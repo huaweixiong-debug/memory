@@ -249,52 +249,86 @@ applies_to: cwd=D:\Claude; reuse_rule=Reuse the minimum non-secret migration che
 - Symptom: migration guidance includes `auth.json` -> stop: it contains OAuth access/refresh/id tokens. Do not copy, output, or retain it; the exposed credentials should be treated as requiring revocation/re-login. [Task 1]
 - Symptom: `profile.ps1` execution-policy noise or `.sandbox-secrets` access denial pollutes discovery -> use PowerShell without a profile and skip protected secret directories; do not infer `deepseek.env` contents from a denied read. [Task 1]
 
-# Task Group: Chiller Line 2 Heating.vi Python replacement with manual start
+# Task Group: Chiller Line 2 heating_python real PLC-to-database-to-laser acceptance
 
-scope: Maintain the fail-closed `heating_python` replacement candidate, its scan-then-operator-Start handshake, and the LabVIEW rollback boundary; production PLC/laser operation remains unaccepted.
-applies_to: cwd=\\100.74.196.22\d\Chiller Line 2 (mapped path=X:\Chiller Line 2); reuse_rule=Reuse HMI architecture, safety gates, and validated mappings for this Chiller Line 2 checkout; revalidate live PLC/OPC, scanner, database, recipe, laser, interlock, and operator conditions before any cutover.
+scope: Prepare and verify the real scan → M0205 → database/TXT → mapped M0907/M0908 laser → heating/result chain; current live production acceptance is blocked by ambiguous temperature semantics and unstable COM6/FX3U reads.
+applies_to: cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2 (related deployment=T:\Chiller Line 2\heating_python and D:\Chiller Line 2\heating_python); reuse_rule=Reuse only for this station or an intentionally ported equivalent; keep LIVE fail-closed and revalidate physical addresses, protocol/framing, temperature semantics, and every acceptance gate before any write or laser trigger.
 
-## Task 1: Inspect Heating.vi and establish safe replacement boundary, partial
-
-### rollout_summary_files
-
-- rollout_summaries/2026-08-29T02-57-32-AoRH-chiller_line_2_heating_python_manual_start.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T13-48-24-01a04b73-73d8-7b91-8d48-97ca13033991_01a05b82-f6eb-7411-bc3f-135b2b3c83fb.jsonl, updated_at=2026-08-31T12:52:11+00:00, thread_id=01a04b73-73d8-7b91-8d48-97ca13033991, static VI evidence; original retained)
-
-### keywords
-
-- Heating.vi, LabSQL, ADO Connection Destroy.vi, OPC, database VI, scanner, laser, MB Master Modbus TCP, SHA-256, UNC paths
-
-## Task 2: Implement Win11-style Python HMI and supporting display model, success
+## Task 1: PLC M0205 gate and mapped laser pulse, partial
 
 ### rollout_summary_files
 
-- rollout_summaries/2026-08-29T02-57-32-AoRH-chiller_line_2_heating_python_manual_start.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T13-48-24-01a04b73-73d8-7b91-8d48-97ca13033991_01a05b82-f6eb-7411-bc3f-135b2b3c83fb.jsonl, updated_at=2026-08-31T12:52:11+00:00, thread_id=01a04b73-73d8-7b91-8d48-97ca13033991, scan-then-Start behavior and 185 tests verified)
+- rollout_summaries/2026-08-29T02-57-32-AoRH-chiller_line_2_real_test_preparation_incomplete.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T13-48-24-01a04b73-73d8-7b91-8d48-97ca13033991_01a05b82-f6eb-7411-bc3f-135b2b3c83fb.jsonl, updated_at=2026-09-01T09:44:57+00:00, thread_id=01a04b73-73d8-7b91-8d48-97ca13033991, logic changed; physical acceptance incomplete)
 
 ### keywords
 
-- heating_python, state_machine.py, hmi.py, cli.py, scanner.py, live_modbus.py, live_fx3u.py, submit_scan, request_start, m105, WAIT_SCAN, SCAN_001, 185 tests
+- M0205, M0907, M0908, m107, m108, state_machine.py, live_laser.py, config_live.json, PLC Start detected; accepting PLC pulse, WAIT_SCAN
+
+## Task 2: Live database integration, additive migration, and temperature safety, partial
+
+### rollout_summary_files
+
+- rollout_summaries/2026-08-29T02-57-32-AoRH-chiller_line_2_real_test_preparation_incomplete.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T13-48-24-01a04b73-73d8-7b91-8d48-97ca13033991_01a05b82-f6eb-7411-bc3f-135b2b3c83fb.jsonl, updated_at=2026-09-01T09:44:57+00:00, thread_id=01a04b73-73d8-7b91-8d48-97ca13033991, migration complete; LIVE chain unverified)
+
+### keywords
+
+- live_database.py, PyMySQL, cli.py, build_live_sm, customer_code_allocation, customer_code_daily_sequence, information, 0xFFC6, temperature, production_backup_20260901_171154, 199 passed
+
+## Task 3: Terra → Luna → Terra real-site acceptance, partial
+
+### rollout_summary_files
+
+- rollout_summaries/2026-08-29T02-57-32-AoRH-chiller_line_2_real_test_preparation_incomplete.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T13-48-24-01a04b73-73d8-7b91-8d48-97ca13033991_01a05b82-f6eb-7411-bc3f-135b2b3c83fb.jsonl, updated_at=2026-09-01T09:44:57+00:00, thread_id=01a04b73-73d8-7b91-8d48-97ca13033991, controlled trigger authorized only after gates pass)
+
+### keywords
+
+- Terra, Luna, scanner, 192.168.3.61:8888, 192.168.3.62:8888, TXT, database preflight, controlled laser trigger, same-part acceptance
+
+## Task 4: Explain simulated live-adapter tests, success
+
+### rollout_summary_files
+
+- rollout_summaries/2026-09-01T14-31-55-xwgK-chiller_line_2_com6_fx3u_stability_verification.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2\heating_python, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T22-31-57-01a05d62-42e5-7d71-a57e-8a075dd59d26.jsonl, updated_at=2026-09-01T16:05:23+00:00, thread_id=01a05d62-42e5-7d71-a57e-8a075dd59d26, offline-test boundary established)
+
+### keywords
+
+- test_live_adapters.py, test_live_production.py, fake OPC UA, scripted Modbus server, fake MySQL, mocked PLC-bit writes, validate_live
+
+## Task 5: Prove stable real COM6/FX3U reads for physical points, partial
+
+### rollout_summary_files
+
+- rollout_summaries/2026-09-01T14-31-55-xwgK-chiller_line_2_com6_fx3u_stability_verification.md (cwd=\\?\UNC\100.74.196.22\d\Chiller Line 2\heating_python, rollout_path=C:\Users\Administrator\.codex\sessions\2026\09\01\rollout-2026-09-01T22-31-57-01a05d62-42e5-7d71-a57e-8a075dd59d26.jsonl, updated_at=2026-09-01T16:05:23+00:00, thread_id=01a05d62-42e5-7d71-a57e-8a075dd59d26, physical serial activity only; stability unproven)
+
+### keywords
+
+- COM6, FX3U, 9600, 7E1, RTS Always, BR0M0205, fx_programming_port, plccheck-final.log, unexpected ACK for read request, PLC returned NAK, FX3U transaction failed after 3 attempt(s)
 
 ## User preferences
 
-- when the user confirmed “确认，按此方案” for a Tkinter, 1920×1080, light Win11-style industrial HMI -> use this fullscreen, high-contrast presentation and expose known fields without guessing unverified live semantics. [Task 2]
-- when the user asked for “完整替代heating.vi” -> clearly separate a simulation/HMI replacement candidate from live production cutover; never imply cutover without field evidence. [Task 1][Task 2]
-- when the user said “扫不到码就跳过，然后扫到码按启动按钮后，对应的激光器就打码” -> make no-scan a normal wait; latch the scan without PLC/laser side effects; let Start select and trigger the laser route. [Task 2]
+- when the user required that PLC M0205's nominal 2-second duration be owned by the PLC -> accept the armed ON signal immediately; do not make Python wait or retime the PLC pulse. [Task 1]
+- when the user required only the scan-mapped output -> never pulse both laser groups; channels 1/3 map to `m107`/M0907 and channels 2/4 to `m108`/M0908. [Task 1]
+- when the user clarified “只能在原有的数据上修改，因为有其他工位也要上传数据” -> database changes must be additive and in place: preserve `information`, never clear/replace/redirect production data, and avoid disrupting other stations. [Task 2]
+- when `0xFFC6` could mean signed `-5.8°C` or a fault code -> ask rather than guess whenever temperature encoding affects physical safety. [Task 2]
+- when the user requested Terra planning → Luna execution → Terra review and “all channels must be connected” -> do not equate HMI/unit tests with same-part end-to-end acceptance; report each physical gate separately. [Task 3][Task 4]
+- when the user confirmed “忽略掉 M105 M107 M108” and physical points `M0205`, `M0907`, `M0908` -> use those confirmed addresses directly in verification and distinguish stable reads from port-open evidence. [Task 5]
 
 ## Reusable knowledge
 
-- Static VI evidence confirms OPC variables, database VIs, scanner/laser logic, and MB Master Modbus TCP dependencies; LabSQL exists at `E:\6. LabSQL\LabSQL ADO functions\Connection\ADO Connection Destroy.vi`. The full block diagram was not visually inspected. `Heating.vi` remained SHA-256 `3B94CA3FA085677718F7318487A6657D30E97E8F8B26081B372C123C5764DD32`. [Task 1]
-- `heating_python/hmi.py` provides `HmiSnapshot`, `HmiController`, and `HeatingHMI`: parameters, eight temperatures, PLC D-register cache values, four scanner/laser routes, alarms, manual scan, Start/Stop/Reset, fullscreen/F11, and a single polling loop owned by the HMI controller. `StationSnapshot` carries `cached_values`, `flow_value`, `gas_active`, `traceable`, `today_sequence`, `final_scans`, and `communication_status`; display refresh is render-only while control remains behind the state machine/worker thread. Remote Python 3.12 compilation, `Ran 182 tests ... OK`, and simulation through `complete` passed. [Task 2]
-- Scanner topology is `.60`–`.63:8888`, 22-byte frames, 30 ms timeout, 50 ms cadence; `.60`/`.63` disabled and `.61`/`.62` enabled/reachable in read-only checks. Preserve non-sequential mappings `m105 → M0205`, `m107 → M0907`, `m108 → M0908`. Temperature device is `192.168.3.32:502`, registers `40001`–`40008`; direct Modbus may contend with NI OPC Servers' single session, so use OPC UA for coexistence. [Task 2][Task 3]
-- `config_live.json` now uses `modbus.temperature_scale: 0.1` (for example `1800 -> 180.0 °C`), tags `1温度`–`8温度`, and QR files `D:\激光码信息二维码1.txt`–`4.txt`; the exact live hardware behavior remains for field confirmation. Safe command: `python -m heating_python --simulate --serial-code EV80015100000000000001 --run-once`. [Task 3]
-- The current handshake is: no scan + Start stays in `WAIT_SCAN` without `SCAN_001`; `submit_scan()` only latches serial/scanner/laser; Start calls `request_start()`, raises `m105`, validates, allocates, marks with the selected laser, then continues. Batch Modbus reading is one `address=0,count=8` request; `192.168.3.32:502` returned eight registers, while PLC FX3U returned NAK. Final suite: `Ran 185 tests ... OK`. [Task 2]
+- `state_machine.py` must preserve the last PLC input observation: the M0205 gate requires a real low observation to arm and accepts the next high immediately. `submit_scan()` must not force `snapshot.start_signal = False`; that regression left simulation in `WAIT_SCAN`. `live_laser.py` pulses configured channel tags and rolls them back on failure. [Task 1]
+- Config-driven PyMySQL support, placeholder compatibility, live CLI wiring, and read-only preflight were added after discovering the allocator still depended on missing environment variables/ODBC DSN despite `config_live.json` database fields. Verify the actual `cli.py/build_live_sm` construction path, not only adapter tests. [Task 2]
+- The SHA-256-verified backup is `D:\Chiller Line 2\customer_code_fix\artifacts\production_backup_20260901_171154\production_full.sql` (148,775,817 bytes; SHA-256 `c4e3eba030760f16229d22d0bafe14e29149cb2c20eda6d80e4ba8107a442f2b`). The additive migration created `customer_code_allocation` (75,006 rows), `customer_code_daily_sequence` (282 rows), and non-unique indexes on `information`; historical conflicts were not automatically altered. [Task 2]
+- High-word temperature values now fail closed instead of being displayed as implausible values such as `6486.5°C`; `0xFFC6` remains unresolved without authoritative device semantics. Focused tests reported 125 passed and integration tests 199 passed, but no final LIVE startup or end-to-end test followed. [Task 2]
+- Current observed scanners: `.61:8888` and `.62:8888` enabled; `.60` and `.63` disabled. Required same-part acceptance evidence is serial/customer code, database result, two TXT readbacks, only mapped M0907 or M0908 asserted for 2 seconds then OFF, plus saved heating/result. [Task 3]
+- `test_live_adapters.py` uses fake OPC UA and an in-process scripted Modbus server; `test_live_production.py` uses fake OPC DA/SVE, fake MySQL, temporary files, and mocked PLC writes. They validate contracts and simulated wiring, not field PLC/database/TXT/laser behavior. [Task 4]
+- COM6 uses `9600 / 7E1 / RTS Always`; read-only requests contained `BR0M0205`. Some valid-looking frames appeared, but repeat reads included ACK for reads, mixed ACK/NAK, malformed/short responses, and parse failures. No PLC writes, laser trigger, TXT change, or database modification occurred in the stability verification. [Task 5]
 
 ## Failures and how to do differently
 
-- Symptom: an OpenCode/tool working directory is UNC -> `UNC paths are not supported`. Fix: use mapped `X:\Chiller Line 2` or local staging. [Task 1]
-- Symptom: Windows PowerShell 5.1 JSON edits cause `找不到属性 temperature_scale`, BOM, or mojibake -> add missing properties with `Add-Member`, write UTF-8 without BOM, then validate with `json.loads(path.read_text(encoding='utf-8'))` and the project tests. [Task 3]
-- Symptom: routine verification is tempted to use `--live` -> do not run it: it can write PLC, laser, and database state. Keep live mode fail-closed until PLC/OPC, laser file, database, recipe, interlock, operator, maintenance window, and explicit cutover approval are verified. [Task 2][Task 3]
-- Symptom: visual LabVIEW inspection is described as complete -> cause: desktop inspection was stopped with Esc and static metadata was used. Fix: record the visual block-diagram inspection as incomplete. [Task 1]
-- Symptom: a second live process starts while COM6 is held -> `SerialException: could not open port 'COM6': PermissionError(13, '拒绝访问')`. Fix: ensure a single live process and identify port ownership before retrying. [Task 2]
+- Symptom: old tests or a partial rerun appear green after handshake changes -> treat earlier results as stale; run the relevant post-change suite before claiming the scan/start change complete. [Task 1]
+- Symptom: temperature parsing aborts at the first high-bit value -> capture channel identity, the other seven values, and recurrence, then obtain device documentation or a user-confirmed field rule; do not infer signed-temperature semantics. [Task 2]
+- Symptom: SSH/share reachability, database connection, or passing tests is described as production-ready -> these are only individual gates. Use bounded checks, report exact gate status, and do not ask the user to scan/press Start until one fresh LIVE process and all non-physical gates have current evidence. [Task 3][Task 4]
+- Symptom: COM6 opens or returns one valid frame -> this proves serial activity, not stable PLC reads. Before any live write, require a bounded repeated-read test for all three physical bits with no ACK/NAK/protocol/length errors; investigate `fx_programming_port` selection, framing/response handling, serial exclusivity, and device parameters if it fails. [Task 5]
 
 # Task Group: LabVIEW OPC.lvlib and Kepware communication-list analysis
 
