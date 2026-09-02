@@ -1,0 +1,7 @@
+# Never publish local sessions or credentials
+sessions/
+*.jsonl
+**/auth.json
+**/.env
+**/*.env
+**/.sandbox-secrets/
