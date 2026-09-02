@@ -182,3 +182,13 @@ docker build -t project-name .
 4. **时间戳**: 设备数据和生产数据的时间戳统一使用 UTC，前端展示时转换
 5. **竞态条件**: 机器人指令和传感器读取可能并发，注意加锁
 6. **前端轮询**: 不要用 setInterval 高频轮询设备状态，用 WebSocket 推送
+
+---
+
+## 八、共享 Memory 更新规则（2026-09-02 起强制）
+
+- **YOU MUST** 每次对话产生稳定结论、决策、用户偏好或完成有价值工作时，更新共享 memory 仓库并 push：https://github.com/huaweixiong-debug/memory
+- 本机工作克隆：`C:\Users\Administrator\Documents\memory-share`；会话开始 `git pull`，结束前 `git pull --rebase` 再 commit + push
+- 写入位置（按来源追加，保留来源标记和日期）：Claude Code / OpenCode 会话结论 → `sources/claude-code/` 或 `sources/opencode/`；跨账号通用结论 → `sources/shared-unified/UNIFIED_MEMORY.md`
+- 只写稳定结论和待办，不复制聊天日志，不写入任何密码 / token / API key
+- 提交信息格式：`memory: <账号> <一句话主题>`

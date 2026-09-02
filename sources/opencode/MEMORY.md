@@ -288,3 +288,11 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 维护提醒：客户端更新订阅/重置配置会覆盖 config.yaml，问题若复发先检查 dns-hijack 是否仍为 any:53。
 - 同会话附：向日葵/UU远程剪贴板失效为常见问题——主因剪贴板同步开关未开、Clipboard User Service 异常、多远程软件/微信输入法抢占，重连远程+重启服务即可。
 - 补充（同日后续）：主站修复后企业网银子域仍失败——其 AAAA 为电信真实记录 240e:604:204:900::5e（Chromium 内置解析器/Windows 多宿主并行查询采纳非空应答，any:53 劫持拦不住非 53 端口通道，Edge 策略 AsyncDns=0 也无效，已写入 HKLM Policies）。最终解法：① Set-DnsClientServerAddress WLAN DNS=198.18.0.2,223.5.5.5（切断电信应答源，立即生效，解析只剩 fake-ip）；② HKLM ...\Tcpip6\Parameters\DisabledComponents=0xFF（重启后系统级禁 AAAA，终极根治）。注意：WLAN DNS 已手动指向 Clash(198.18.0.2)，若日后卸载/长期关闭 Clash 需改回 DHCP 自动获取，否则无法解析域名。
+
+### 2026-09-02（Windows opencode-go/glm-5.3-flash）：共享 Memory GitHub 仓库建立
+
+- 用户要求把当前账号全部 memory push 到 https://github.com/huaweixiong-debug/memory，并确立规则：以后所有 AI 账号对话都必须更新该共享 memory。
+- 已完成初始同步（commit 4060628）：sources/current-codex/（完整镜像 ~/.codex/memories，含 rollout_summaries）、sources/claude-code/CLAUDE.md（新增）、sources/shared-unified/AGENTS-global.md 与 CODEX-shared-memory-instructions.md（新增）。推送前扫描确认无敏感凭据。
+- 本机工作克隆固定为 C:\Users\Administrator\Documents\memory-share（已从 Temp 移出，避免被清理）。
+- 强制更新规则已写入四处本地全局规则文件（~/.claude/CLAUDE.md 第八节、~/AGENTS.md 第九节、~/.codex/AGENTS.md、~/.config/opencode/AGENTS.md 新建）及仓库 README"更新规则"节：每次对话产生稳定结论/决策/偏好时 git pull --rebase 后 commit + push，格式 memory: <账号> <一句话主题>，不写密码/token/API key。
+- 待办：其他 Codex/ChatGPT 账号下次会话时应拉取本仓库并遵守 README 中的更新规则。
