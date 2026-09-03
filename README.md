@@ -4,6 +4,8 @@
 
 统一关联规则见 [`UNIFIED_MEMORY.md`](UNIFIED_MEMORY.md)：三个来源按同一用户的连续记忆联合使用，来源仍保留。
 
+三方 Agent（Codex / ZCode / OpenCode）的统一模型路由与升级规则见 [`sources/shared-unified/MODEL_ROUTING.md`](sources/shared-unified/MODEL_ROUTING.md)。
+
 - [`account_memory/MEMORY.md`](account_memory/MEMORY.md)：Codex 第二账号，149 个已整理会话
 - [`current_account_memory/MEMORY.md`](current_account_memory/MEMORY.md)：Codex 本机当前账号，会话卡片与索引
 - [`opencode_memory/MEMORY.md`](opencode_memory/MEMORY.md)：OpenCode 共享记忆，包含用户画像、环境与项目上下文
