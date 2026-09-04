@@ -14,6 +14,7 @@
 | `bartender-label-print` | BarTender 标签打印（bartend.exe 命令行） | hc-leak-test-print, xiezhong-Morocco-2-stations, Yida-Marking-Printing |
 | `lin-bus-usb2xxx-heating` | LIN 总线加热产品 A045/A050，USB2XXX 适配器 | Heating-LIN |
 | `can-bus-ptc-heating` | CAN 总线 PTC 加热（BAIC ThermalBUS DBC），USB2CAN | heating-can |
+| `chatgpt-proxy-guard` | "南美"Clash 客户端：ChatGPT 不可达时自动切换节点（PowerShell + mihomo API） | 无仓库（本机实测，Windows 环境部署类技能） |
 
 ## 维护规则
 

@@ -276,6 +276,13 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 根因：窗口恢复状态中保存了已断开的网络目录会话（`\\100.121.217.117\d\Test`、`\\100.74.196.22\d\Chiller Line 2`）；新版桌面端启动时对这些路径 `lstat` 失败，未能隔离异常，导致整个会话页无法加载。另有历史默认远程服务器 `http://100.117.1.6:4096` 返回 502，已移除该默认连接，改回本机 sidecar。
 - 修复：备份并重置桌面端窗口/全局标签缓存；将 16 条指向上述断开目录的会话临时重定向至 `C:/Users/Administrator/Documents/Default Project`，以保留会话消息并避免启动失败。数据库备份在 `C:\Users\Administrator\.local\share\opencode\backups\20260901-1335-before-directory-repair`；桌面状态备份保留在 `C:\Users\Administrator\AppData\Roaming\ai.opencode.desktop\*.backup-20260901-*`。
 - 验证：OpenCode 已重启，界面正常显示提示词输入框、Build 智能体和 GLM-5.3-Flash 选择器，渲染日志未再出现 session-load 错误。
+### 2026-09-02：OpenCode Desktop 聊天空白、主菜单无响应及最新会话恢复
+
+- 症状：OpenCode Desktop 1.18.26 当前窗口聊天页空白，点击主菜单无响应；renderer 日志出现 `Uncaught RangeError: Maximum call stack size exceeded`，随后 window 日志记录 `renderer unresponsive`。
+- 修复：停止 OpenCode 后，将 `AppData\\Roaming\\ai.opencode.desktop` 下窗口状态、`Local Storage`、`Session Storage` 移入可回滚备份目录 `repair-backup-20260902-174336`；聊天数据库、认证未改动。窗口恢复指针设置到最新会话 `ses_fa4865e24ffeY6ueAd7nMZRLFD`。
+- 会话核对：该会话最后更新时间为 2026-09-02 17:24:17，本地库 694 条消息；旧误打开的 `ses_fa488a539ffe6M8e8AuAG7BCyq` 最后更新为 2026-09-01 13:48:56。
+- 验证：重启后窗口指针只保留目标会话；6 个 OpenCode 进程全部响应；新日志无 `RangeError`、`Maximum call stack`、`renderer unresponsive` 或会话加载错误。若复发，优先检查新的 `last-active-url` 是否把窗口切回旧会话，并保留 repair-backup 目录用于回滚。
+
 ### 2026-09-01 Clash TUN 致 Edge 打不开工行网站：DNS 劫持修复（Windows 本机）
 
 - 现象：Edge 打开 www.icbc.com.cn / corporbank-simp.icbc.com.cn 报 ERR_CONNECTION_CLOSED，时好时坏；curl 直连/走代理均 HTTP 200 秒开。
@@ -288,3 +295,10 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 维护提醒：客户端更新订阅/重置配置会覆盖 config.yaml，问题若复发先检查 dns-hijack 是否仍为 any:53。
 - 同会话附：向日葵/UU远程剪贴板失效为常见问题——主因剪贴板同步开关未开、Clipboard User Service 异常、多远程软件/微信输入法抢占，重连远程+重启服务即可。
 - 补充（同日后续）：主站修复后企业网银子域仍失败——其 AAAA 为电信真实记录 240e:604:204:900::5e（Chromium 内置解析器/Windows 多宿主并行查询采纳非空应答，any:53 劫持拦不住非 53 端口通道，Edge 策略 AsyncDns=0 也无效，已写入 HKLM Policies）。最终解法：① Set-DnsClientServerAddress WLAN DNS=198.18.0.2,223.5.5.5（切断电信应答源，立即生效，解析只剩 fake-ip）；② HKLM ...\Tcpip6\Parameters\DisabledComponents=0xFF（重启后系统级禁 AAAA，终极根治）。注意：WLAN DNS 已手动指向 Clash(198.18.0.2)，若日后卸载/长期关闭 Clash 需改回 DHCP 自动获取，否则无法解析域名。
+
+### 2026-09-04 ChatGPT 代理守护 skill（chatgpt-proxy-guard）
+
+- 位置：`P:\memory\skills\chatgpt-proxy-guard\`（SKILL.md + guard.ps1 + install.ps1）。用于任何装有"南美"Clash 客户端的机器一键部署：节点失效/被 ChatGPT 403 时自动切换到能访问 chatgpt.com 的节点，永不放弃。
+- 本机（Administrator）已部署：`%USERPROFILE%\Tools\ChatGptProxyGuard\guard.ps1`，自启在启动文件夹 `ChatGptProxyGuard.vbs`，日志 `Tools\ChatGptProxyGuard\logs\guard.log`。判定=经 17890 口实测 chatgpt.com/robots.txt 仅认 200；连续 2 次失败才切换（防瞬时 403 抖动）；候选按延迟历史排序、过滤信息节点。
+- 关键实测教训（详见 SKILL.md）：① PS5.1 Invoke-RestMethod 把 mihomo API 响应按 Latin-1 解码致中文节点名全乱、PUT 全 400，必须 WebClient+显式 UTF-8；② 核心不随 config.yaml 热更新，改规则必须 `PUT /configs?force=true` 重载（本机 9/1 旧规则曾致 chatgpt.com 整体走不到节点，重载即愈）；③ 无 BOM UTF-8 ps1 含中文被按 GBK 误读；④ VBS Run 内嵌路径引号规则：路径前 2 个 `"`、后 3 个 `"`；⑤ 机场 IP 被 ChatGPT 风控会漂移（香港403→新加坡200→新加坡也403），只能实时判定。
+- 当日状态：订阅多节点曾被墙/失效，"法国"死亡、"香港"403；重载配置后当前"新加坡隧道"200 可用。南美订阅地址/token 只在客户端内，不入库。

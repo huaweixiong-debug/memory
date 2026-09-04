@@ -9,6 +9,7 @@
 - [`account_memory/MEMORY.md`](account_memory/MEMORY.md)：Codex 第二账号，149 个已整理会话
 - [`current_account_memory/MEMORY.md`](current_account_memory/MEMORY.md)：Codex 本机当前账号，会话卡片与索引
 - [`opencode_memory/MEMORY.md`](opencode_memory/MEMORY.md)：OpenCode 共享记忆，包含用户画像、环境与项目上下文
+- [`skills/`](skills/)：跨机器复用的部署/设备技能库（如 [`skills/chatgpt-proxy-guard/`](skills/chatgpt-proxy-guard/SKILL.md)：ChatGPT 代理节点自动切换守护）
 - [`current_account_memory/chat_index.jsonl`](current_account_memory/chat_index.jsonl)：当前 Codex 账号机器可读索引
 - [`current_account_memory/rollout_manifest.txt`](current_account_memory/rollout_manifest.txt)：本机全部原始 rollout 路径
 - `sources/current-codex/` — memory produced by the current Codex account (mirrored from `~/.codex/memories/`, last synced 2026-09-02).

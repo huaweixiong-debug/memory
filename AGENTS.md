@@ -8,7 +8,7 @@
 2. `opencode_memory/MEMORY.md` — OpenCode 共享记忆
 3. `account_memory/MEMORY.md` — Codex 第二账号记忆
 4. `current_account_memory/MEMORY.md` — Codex 当前账号记忆
-5. `skills/` — 跨账号设备/仪器技能库（ATEQ 检漏仪、S7-200 SMART PLC、SCPI 耐压仪、奇力速螺丝刀、扫码枪、BarTender 打印、LIN/CAN 总线）；涉及对应设备通讯时先读 `skills/README.md` 索引与对应 SKILL.md
+5. `skills/` — 跨账号设备/仪器技能库（ATEQ 检漏仪、S7-200 SMART PLC、SCPI 耐压仪、奇力速螺丝刀、扫码枪、BarTender 打印、LIN/CAN 总线、ChatGPT 代理守护）；涉及对应设备通讯或环境部署时先读 `skills/README.md` 索引与对应 SKILL.md
 
 把以上来源视为同一用户的连续记忆。需要追溯时保留来源标记，冲突时以最新最具体的记录为准。敏感信息已脱敏，完整上下文以原始 rollout 为准。
 
