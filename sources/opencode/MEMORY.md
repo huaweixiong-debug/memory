@@ -296,3 +296,13 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 本机工作克隆固定为 C:\Users\Administrator\Documents\memory-share（已从 Temp 移出，避免被清理）。
 - 强制更新规则已写入四处本地全局规则文件（~/.claude/CLAUDE.md 第八节、~/AGENTS.md 第九节、~/.codex/AGENTS.md、~/.config/opencode/AGENTS.md 新建）及仓库 README"更新规则"节：每次对话产生稳定结论/决策/偏好时 git pull --rebase 后 commit + push，格式 memory: <账号> <一句话主题>，不写密码/token/API key。
 - 待办：其他 Codex/ChatGPT 账号下次会话时应拉取本仓库并遵守 README 中的更新规则。
+
+### 2026-09-06（Windows opencode）：南美代理故障速修手册 + Codex 桌面版本机化
+
+- 复发规律：南美客户端每次重启会把系统代理 ProxyEnable 重置为 0（本轮 9/6 晚即因此全断）；clash-windows-amd64 核心还会僵死——端口能 TCP 连通但完全不转发（请求 5 秒失败、所有节点测速超时），唯一解法是重启南美客户端让核心重拉。
+- 节点按端口失效：9/6 实测 nanmei13.hainiu56251454.com (43.198.71.139) 上韩国17049/香港17044/越南17048/德国17054 完全不通，美国1(17050)/美国2(17051)/马来西亚(17047)/台湾1(17046)/菲律宾(17056)/新加坡(17057) 约 210ms 可用；法国(17055) 1.2s 慢。服务商已从 nanmei12 轮换到 nanmei13，晚高峰国际线路 TCP 握手可达 15s。切节点用 API：PUT http://127.0.0.1:8765/proxies/Pluto body {"name":"美国1"}（中文 body 必须 UTF8.GetBytes）。
+- 速修三步：① Set-ItemProperty HKCU:...\Internet Settings ProxyEnable=1 + wininet InternetSetOption(39/37) 广播；② 节点测速 API /proxies/{name}/delay?timeout=5000 并切到快节点；③ 全断且测速全超时 → 重启南美客户端（D:\南美\南美.exe，config 在 Roaming\南美\config.yaml 可直接写，非 9/1 记录的 Program Files 路径）。
+- Codex 桌面版已于 8/30 改为本机执行：~/.ssh/config 的 ubuntu-codex 块已注释（备份 config.bak-20260830），.codex-global-state.json 已清全部 ubuntu-codex 绑定（备份 .bak-20260830，含 selected-remote-host-id/auto-connect 等根级键）。远程 openaiserver(100.117.1.6)/lulian(100.82.136.106) 两台 Tailscale 机器当时同掉线（Y盘=Y:\协众 映射自 lulian）。恢复远程：去掉 ssh 注释并在应用里重选主机。
+- 仍生效的修复：hosts 里 ws.chatgpt.com→104.18.39.21/172.64.148.235、ab.chatgpt.com→104.18.32.47/172.64.155.209（桌面版本地解析被 DNS 污染，浏览器无此问题因走代理解析）；用户级环境变量 HTTP_PROXY/HTTPS_PROXY=http://127.0.0.1:17890、NO_PROXY 含 100.64.0.0/10（git/npm 等走代理依赖它，git pull GitHub 必须先设 HTTPS_PROXY）。
+- 浏览器坑：系统代理变更后已运行的 Edge 不会感知（启动加速后台驻留），需彻底结束 msedge.exe 重开；360 浏览器当时新启动所以正常。ws.chatgpt.com 在 Clash connections 里 destinationIP 显示污染 IP 是本地规则匹配解析，实际转发域名由节点远程解析，以 TLS 证书 CN 为准判断真假。
+- 潜在隐患：9/1 条目把 WLAN DNS 手动指向 198.18.0.2（Clash DNS），当前 TUN 关闭仅系统代理模式，DNS 依赖 clash 进程存活；clash 一停 DNS 即瘫。若彻底弃用南美需把 WLAN DNS 改回 DHCP。
