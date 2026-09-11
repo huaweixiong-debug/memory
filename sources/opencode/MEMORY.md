@@ -317,3 +317,5 @@ eferences/v1_workflow.jsonï¼ˆè·¯ç”±/çŠ¶æ€/æ ‡è®°å¥‘çº¦ï¼‰ã€10 ä¸ª .ai-workflow
 - DEEPSEEK_API_KEY ÒÑÉèÎªÓÃ»§¼¶»·¾³±äÁ¿²¢ÑéÖ¤ API Á¬Í¨³É¹¦
 
 - Ä¬ÈÏ model ÓÉ opencode-go/deepseek-v4-flash ¸ÄÎª deepseek/deepseek-flash£¨opencode.jsonc Ä¬ÈÏÈÔÎª glm-5.3-flash£©£»OpenCode Go ±£Áô£¬´ı¶î¶È»Ö¸´ºóÊÖ¶¯Ñ¡ÓÃ
+
+- ĞŞ¸´Ä£ĞÍÁĞ±í²»ÏÔÊ¾£º×Ô¶¨Òå provider ID "deepseek" Óë opencode ÄÚÖÃ deepseek provider ³åÍ»±»¸²¸Ç£¬¸ÄÃûÎª "deepseek-official"£¨Ä£ĞÍ deepseek-flash ¼´¿É³öÏÖÔÚ DeepSeek Official ·Ö×éÏÂ£©£¬Ä¬ÈÏ model Í¬²½¸üĞÂ
