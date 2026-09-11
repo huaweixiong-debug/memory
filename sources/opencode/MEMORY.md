@@ -306,3 +306,9 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 仍生效的修复：hosts 里 ws.chatgpt.com→104.18.39.21/172.64.148.235、ab.chatgpt.com→104.18.32.47/172.64.155.209（桌面版本地解析被 DNS 污染，浏览器无此问题因走代理解析）；用户级环境变量 HTTP_PROXY/HTTPS_PROXY=http://127.0.0.1:17890、NO_PROXY 含 100.64.0.0/10（git/npm 等走代理依赖它，git pull GitHub 必须先设 HTTPS_PROXY）。
 - 浏览器坑：系统代理变更后已运行的 Edge 不会感知（启动加速后台驻留），需彻底结束 msedge.exe 重开；360 浏览器当时新启动所以正常。ws.chatgpt.com 在 Clash connections 里 destinationIP 显示污染 IP 是本地规则匹配解析，实际转发域名由节点远程解析，以 TLS 证书 CN 为准判断真假。
 - 潜在隐患：9/1 条目把 WLAN DNS 手动指向 198.18.0.2（Clash DNS），当前 TUN 关闭仅系统代理模式，DNS 依赖 clash 进程存活；clash 一停 DNS 即瘫。若彻底弃用南美需把 WLAN DNS 改回 DHCP。
+
+## 2026-09-11 - ���� DeepSeek V4.1 Flash ģ��
+- opencode.json �� opencode.jsonc ������ deepseek provider��@ai-sdk/openai-compatible��baseURL https://api.deepseek.com/v1��apiKey �� env:DEEPSEEK_API_KEY��
+- ģ�� ID��deepseek-v4.1-flash����Ϊ��ѡ�Ĭ�� model δ�Ķ�
+- ע�⣺opencode.json �� "model" �ֶ�������δ����� provider opencode-go��opencode-go/deepseek-v4-flash��
+- �����û������� DEEPSEEK_API_KEY ����ʹ��
