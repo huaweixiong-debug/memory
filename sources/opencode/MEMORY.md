@@ -333,3 +333,15 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 切换助手脚本：`C:\Users\Administrator\mihomo\nas-switch.py`（status / list / nodes / use）
 - 配置副本：`C:\Users\Administrator\mihomo\nas-merged-config.yaml`
 - 状态（2026-09-21 晚）：主入口=西游云-自动选择，西游云自动选香港3｜高速，南美自动选香港；两路 github/opencode 均 200
+
+### 2026-09-21 追加：自动选择限定德/日/韩（ChatGPT 不支持香港）
+
+- 用户用途：ChatGPT、opencode、GitHub —— **香港节点不可用**（OpenAI 不支持 HK），只能用德国/日本/韩国
+- 自动选择组重命名为 `西游云-德日韩` / `南美-德日韩`，各含 5 个节点：
+  - 西游云：日本1｜高速、日本2｜高速、日本｜备份、韩国1｜高速、德国
+  - 南美：日本、日本1、韩国、韩国1、南美-德国
+- 两个死节点（新加坡｜直连、日本｜直连2，trojan b.1181181.xyz:2096 i/o timeout）已从所有组剔除
+- 手动组 `西游云`/`南美` 中德/日/韩排最前，其余节点保留在下方备选
+- 验证（2026-09-21）：西游云-德日韩（日本1｜高速）github/chatgpt/opencode 全 200；南美-德日韩（韩国1）github/opencode 200（chatgpt 403 为 curl 被 Cloudflare 拦截，非节点问题）
+- 注意：chatgpt 对 curl 时而 200 时而 403，判断节点可用性以 github/opencode/浏览器实测为准
+- 默认状态：节点选择 = 西游云-德日韩 → 自动选日本1｜高速
