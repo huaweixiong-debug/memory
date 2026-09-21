@@ -319,3 +319,17 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - Ĭ�� model �� opencode-go/deepseek-v4-flash ��Ϊ deepseek/deepseek-flash��opencode.jsonc Ĭ����Ϊ glm-5.3-flash����OpenCode Go ����������Ȼָ����ֶ�ѡ��
 
 - �޸�ģ���б�����ʾ���Զ��� provider ID "deepseek" �� opencode ���� deepseek provider ��ͻ�����ǣ�����Ϊ "deepseek-official"��ģ�� deepseek-flash ���ɳ����� DeepSeek Official �����£���Ĭ�� model ͬ������
+
+## 2026-09-21 NAS mihomo 双订阅融合（西游云 + 南美）
+
+- **NAS Docker mihomo（100.82.136.106）配置彻底重建**：合并两套订阅 73 个节点（西游云 47 + 南美 26，4 个重名节点南美侧加"南美-"前缀）
+- 分组结构：`节点选择`（主入口，select）→ `西游云-自动选择` / `南美-自动选择` / `西游云` / `南美` / DIRECT；自动选择组只含真实节点（信息占位节点如"剩余流量：xx GB"被过滤，仅在手动组可见）
+- 规则：沿用西游云 522 条规则，全部指向 `节点选择` 主入口
+- **API 端口从 8765 改为 9090**：8765 被 NAS 上 `fio --server`（磁盘测试守护进程，开机自启）占用，mihomo 无法绑定。9090 未被占用
+- **配置写入方法**：Synology SFTP 报 No such file（chroot 限制），改用 SSH `cat > 文件` stdin 管道写入（paramiko stdin.write + shutdown_write），MD5 校验一致
+- **关键教训**：NAS config 是 bind mount（/volume1/docker/mihomo/config.yaml），`docker cp` 改不到；且禁止用 sed/PowerShell 管道处理中文配置（编码损坏导致解析失败）。正确做法：本地 Python utf-8 构建 → mihomo -t 本地校验 → stdin 管道上传
+- 容器重启后配置生效；日志 `External controller listen error` 消失
+- 切换验证全部通过：API PUT /proxies/{组}，两个提供商流量测试 github/opencode 200
+- 切换助手脚本：`C:\Users\Administrator\mihomo\nas-switch.py`（status / list / nodes / use）
+- 配置副本：`C:\Users\Administrator\mihomo\nas-merged-config.yaml`
+- 状态（2026-09-21 晚）：主入口=西游云-自动选择，西游云自动选香港3｜高速，南美自动选香港；两路 github/opencode 均 200
