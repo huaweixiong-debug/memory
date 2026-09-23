@@ -356,3 +356,13 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 西游云-德日韩组已改为 4 节点（去掉死的日本｜备份）
 - 重要认知：HK/俄罗斯节点对 ChatGPT 区域封锁（HTTP 可达但账号不可用）；除德日韩外，西游云 美国1｜AI通用、新加坡3|高速、台湾｜高速-家宽、法国、英国、意大利、土耳其、西班牙、印尼、菲律宾、沙特、墨西哥、智利、尼日利亚、阿塞拜疆 也三站全通（备选）
 - 南美 新加坡隧道/台湾/台湾1/南美-马来西亚/马来西亚A/美国3/菲律宾一/南美-法国 等亦三站全通
+
+### 2026-09-23 ChatGPT 桌面版（OpenAI.Codex MSIX）启动卡死根治 + 本地 clash 节点坑
+- **卡死根因（两层叠加）**：① 应用启动时 sidebar 对项目列表逐个做 stat + git rev-parse，项目里有死网络路径（\\\\100.99.20.28、\\\\100.87.176.32、U:\\、W:\\、X:\\ 等），每个 60s 超时，30 个目录扫 187 秒，窗口全程未响应；② T:/Y: 等 SMB 映射僵尸会话（net use 显示 OK 但实际访问挂死），TCP 445 通也没用
+- **修复**：删 .codex-global-state.json 的 electron-saved-workspace-roots + local-projects 死条目；删 state_5.sqlite 的 projects/project_roots/project_idempotency_keys 死行（threads 先置 project_id=NULL 保历史，实测死项目 0 线程）；
+et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原文件旁 .bak-20260923
+- **存储位置**：项目列表双存储 = C:\Users\Administrator\\.codex\\.codex-global-state.json（Electron 层）+ state_5.sqlite（app-server 层，只改一处会被另一处回填，projectCount 日志可验证）
+- **本地 clash（南美）重大坑**：德国节点对 chatgpt.com 完全连接失败（000 超时），对 auth/api.openai.com 也曾 SSL 失败；日本/日本1/韩国/韩国1 全通。ChatGPT 卡死别只查路径，先 curl -x 127.0.0.1:17890 https://chatgpt.com 测当前节点。切换工具：python C:\Users\Administrator\\mihomo\\clash-api.py status|list|use|test（Pluto 组）
+- **诊断技巧**：主进程 Responding 忙等翻转（True↔False）+ CPU 不涨 = 同步阻塞；应用日志在 %LOCALAPPDATA%\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\Codex\\Logs\\2026\\MM\\DD\\，t0=主进程 t1=git worker；[git] timed_out=true 即网络路径挂死实锤
+- 重启应用：explorer.exe shell:AppsFolder\\OpenAI.Codex_2p2nqsd0c76g0!App；statsig.openai.com / oai-sentry.openai.com 经代理 000（不阻塞使用）
+- PowerShell 5.1 坑：python -c 多行代码会报 NullReferenceException，必须写脚本文件执行
