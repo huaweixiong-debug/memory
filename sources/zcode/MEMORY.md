@@ -36,3 +36,6 @@
 ## 2026-09-25（三）
 - 两套代理全节点体检：**西游云基本全灭**——本机 9-7 旧订阅 44 节点仅「马来西亚」活（38.47.189.86:21112，独立 IP，640ms，但也被 OpenAI 拦 403 dc），其余 35 个入口全部拒绝连接；主入口 bzd.11151115.xyz 整机下线（DoH 确认 52.68.82.112 为真实记录、非 DNS 污染），b.1181181.xyz:2096 / tw01.1100886.xyz:11027 / 36.141.116.50:37201 同死。套餐剩 120GB、2026-10-07 到期，**修复 = 去 www.xiyou.us 更新订阅**。**南美延迟全绿（20/20）但 ChatGPT 全军覆没**：dc 硬拦（美日韩新德法越马）+ 香港 unsupported_country + 台湾 cf-mitigated:challenge（桌面客户端过不了）。延迟榜：香港 145/台湾1 177/香港1 197/新加坡隧道 229/韩国1 349ms。
 - 可复用测试方法：未运行的代理起临时实例（复制核心+配置+Country.mmdb，sed 改端口 17891/8766）；入口真伪用裸 TCP socket 测 + 1.1.1.1 DoH JSON 对比（区分机场挂了 vs DNS 污染）；`GET /proxies/{名}/delay` 并行测延迟不切组、不影响在线流量；OpenAI 判据 ios.chat.openai.com（403 JSON type=dc 硬拦 / 403 HTML cf-mitigated:challenge 软拦 / 200 放行）；urllib `[Errno 2]` 是 CONNECT 被断假象非节点死；Git Bash curl 切中文节点名必挂须 python urllib + ensure_ascii=False。
+
+## 2026-09-25（四）勘误
+- **勘误（三）中「南美全节点被 OpenAI 拦、ChatGPT 必挂」的结论**：用户实测 ChatGPT 桌面客户端正常。mihomo `/connections` 证实同一「越南1」节点上客户端 13 条活跃连接、MB 级收发；而 curl 测 `ios.chat.openai.com` 同时仍 403 `{"type":"dc"}`——**Cloudflare 拦的是 curl 的 TLS 指纹，不是应用**。规则固化：curl/urllib 的 OpenAI 端点响应（403 dc、cf challenge）不可作为「应用不可用」判据，唯一可信的硬封锁是香港式 `unsupported_country_region_territory`；判断 ChatGPT 真实可用性看 `/connections` 流量增长或重启应用实测。当天上午「连不上」为出口 IP 临时风控/应用状态问题，已自愈，与 9-21「间歇波动」记录一致。西游云入口全灭（待更新订阅）结论不变。
