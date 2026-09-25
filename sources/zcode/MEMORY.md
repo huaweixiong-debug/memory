@@ -39,3 +39,7 @@
 
 ## 2026-09-25（四）勘误
 - **勘误（三）中「南美全节点被 OpenAI 拦、ChatGPT 必挂」的结论**：用户实测 ChatGPT 桌面客户端正常。mihomo `/connections` 证实同一「越南1」节点上客户端 13 条活跃连接、MB 级收发；而 curl 测 `ios.chat.openai.com` 同时仍 403 `{"type":"dc"}`——**Cloudflare 拦的是 curl 的 TLS 指纹，不是应用**。规则固化：curl/urllib 的 OpenAI 端点响应（403 dc、cf challenge）不可作为「应用不可用」判据，唯一可信的硬封锁是香港式 `unsupported_country_region_territory`；判断 ChatGPT 真实可用性看 `/connections` 流量增长或重启应用实测。当天上午「连不上」为出口 IP 临时风控/应用状态问题，已自愈，与 9-21「间歇波动」记录一致。西游云入口全灭（待更新订阅）结论不变。
+
+## 2026-09-25（五）YOLO 实际训练配置盘点
+- 实际训练项目在 `D:\ultralytics-main`（脚本 `Yolo train GPU.py`），数据集 `D:\Hengchuang00601.v47i.yolo26`（715 张 train 图，Roboflow 导出），跑在 conda `pytorch` 环境（用户确认训练确实走 GPU）。实际参数：yolo26s @ imgsz=1024、batch=16、**workers=0**、multi_scale=True、mosaic=1.0、amp=True，100 epochs 已完整跑过（输出 `D:\Hengchuang00601.v47i.yolo26_v2`）。
+- 关键判断：**workers=0 使数据准备与 GPU 计算完全串行**（1024px+mosaic+multi_scale 的 CPU 管线很重，GPU 大概率在批间挨饿），是当前训练速度最大疑似瓶颈；设 0 的原因几乎肯定是 16GB 内存开不了 worker（桌面仅余 0.6GB，且有 `Yolo train GPU - test mem.py`（768+batch8）调内存的痕迹）。加内存条到 32GB 的核心收益 = 有资格把 workers 提到 4~8，预估 epoch 时间降至 1/2~1/3，待 A/B 实测验证（方法：同参数跑 2-3 epoch 对比 workers=0 vs 2~4，看 nvidia-smi GPU-Util 锯齿变化）。
