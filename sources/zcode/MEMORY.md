@@ -32,3 +32,7 @@
 ## 2026-09-25（二）
 - ChatGPT 桌面客户端连不上排查结论：①绿联 NAS（lulian 100.82.136.106）的 Tailscale exit node 从未在本机启用（debug prefs 的 ExitNodeID 为空），且实测启用后出口=NAS 所在网络江苏电信家宽 180.109.26.176，直连 chatgpt.com 超时——exit node≠翻墙，NAS 不自己跑透明代理/TUN 就没用于访问被墙服务（测试后已关闭恢复原状）。②真正根因：NanmeiProxy 订阅全部 20 节点被 OpenAI 拦截（ios.chat.openai.com 403 "type":"dc" 数据中心 IP 封锁；香港×2=unsupported_country_region_territory；台湾×2 节点已死），推翻 9-21 "桌面客户端一般不受影响" 的旧结论。③待办：换有原生/家宽 IP 的机场节点，或让 NAS 自己跑翻墙后再用 exit node；南美套餐 2026-09-27 到期。
 - 排查技巧：mihomo API `PUT /proxies/{组}` 切节点，Git Bash curl 传中文节点名会静默 400 "proxy not exist"，必须用 python urllib + `ensure_ascii=False`；切换后务必用 chatgpt.com/cdn-cgi/trace 的 loc 字段确认真切换了——节点挂名与实际出口常不符（德国/法国/菲律宾一实际都出口韩国 ICN）。
+
+## 2026-09-25（三）
+- 两套代理全节点体检：**西游云基本全灭**——本机 9-7 旧订阅 44 节点仅「马来西亚」活（38.47.189.86:21112，独立 IP，640ms，但也被 OpenAI 拦 403 dc），其余 35 个入口全部拒绝连接；主入口 bzd.11151115.xyz 整机下线（DoH 确认 52.68.82.112 为真实记录、非 DNS 污染），b.1181181.xyz:2096 / tw01.1100886.xyz:11027 / 36.141.116.50:37201 同死。套餐剩 120GB、2026-10-07 到期，**修复 = 去 www.xiyou.us 更新订阅**。**南美延迟全绿（20/20）但 ChatGPT 全军覆没**：dc 硬拦（美日韩新德法越马）+ 香港 unsupported_country + 台湾 cf-mitigated:challenge（桌面客户端过不了）。延迟榜：香港 145/台湾1 177/香港1 197/新加坡隧道 229/韩国1 349ms。
+- 可复用测试方法：未运行的代理起临时实例（复制核心+配置+Country.mmdb，sed 改端口 17891/8766）；入口真伪用裸 TCP socket 测 + 1.1.1.1 DoH JSON 对比（区分机场挂了 vs DNS 污染）；`GET /proxies/{名}/delay` 并行测延迟不切组、不影响在线流量；OpenAI 判据 ios.chat.openai.com（403 JSON type=dc 硬拦 / 403 HTML cf-mitigated:challenge 软拦 / 200 放行）；urllib `[Errno 2]` 是 CONNECT 被断假象非节点死；Git Bash curl 切中文节点名必挂须 python urllib + ensure_ascii=False。
