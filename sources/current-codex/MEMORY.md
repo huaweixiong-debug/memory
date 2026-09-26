@@ -1076,3 +1076,8 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Read-only inspection found the existing enabled logon task `Langguo Agent Factory Orchestrator` running interactively as Administrator, but its action invoked the Python script through mapped drive `P:`. The Orchestrator already supports `LG_AF_ROOT_UNC` as a config-root fallback.
 - Verified a nested Windows PowerShell launch of the script from `\\100.117.1.6\projects\Langguo_AI` with `LG_AF_ROOT` deliberately unavailable and `LG_AF_ROOT_UNC` set to the NAS UNC; it loaded config and returned `ORCHESTRATOR_ALREADY_RUNNING` (exit 0), confirming the existing instance lock prevented a duplicate daemon.
 - Updated only the existing Scheduled Task action to invoke Windows PowerShell, set `LG_AF_ROOT` and `LG_AF_ROOT_UNC`, and launch the Python script by UNC path. The task remained `Running`, the interactive Administrator principal and logon trigger stayed enabled, and its last result remained `0x41301` (running). No Orchestrator restart or production operation was performed.
+
+## 2026-09-27 — Langguo Agent Factory TASK-0003
+
+- Added bounded continuous-daemon verification on `feature/github-issue-intake`. Final review found the subprocess test could write Python bytecode into the repository; OpenCode fixed it with `-B`, `PYTHONDONTWRITEBYTECODE`, a temporary cache prefix and working directory, and a repository `.pyc` snapshot assertion. The repair is preserved as attempt 1.
+- ZCode independently passed 14 focused tests and 84 offline tests; GPT-6 Luna/high final review approved TASK-0003. Commit `a90be26` was pushed; PR #1 remains open and unmerged, and both hosted Windows CI checks passed. Deployment and industrial writes remained disabled.
