@@ -376,3 +376,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 状态机：`.agent/state/TASK-0002.json` 置 `IMPLEMENTED / ZCODE`，attempt=3 保留；下一棒 ZCode QA，再 Codex Reviewer
 - 未 push、未改 `P:\Langguo_AI` 活动配置、未动 TASK-0001 历史；`.agent/state` 为 gitignore 不提交
 - 流程约定：Builder 完成即更新 `.agent/reports/{task}-IMPLEMENTATION.md` 并改状态到 IMPLEMENTED/ZCODE（见 orchestrator `builder_prompt`）
+
+### 2026-09-27 Langguo Agent Factory TASK-0003 修复（子进程字节码隔离，attempt 1）
+- 仓库 `Langguo-Agent-Factory`（UNC `\\100.117.1.6\projects\Langguo_AI\repos\Langguo-Agent-Factory`）；OpenCode = Builder
+- 最终评审 REPAIR_REQUIRED（attempt 1，owner OPENCODE）：`tests/test_orchestrator_daemon.py` 子进程集成测试未隔离 Python 字节码——`child_env()` 继承环境、`run_child()` 以 REPO_ROOT 为 cwd，Orchestrator 导入 `github_intake` 会在仓库 `runtime/orchestrator/__pycache__` 写 .pyc，违反 SPEC AC4「文件写入仅限临时根」
+- 修复：`child_env()` 设 `PYTHONDONTWRITEBYTECODE=1` + `PYTHONPYCACHEPREFIX=<tmp>/pycache`；新增 `child_command()` 用 `python -B`；`run_child()` cwd 改为临时根；新增 `ChildIsolationTests`（2 例）与 `repo_pyc_snapshot()` 前后快照断言
+- 验证：`py_compile` OK；focused 14 tests OK；full `python -m unittest discover -s tests -v` → **84 tests OK**；前后对照演示：无守护子进程重建 `__pycache__`=True，守护后=False
+- 状态机：`.agent/state/TASK-0003.json` → `IMPLEMENTED / ZCODE`，attempt=1 保留；下一棒 ZCode QA，再 Codex Reviewer
+- 未 push、未动 `P:\Langguo_AI` 活动配置、未改 TASK-0001/0002 历史；`.agent/state` 属 gitignore 不提交
