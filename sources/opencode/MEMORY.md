@@ -307,18 +307,18 @@ eferences/v1_workflow.json（路由/状态/标记契约）、10 个 .ai-workflow
 - 浏览器坑：系统代理变更后已运行的 Edge 不会感知（启动加速后台驻留），需彻底结束 msedge.exe 重开；360 浏览器当时新启动所以正常。ws.chatgpt.com 在 Clash connections 里 destinationIP 显示污染 IP 是本地规则匹配解析，实际转发域名由节点远程解析，以 TLS 证书 CN 为准判断真假。
 - 潜在隐患：9/1 条目把 WLAN DNS 手动指向 198.18.0.2（Clash DNS），当前 TUN 关闭仅系统代理模式，DNS 依赖 clash 进程存活；clash 一停 DNS 即瘫。若彻底弃用南美需把 WLAN DNS 改回 DHCP。
 
-## 2026-09-11 - ���� DeepSeek V4.1 Flash ģ��
-- opencode.json �� opencode.jsonc ������ deepseek provider��@ai-sdk/openai-compatible��baseURL https://api.deepseek.com/v1��apiKey �� env:DEEPSEEK_API_KEY��
-- ģ�� ID��deepseek-v4.1-flash����Ϊ��ѡ�Ĭ�� model δ�Ķ�
-- ע�⣺opencode.json �� "model" �ֶ�������δ����� provider opencode-go��opencode-go/deepseek-v4-flash��
-- �����û������� DEEPSEEK_API_KEY ����ʹ��
+## 2026-09-11 - ���� DeepSeek V4.1 Flash ģ��
+- opencode.json �� opencode.jsonc ������ deepseek provider��@ai-sdk/openai-compatible��baseURL https://api.deepseek.com/v1��apiKey �� env:DEEPSEEK_API_KEY��
+- ģ�� ID��deepseek-v4.1-flash����Ϊ��ѡ�Ĭ�� model δ�Ķ�
+- ע�⣺opencode.json �� "model" �ֶ�������δ����� provider opencode-go��opencode-go/deepseek-v4-flash��
+- �����û������� DEEPSEEK_API_KEY ����ʹ��
 
-- �������� Key ʵ�ʿ���ģ�� ID Ϊ deepseek-flash �� deepseek-v4-pro���� deepseek-v4.1-flash���������Ѹ�Ϊ deepseek-flash
-- DEEPSEEK_API_KEY ����Ϊ�û���������������֤ API ��ͨ�ɹ�
+- �������� Key ʵ�ʿ���ģ�� ID Ϊ deepseek-flash �� deepseek-v4-pro���� deepseek-v4.1-flash���������Ѹ�Ϊ deepseek-flash
+- DEEPSEEK_API_KEY ����Ϊ�û���������������֤ API ��ͨ�ɹ�
 
-- Ĭ�� model �� opencode-go/deepseek-v4-flash ��Ϊ deepseek/deepseek-flash��opencode.jsonc Ĭ����Ϊ glm-5.3-flash����OpenCode Go ����������Ȼָ����ֶ�ѡ��
+- Ĭ�� model �� opencode-go/deepseek-v4-flash ��Ϊ deepseek/deepseek-flash��opencode.jsonc Ĭ����Ϊ glm-5.3-flash����OpenCode Go ����������Ȼָ����ֶ�ѡ��
 
-- �޸�ģ���б�����ʾ���Զ��� provider ID "deepseek" �� opencode ���� deepseek provider ��ͻ�����ǣ�����Ϊ "deepseek-official"��ģ�� deepseek-flash ���ɳ����� DeepSeek Official �����£���Ĭ�� model ͬ������
+- �޸�ģ���б�����ʾ���Զ��� provider ID "deepseek" �� opencode ���� deepseek provider ��ͻ�����ǣ�����Ϊ "deepseek-official"��ģ�� deepseek-flash ���ɳ����� DeepSeek Official �����£���Ĭ�� model ͬ������
 
 ## 2026-09-21 NAS mihomo 双订阅融合（西游云 + 南美）
 
@@ -366,3 +366,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **诊断技巧**：主进程 Responding 忙等翻转（True↔False）+ CPU 不涨 = 同步阻塞；应用日志在 %LOCALAPPDATA%\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\Codex\\Logs\\2026\\MM\\DD\\，t0=主进程 t1=git worker；[git] timed_out=true 即网络路径挂死实锤
 - 重启应用：explorer.exe shell:AppsFolder\\OpenAI.Codex_2p2nqsd0c76g0!App；statsig.openai.com / oai-sentry.openai.com 经代理 000（不阻塞使用）
 - PowerShell 5.1 坑：python -c 多行代码会报 NullReferenceException，必须写脚本文件执行
+
+### 2026-09-26 Langguo Agent Factory TASK-0002 修复第 3 轮（GitHub 只读导入接入 Orchestrator）
+- 仓库 `Langguo-Agent-Factory`，分支 `feature/github-issue-intake`；OpenCode = Builder，工作区 UNC `\\100.117.1.6\projects\Langguo_AI\repos\Langguo-Agent-Factory`
+- 阻塞缺陷（最终评审 attempt 2）：`github_intake._label_names` 用 `record.get("labels") is None` 把「字段缺失」与「显式 JSON null」混为一谈 → 混合响应可部分导入
+- 修复：改为 `if "labels" not in record: return set()`，显式 null 落为「非 list → ValueError → malformed」，使整份响应对导入 all-or-nothing
+- 新增 3 个离线回归：Eligibility 显式 null 分类、Import 混合响应双顺序零写入、daemon 层 `GITHUB_INTAKE_FAILED` 零 task/state
+- 验证：`python -m unittest discover -s tests -v` → **70 tests OK**（67+3，纯离线 mock gh，无网络）
+- 状态机：`.agent/state/TASK-0002.json` 置 `IMPLEMENTED / ZCODE`，attempt=3 保留；下一棒 ZCode QA，再 Codex Reviewer
+- 未 push、未改 `P:\Langguo_AI` 活动配置、未动 TASK-0001 历史；`.agent/state` 为 gitignore 不提交
+- 流程约定：Builder 完成即更新 `.agent/reports/{task}-IMPLEMENTATION.md` 并改状态到 IMPLEMENTED/ZCODE（见 orchestrator `builder_prompt`）
