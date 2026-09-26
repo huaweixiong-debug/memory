@@ -1064,3 +1064,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - In `P:\Langguo_AI\repos\Langguo-Agent-Factory`, TASK-0002 implements continuous, read-only GitHub Issue intake for the Orchestrator, gated by both strict opt-ins and an independent 300–86400 second cadence. Example configuration keeps GitHub intake/writes, deployment, and industrial writes disabled.
 - Attempt 3 fixed explicit `labels: null` handling; ZCode QA and GPT-6 Luna/high final review approved the change. Offline suite: 70 tests passed; `py_compile`, JSON validation, and `git diff --check` passed.
 - Commit `1c64bd6` was pushed to `feature/github-issue-intake` in private `huaweixiong-debug/Langguo-Agent-Factory`; PR #1 remains open and unmerged. No production config, deployment, or industrial hardware was touched.
+
+## 2026-09-27 — Generic ZCode QA Worker
+
+- Updated the existing hourly ZCode automation `Langguo ZCode QA Worker` from the factory-specific TASK-0002 prompt to a queue-driven worker that scans immediate project state files under `P:\Langguo_AI\repos` for `IMPLEMENTED / ZCODE`, QA-checks each eligible task, writes only `{task_id}-TEST.md` plus state `status`/`owner`, and routes failures to `REPAIR_REQUIRED / OPENCODE` without changing `attempt`.
+- Removed the stale hard-coded TASK-0002 write restriction. Saved prompt was reopened and verified; an immediate run scanned 8 states across 3 projects, found no eligible work, returned exactly `ZCODE_NO_WORK`, and made no project changes.
+- Factory PR #1 for TASK-0002 remains open/unmerged; both hosted Windows CI checks passed. GitHub issue intake, deployment, and industrial writes remain disabled by default.
