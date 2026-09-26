@@ -384,3 +384,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：`py_compile` OK；focused 14 tests OK；full `python -m unittest discover -s tests -v` → **84 tests OK**；前后对照演示：无守护子进程重建 `__pycache__`=True，守护后=False
 - 状态机：`.agent/state/TASK-0003.json` → `IMPLEMENTED / ZCODE`，attempt=1 保留；下一棒 ZCode QA，再 Codex Reviewer
 - 未 push、未动 `P:\Langguo_AI` 活动配置、未改 TASK-0001/0002 历史；`.agent/state` 属 gitignore 不提交
+
+### 2026-09-27 Langguo Agent Factory TASK-0004 修复第 3 轮（QA 绑定到可发布 worktree 的执行证据）
+- 仓库 `Langguo-Agent-Factory`，分支 `feature/github-issue-intake`（UNC `\\100.117.1.6\projects\Langguo_AI\repos\Langguo-Agent-Factory`）；OpenCode = Builder
+- 最终评审 REPAIR_REQUIRED（attempt 3，owner OPENCODE）：交付启用时 `IMPLEMENTED/ZCODE` 只写 handoff + `WAIT_ZCODE`，不把 ZCode 派发进任务 worktree；`write_qa_attestation` 只写身份字段 + verified，无测试执行证据 → 无法证明 QA 真在 worktree 跑过
+- 修复三块：① Orchestrator 新增 `qa_prompt()`+`run_zcode()`，`process_task` 在 `IMPLEMENTED/ZCODE` 且交付启用时把 QA worker 派发进 handoff 记录的 worktree（禁用时保持原 `WAIT_ZCODE` 共享检出等待），派发后 `verify_task_qa_binding` 必须通过；② 证据合约：attestation 必须含 `tested_worktree`、`report_path`（精确 `.agent/reports/<task>-TEST.md`）、`report_sha256`、非空 `commands`（每项 `{argv:[...], exit_code:0}`），`verify_qa_attestation` 重新哈希报告并逐字段校验，新增 `record_qa_evidence()` + CLI `--record-qa`（按 handoff 重算身份）；③ 新增 `docs/qa-worktree-attestation.md` 定义协议，集成测试 `test_qa_dispatch_routes_worker_to_worktree_and_gates_delivery` 经 `process_task` 派发假 QA、断言 worktree 路由与 work-order 身份、在 worktree 真跑子进程并记录证据，再验证 Reviewer 路由与交付路径集一致；另加无证据 fail-closed 与禁用保持 `WAIT_ZCODE` 两例
+- 验证：`py_compile` OK；focused delivery 56 tests OK；full `python -m unittest discover -s tests -v` → **141 tests OK**（纯离线、mock gh）
+- 状态机：`.agent/state/TASK-0004.json` → `IMPLEMENTED / ZCODE`，attempt=3 保留；下一棒 ZCode QA（须在 handoff 的 worktree 跑测试并把 argv/exit_code 写进报告与 attestation），再 Codex Reviewer
+- 本地提交 `340616b fix: bind task QA to executed worktree evidence`（5 文件）；**未 push**、未建真实 PR、未 merge/deploy、未改 `P:\Langguo_AI` 活动配置；`.agent/state` 属 gitignore 不提交
+- 并发提醒：本会话发现同一仓库有另一进程并发编辑（docs/README/implementation report 在会话中途出现），最终工作树与 HEAD 一致且 141 测试通过
