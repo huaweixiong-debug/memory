@@ -1058,3 +1058,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Symptom: desktop download/install was attempted but the CDN is ~65 KB/s, BITS remains `Connecting`, browser rejects binary content type, or execution policy blocks PowerShell -> desktop is not complete. Verify completed installer, execution, and app launch before reporting success. [Task 1]
 - Symptom: resume with `curl -C -` fails as `curl: (33) HTTP server does not seem to support byte ranges.` -> restart or choose another verified delivery path; do not assume resume is supported. Investigate npm's `allowScripts` warning if CLI features are incomplete. [Task 1]
 - Symptom: user has forgotten/no password -> provide recovery/reset, not a fictional default-password lookup. [Task 2]
+
+## 2026-09-26 — Langguo Agent Factory TASK-0002
+
+- In `P:\Langguo_AI\repos\Langguo-Agent-Factory`, TASK-0002 implements continuous, read-only GitHub Issue intake for the Orchestrator, gated by both strict opt-ins and an independent 300–86400 second cadence. Example configuration keeps GitHub intake/writes, deployment, and industrial writes disabled.
+- Attempt 3 fixed explicit `labels: null` handling; ZCode QA and GPT-6 Luna/high final review approved the change. Offline suite: 70 tests passed; `py_compile`, JSON validation, and `git diff --check` passed.
+- Commit `1c64bd6` was pushed to `feature/github-issue-intake` in private `huaweixiong-debug/Langguo-Agent-Factory`; PR #1 remains open and unmerged. No production config, deployment, or industrial hardware was touched.
