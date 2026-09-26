@@ -1070,3 +1070,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Updated the existing hourly ZCode automation `Langguo ZCode QA Worker` from the factory-specific TASK-0002 prompt to a queue-driven worker that scans immediate project state files under `P:\Langguo_AI\repos` for `IMPLEMENTED / ZCODE`, QA-checks each eligible task, writes only `{task_id}-TEST.md` plus state `status`/`owner`, and routes failures to `REPAIR_REQUIRED / OPENCODE` without changing `attempt`.
 - Removed the stale hard-coded TASK-0002 write restriction. Saved prompt was reopened and verified; an immediate run scanned 8 states across 3 projects, found no eligible work, returned exactly `ZCODE_NO_WORK`, and made no project changes.
 - Factory PR #1 for TASK-0002 remains open/unmerged; both hosted Windows CI checks passed. GitHub issue intake, deployment, and industrial writes remain disabled by default.
+
+## 2026-09-27 — Langguo Task Scheduler UNC startup
+
+- Read-only inspection found the existing enabled logon task `Langguo Agent Factory Orchestrator` running interactively as Administrator, but its action invoked the Python script through mapped drive `P:`. The Orchestrator already supports `LG_AF_ROOT_UNC` as a config-root fallback.
+- Verified a nested Windows PowerShell launch of the script from `\\100.117.1.6\projects\Langguo_AI` with `LG_AF_ROOT` deliberately unavailable and `LG_AF_ROOT_UNC` set to the NAS UNC; it loaded config and returned `ORCHESTRATOR_ALREADY_RUNNING` (exit 0), confirming the existing instance lock prevented a duplicate daemon.
+- Updated only the existing Scheduled Task action to invoke Windows PowerShell, set `LG_AF_ROOT` and `LG_AF_ROOT_UNC`, and launch the Python script by UNC path. The task remained `Running`, the interactive Administrator principal and logon trigger stayed enabled, and its last result remained `0x41301` (running). No Orchestrator restart or production operation was performed.
