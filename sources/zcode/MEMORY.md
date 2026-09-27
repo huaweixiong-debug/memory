@@ -109,3 +109,8 @@
 ## 2026-09-27（十二）
 - **手机配对"无法连接到你的电脑"的根因 = PC 双层代理掐断长连接**：PC 同时开 exit node + 本机 clash 形成嵌套隧道，DF 大包测试 1472 字节丢 50%（有效 MTU 压到 ~1430），ChatGPT/Codex 桌面应用的 ws.chatgpt.com 中继 WebSocket 90 秒重连 1287 次（重试风暴），手机配对永远失败。修复 = PC 关 exit node 回归单层，ws 连接立刻长稳（60/60 采样持续在线）。结论固化：**PC 挂 NAS exit node 的双层架构对长连接（WS/SSH/SSE）有害，PC 用单层 clash、手机用 NAS exit node，各走各的**。诊断法：`curl --limit-rate` 抓 + /connections 按 start 时间统计重连频率；`ping -f -l` 分层测 MTU。
 - 错误演进对照（排查手机配对问题）：非预期SSL证书 → （修 geetest 直连）→ 配对失败无法连接电脑 → （关 PC exit node 单层化）→ 待用户确认。
+
+## 2026-09-27（十三）
+- 用户新增机场「魔戒」（NAS mihomo 的 proxy-provider `mojie`，订阅 21 节点，多个标"GPT"优化，url-test 组「魔戒-灾备」自动选优，当前新加坡-优化-GPT），并把 5 条 ChatGPT 规则改指向新 fallback 组「AI自动」。审查结论：**配置正确无需修改**——AI自动成员顺序 [OpenAI, 南美, 魔戒-灾备]（现有节点主力、魔戒最后兜底），日志实证 `chatgpt.com match DomainSuffix using AI自动[新加坡隧道]`。
+- 当前完整高可用链路（三层）：规则→AI自动(fallback, 120s 健康检查)→ ①OpenAI 组(46池, v3 failover: 最快+地区校验+2min巡检, 当前新加坡隧道) → ②南美组 → ③魔戒-灾备(21节点)。任一层故障自动降级到下一层，恢复后自动回切。
+- mojie 订阅源: https://74.82.196.10:5000/api/v1/client/subscribe?token=... (providers/mojie.yaml, exclude-filter 已滤香港/流量信息)。
