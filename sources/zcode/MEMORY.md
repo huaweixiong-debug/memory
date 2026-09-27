@@ -100,3 +100,8 @@
 - 手机配 SSL 证书报错的另一层原因：OpenAI 组主力「美国2」当晚会间歇性失联（nanmei13 入口 dial timeout，19:29/20:09 有失败记录），failover 的 2 分钟巡检窗口内用户会撞上。已手动触发切换到俄罗斯(388ms)。
 - **重要事实核查**：用户说"手机用了 exit node"，但 tailnet 里两台 iPhone 都是离线状态（iphone-3 离线1天、iphone181 离线4小时）——iOS 会挂起后台 VPN，手机上 Tailscale 很可能根本没连上（或连了又断）。排查手机问题前先确认：手机 Tailscale App 显示 Connected + 状态栏 VPN 图标 + Exit Node=lulian 选中。手机 ChatGPT"能正常用"是因为走了手机上另一个代理 App 或裸 5G 的其他通道，与 exit node 无关。
 - PC 端 ChatGPT 桌面应用（OpenAI.Codex 商店包）配对中继域名：ws.chatgpt.com / chat.openai.com / auth.openai.com / ab.chatgpt.com / *.oaiusercontent.com，全部被 NAS OpenAI 组的 DomainSuffix 规则覆盖。
+
+## 2026-09-27（十一）
+- **failover v3：加地区校验**。用户实测"俄罗斯节点连不了 ChatGPT"——俄罗斯=OpenAI 制裁区，trace 探活只能测到 CF 边缘、测不出地区支持（与香港同类盲区）。修复：①巡检改用 `ios.chat.openai.com` 的响应体判断（含 unsupported_country=地区封锁→计失败；403 type:dc/200=可用——curl 指纹 403 不是拒绝信号）；②切换时遍历按延迟排序的候选，逐个"切换+地区校验"，首个通过者才落定，日志记 "region verified" / "candidate rejected: X (region blocked)"。演练实证：俄罗斯被拒→落加拿大(462ms)。
+- v3 引入过笔误（jq `{name: $node_name}` 应为 `{name: $name}`，变量名不一致导致全部 PUT 400），已修复重验。教训：sh 里 jq --arg 定义的变量名和 filter 引用必须一致；改完必须实跑演练不能只看语法。
+- OpenAI 组当前：加拿大(462ms, 地区校验通过)，主力仍为美国2（每日 03:00 复位，复位后若地区/连通失败会自动再切）。
