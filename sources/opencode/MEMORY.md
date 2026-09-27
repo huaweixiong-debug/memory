@@ -408,3 +408,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复：BOM P/Q、工时 R/S 状态公式在行已开始且 A 为空时一律 待补齐；空行仍留空；有编号行保持原数值/显式 0 语义；项目级公式未改（无编号行本就不参与项目汇总）
 - QA：新增 S8（BOM 估算/实际缺编号行）与 S9（工时估算/实际缺编号行），断言四个状态为 待补齐 且 G/J/K/L/M 合计公式留空；S1–S7 全部保留通过；`node build-cost-tracker.mjs` 退出码 0，demo/clean/saved 三次公式错误扫描 0 命中，保存文件无 TEST- 残留；openpyxl 复核门控存在于 P5/Q5/R5/S5
 - 产物：同路径 xlsx 重生成（105,466B，SHA256 4f75385e…）；构建器 93dfdb17…；证据 runs\20260927-cost-workbook-fix2（REVIEW_PACKET.md、builder.diff、build-run.log、verify-openpyxl.log）
+
+### 2026-09-27 lg-pilot-ateq TASK-1002 DEF-2 修复（Core 离线冒烟 flag 边界，attempt 2）
+- 仓库 `lg-pilot-ateq-20260927`（UNC `\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-ateq-20260927`，`P:\Langguo_AI` 同源）；OpenCode = Builder
+- 接单 REPAIR_REQUIRED（attempt 2，owner OPENCODE）；DEF-2：`--core-smoke-cycle --mode simulate` 下 `--ateq-test`（可对串口写程序号）与 `--preflight`（访问 PLC/ATEQ/MySQL/激光目录）分支先于 Core 派发执行，违反离线验收边界（AC4）
+- 修复：`app/main.py:119-123` 新增 guard——Core smoke 与 `--ateq-test`/`--preflight` 组合立即 exit 2 并输出 `CORE_SMOKE_BLOCKED`，位于配置加载、ateq、preflight 分支之前；`--live-ui` 仍由既有 mode guard 拦截；composition 层 `CORE_OFFLINE_ONLY` 与 6 元组 `build_services()` 契约未动
+- 测试：`tests/test_core_adapters.py` 新增 4 个 CLI 回归——ateq-test 哨兵（含 `--program`）、preflight 哨兵、双 flag 组合、SIMULATE 正例（exit 0 `CORE SIMULATE OK` 且 preflight 哨兵零调用）；focused **26 passed**，full **90 passed**（首次运行，无 WinError 5 复现）
+- CLI 手测：valid 0；`--ateq-test --program 2` → 2；`--preflight` → 2；`--mode live --config config/live.toml` → 2（DEF-1 守护保持）
+- 状态：`.agent/state/TASK-1002.json` → `IMPLEMENTED / ZCODE`，attempt=2；报告 `.agent/reports/TASK-1002-IMPLEMENTATION.md`；下一棒 ZCode QA → Codex Reviewer
+- 离线边界：未开物理 ATEQ/PLC/激光/数据库/网络；项目非 git 仓库，未 push、未部署；除实现文件、报告与 state 两字段外未改其他内容
