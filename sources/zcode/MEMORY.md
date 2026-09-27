@@ -64,3 +64,8 @@
 - **NAS auto-redirect 已持久化**：SSH 登录绿联 NAS（18913391330@100.82.136.106，DXP4800 PLUS/UGOS，本机公钥已装入其 authorized_keys 可免密；密码不入库）。mihomo 是 Docker 容器（host 网络），配置 /volume1/docker/mihomo/config.yaml（bind 挂载），已在 tun 块加 "auto-redirect: true"（备份 config.yaml.bak-20260926）并 docker restart 验证重启后仍生效；tailnet 其他设备（100.100.83.52/100.67.124.5）流量已被网关正常分流（国外走南美·越南1、国内直连）。
 - NAS 上还有既有的 mihomo-openai-failover.sh（crontab 每 2 分钟探测 chatgpt.com 自动切 "OpenAI" 组、每日 03:00 复位；纯 API 操作不碰配置文件，与本次修改无冲突；当前配置里无 OpenAI 组，脚本疑似休眠）。目录有大量 9-25/26 的配置实验备份（bak-before-no-autoredirect 等）说明 auto-redirect 之前是被人为去掉的。
 - **手机用法最终态**：iOS Tailscale → Exit Node 选 lulian 即可上 ChatGPT；NAS 离线则手机断外网。
+
+## 2026-09-27（二）
+- **NAS ChatGPT 自动切换已修活**：mihomo-openai-failover.sh 失效根因 = 配置里无 OpenAI 组。已加 OpenAI select 组（美国2 主力 + 67 个真实节点为候选池）+ 既有 5 条 chatgpt/openai 分流规则（chatgpt.com/openai.com/oaistatic.com/oaiusercontent.com/chatgpt.livekit.cloud，原指向南美）改指向 OpenAI 组；脚本 test_url 从 chatgpt.com/（curl 指纹 403 误报）改为 chatgpt.com/cdn-cgi/trace（稳定 200）。切换逻辑本就符合"候选不指定+切换前实测"：失败计 2 次 → 遍历候选组员逐个 mihomo delay API 实测 trace → 首个通过者才切；每日 03:00 复位回美国2。
+- 演练验证：MIHOMO_FAILOVER_FORCE_CURRENT_FAILURE=1 强制故障 → 日志 "automatic failover: 美国2 -> 乌克兰"（切换前实测乌克兰 trace 通过）；reset 复位回美国2 正常；非强制 monitor 探测通过。
+- **坑**：NAS mihomo config.yaml 的 proxy-groups 是顶格 `- name:`（0 缩进），插组时用 1 空格缩进导致 YAML 解析炸、容器 crash loop（fatal: did not find expected key line 1040），回滚备份后用 0 缩进重做成功。NAS 家目录和 /tmp 对 SSH 用户不可写，传文件用 `ssh "cat > /volume1/docker/mihomo/xx" < local`。
