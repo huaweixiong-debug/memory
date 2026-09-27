@@ -92,3 +92,6 @@
 - **PC 也挂上了 exit node（用户自行启用，lulian）**。新链路：PC clash 的 DIRECT 流量（ZCode/bigmodel/geetest 等）会经隧道到 NAS 被 NAS 规则二次处理——而 bigmodel.cn 解析到阿里云日本 IP，NAS 原本会把它丢进代理 → 验证码 IP 不一致会复发。**修复 = 把 8 条国内直连规则（bigmodel/zhipuai/chatglm/geetest/geetestcdn/zcode.ai/doubao/vipmro）同步加到 NAS config rules 顶部**（备份 config.yaml.bak-cn-20260927），日志实证 `match DomainSuffix(bigmodel.cn) using DIRECT`。
 - 当前 PC 双跳链路已验证：ChatGPT = PC clash(新加坡隧道) 经 NAS 隧道转发 → 出口 SG 200 正常（略慢的双层代理）；国内 = NAS 判 DIRECT 出家宽。注意：①PC 挂 exit node 后 NAS 成为全部流量的单点，NAS 关机=电脑断网；②NAS 的 OpenAI 自动切换只服务走 NAS OpenAI 组的设备（手机），PC 的 ChatGPT 仍走自己 clash 的 Pluto 组；③更省层的备选方案（未实施）：PC 关系统代理，全流量交给 NAS 网关单层处理。
 - 诊断技巧：连接受时长影响抓不到时，用 `docker logs mihomo | grep 域名` 看 match 日志是最可靠的规则命中取证；`GET /rules` 可确认规则加载顺序。
+
+## 2026-09-27（九）
+- 手机 ChatGPT"远程控制电脑"报"非预期的SSL证书"：手机（5G 裸连，Tailscale 已离线1天没走 exit node）→ OpenAI 中继 → PC 端 ChatGPT 桌面应用，而 **PC 端应用在当天多轮代理变更后已僵死**（12 进程但中继连接全断，应用自退过一次）。修复 = 重启 ChatGPT 桌面应用（微软商店包 OpenAI.Codex_2p2nqsd0c76g0，启动命令 shell:AppsFolder\OpenAI.Codex_2p2nqsd0c76g0!App），重启后 15 条连接全走本机代理 127.0.0.1:17890、chatgpt 流量正常（经新加坡隧道）。坑：查应用连接时 Get-NetTCPConnection 过滤别排除回环（走系统代理的应用连接=127.0.0.1:17890），且 PID 过滤要用 -contains 精确匹配而非 -match 正则（会误匹配其他进程）。
