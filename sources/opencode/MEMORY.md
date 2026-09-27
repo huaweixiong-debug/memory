@@ -435,3 +435,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 推送/托管：commit `9f400ff` 推送至 PR 分支；PR 触发 Release run 36331055663 `success`（ci 3.10/3.11/3.12 + Package preflight pass，Publish skipped，artifact `dist` 22,165B）；手动 workflow_dispatch run 36331152276 `success` 同样跳过 publish；`gh release list` 空、`git ls-remote --tags` 空、PR 仍 draft/open——未建 tag/release、未 merge/deploy
 - 证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20260927-lg-core-release-preflight`（REVIEW_PACKET.md、implementation.diff、session.txt、hosted-* 证据）
 - 待办：plan 步骤 5/6 的 GPT-6 Luna high 中间评审与 max 终审由 Codex orchestrator 执行（不在 OpenCode 会话内）
+
+### 2026-09-28 lg-industrial-core P: 源镜像与试点证据对齐（OpenCode executor）
+- 目标仓库 `C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\lg-industrial-core`（branch `codex/lg-core-rename-foundation`，基线 `9f400ff5`）；P: 镜像 `P:\Langguo_AI\repos\lg-industrial-core`（无 .git）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-lg-core-mirror-doc-alignment`
+- 镜像同步：`src/lg_industrial_core/events.py`、`recording.py` 原字节已备份到证据目录 `before-mirror\`（SHA256 `f4ef57…`/`e801d2…`，2909/12073B）；执行器在会话开始前已预同步（备份时间 00:51:36），本会话按计划再复制一次（幂等）；同步后 `git hash-object` == `HEAD:` blob `6bf8094e…`/`8fcf2bc…`，raw SHA256 == 规范检出文件
+- 验证（统一 PYTHONPATH=镜像 `src`，Python 3.10.11，`PYTHONDONTWRITEBYTECODE=1`，导入路径经 `-c` 打印确认命中镜像而非 site-packages 副本）：Core 单测 69 passed；兼容性 `PASS Morocco` + `PASS ATEQ-F620-Laser`（用镜像内工具副本跑，保证 checker 解析到镜像 src）；Morocco 全量 166 passed / 2 failed（已知基线：缺打包 `LeakTest2Channels.exe`、中文 UI 独立字母 `M`）；ATEQ 全量 90 passed
+- 文档（仅授权改这两份）：`README.md` 两处措辞改为区分离线试点副本与公共/上游产品仓库（后者未改、不依赖、无发布/生产批准）；`docs/pilot-compatibility.md` 新增 2026-09-28 复验章节（修订号、试点 ID、命令/结果表、两项已知失败、离线限制），并标注首轮旧计数已被取代
+- 审计：新增 `audit-records\TASK-1001-morocco-revalidation-audit.md` 与 `TASK-1002-ateq-revalidation-audit.md`（实际命令、修订/路径、结果、已知失败、试点原始产物哈希与保全声明）；未改试点 `.agent` 任何文件与状态（全部 mtime 早于会话开始；TASK-1002.md 哈希与既有评审记录一致）
+- 边界：无硬件/客户数据库/网络/部署/tag/发布/合并；未 push、未动 PR；PR 更新留给双评审通过后由 Codex 执行。遗留：镜像的 README/release.yml/tests 仍较旧——计划仅授权同步两个 src 文件，已在 packet 中标注为超出范围
