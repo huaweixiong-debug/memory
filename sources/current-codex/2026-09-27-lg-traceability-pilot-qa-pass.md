@@ -1,0 +1,6 @@
+# 2026-09-27 — LG traceability pilot accepted
+
+- The local `lg-traceability-pilot-20260927` SIMULATE-only traceability pilot passed independent ZCode QA and Codex final acceptance. `TASK-0001` is `APPROVED` / `ORCHESTRATOR`, with attempt unchanged; QA evidence is `.agent/reports/TASK-0001-TEST.md`.
+- QA independently confirmed scan → two tests → simulated label → SQLite query/Core replay, synthetic-only barcode/product allow-lists, rejected-print accounting, and offline evidence. Python 3.10.11 suite: 28 passed; static/in-memory checks passed. No hardware, live network, production DB, or real customer records were used.
+- Codex GPT-6 Luna high intermediate review and GPT-6 Luna max final acceptance both passed with no findings. ZCode made no source-code changes. Pilot source remains local/uncommitted and has no Git remote.
+- Process limitations: no separate SPEC/task/report existed beyond the state goal; ZCode could not reproduce Python 3.14 tests because its permitted environment lacked the installed `lg_industrial_core` package (the implementation review packet had reported 28 passing tests on 3.14); no worktree handoff existed, so no QA attestation applied. Live/field acceptance and rollout remain gated.
