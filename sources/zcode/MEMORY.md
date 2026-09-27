@@ -95,3 +95,8 @@
 
 ## 2026-09-27（九）
 - 手机 ChatGPT"远程控制电脑"报"非预期的SSL证书"：手机（5G 裸连，Tailscale 已离线1天没走 exit node）→ OpenAI 中继 → PC 端 ChatGPT 桌面应用，而 **PC 端应用在当天多轮代理变更后已僵死**（12 进程但中继连接全断，应用自退过一次）。修复 = 重启 ChatGPT 桌面应用（微软商店包 OpenAI.Codex_2p2nqsd0c76g0，启动命令 shell:AppsFolder\OpenAI.Codex_2p2nqsd0c76g0!App），重启后 15 条连接全走本机代理 127.0.0.1:17890、chatgpt 流量正常（经新加坡隧道）。坑：查应用连接时 Get-NetTCPConnection 过滤别排除回环（走系统代理的应用连接=127.0.0.1:17890），且 PID 过滤要用 -contains 精确匹配而非 -match 正则（会误匹配其他进程）。
+
+## 2026-09-27（十）
+- 手机配 SSL 证书报错的另一层原因：OpenAI 组主力「美国2」当晚会间歇性失联（nanmei13 入口 dial timeout，19:29/20:09 有失败记录），failover 的 2 分钟巡检窗口内用户会撞上。已手动触发切换到俄罗斯(388ms)。
+- **重要事实核查**：用户说"手机用了 exit node"，但 tailnet 里两台 iPhone 都是离线状态（iphone-3 离线1天、iphone181 离线4小时）——iOS 会挂起后台 VPN，手机上 Tailscale 很可能根本没连上（或连了又断）。排查手机问题前先确认：手机 Tailscale App 显示 Connected + 状态栏 VPN 图标 + Exit Node=lulian 选中。手机 ChatGPT"能正常用"是因为走了手机上另一个代理 App 或裸 5G 的其他通道，与 exit node 无关。
+- PC 端 ChatGPT 桌面应用（OpenAI.Codex 商店包）配对中继域名：ws.chatgpt.com / chat.openai.com / auth.openai.com / ab.chatgpt.com / *.oaiusercontent.com，全部被 NAS OpenAI 组的 DomainSuffix 规则覆盖。
