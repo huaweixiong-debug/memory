@@ -1,0 +1,6 @@
+# 2026-09-27 — LG Industrial Core pilots on final PR revision
+
+- Core PR #1 was updated to commit `42924ff4fc2348b3da99e94236380dd90e32dc46` with strict `EventEnvelope` runtime validation, regression coverage, and accurate no-redaction guidance. GPT-6 Luna high intermediate review and GPT-6 Luna max final acceptance both passed with zero findings; hosted CI passed Python 3.10, 3.11, and 3.12. The PR remains draft and unmerged.
+- Morocco and ATEQ both imported the exact `lg_industrial_core` source from that commit for revalidation. ATEQ: 90 tests and Core SIMULATE smoke passed. Morocco: 166 tests and SIMULATE smoke passed; the same two previously documented baseline UI/package failures remained. No hardware, production DB, or deployment was used.
+- The four-sheet cost-estimate/actual workbook is saved under `company/outputs/01a0dc5b-a613-7a30-9675-6be7a44f5ddd/项目成本估算与实际记录.xlsx`; it is a blank collection template with formula/cleanup QA, not populated with invented commercial data. Real estimate/actual costs remain uncollected until a new project uses it.
+- Phase 1 offline engineering validation is complete. Keep field/LIVE acceptance, release/merge, actual cost baselines, and broader rollout gated; expand only after a real project produces cost/rework evidence and reusable interfaces are confirmed.
