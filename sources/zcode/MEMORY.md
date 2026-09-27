@@ -69,3 +69,7 @@
 - **NAS ChatGPT 自动切换已修活**：mihomo-openai-failover.sh 失效根因 = 配置里无 OpenAI 组。已加 OpenAI select 组（美国2 主力 + 67 个真实节点为候选池）+ 既有 5 条 chatgpt/openai 分流规则（chatgpt.com/openai.com/oaistatic.com/oaiusercontent.com/chatgpt.livekit.cloud，原指向南美）改指向 OpenAI 组；脚本 test_url 从 chatgpt.com/（curl 指纹 403 误报）改为 chatgpt.com/cdn-cgi/trace（稳定 200）。切换逻辑本就符合"候选不指定+切换前实测"：失败计 2 次 → 遍历候选组员逐个 mihomo delay API 实测 trace → 首个通过者才切；每日 03:00 复位回美国2。
 - 演练验证：MIHOMO_FAILOVER_FORCE_CURRENT_FAILURE=1 强制故障 → 日志 "automatic failover: 美国2 -> 乌克兰"（切换前实测乌克兰 trace 通过）；reset 复位回美国2 正常；非强制 monitor 探测通过。
 - **坑**：NAS mihomo config.yaml 的 proxy-groups 是顶格 `- name:`（0 缩进），插组时用 1 空格缩进导致 YAML 解析炸、容器 crash loop（fatal: did not find expected key line 1040），回滚备份后用 0 缩进重做成功。NAS 家目录和 /tmp 对 SSH 用户不可写，传文件用 `ssh "cat > /volume1/docker/mihomo/xx" < local`。
+
+## 2026-09-27（三）
+- OpenAI 候选池精简：用 /group/OpenAI/delay?url=chatgpt.com/cdn-cgi/trace 一次性批量实测 67 成员，51 个 ChatGPT 可达，剔 5 个香港（unsupported_country）+ 16 个死节点（西游云全部"直连"系列/美国1｜AI通用/美国2｜高速/美国｜高速/伊拉克/哈萨克斯坦/意大利/菲律宾/阿塞拜疆/马来西亚）后重建组为 46 成员（美国2 主力在前、按 trace 延迟升序：俄罗斯 374ms 最快，南美-马来西亚 393ms、台湾 543ms 次之）。重建后 monitor 巡检通过。备份 config.yaml.bak-openai-v3-20260927。
+- 附注：NAS mihomo 配置里同名单纯名（台湾/日本/德国等）= 南美原节点，"｜高速"等后缀名 = 西游云；延迟均为 NAS→节点→chatgpt trace 实测值。
