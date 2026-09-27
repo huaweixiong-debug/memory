@@ -87,3 +87,8 @@
 
 ## 2026-09-27（七）
 - **ZCode 验证码"手动拖对也失败"的根因**：验证码是第三方 geetest.com（api/captcha/static.geetest.com），不在智谱直连规则里 → 验证码组件走代理（境外 IP）加载/校验、主 API 走直连（家宽 IP）→ **两端 IP 不一致，服务端绑定校验必失败**，与拖拽是否正确无关。修复：rules 顶部再加 geetest.com/geetestcdn.com/zcode.ai/doubao.com 四条 DIRECT（现共 7 条国内服务直连规则在最顶部）。ZCode 实际域名清单（从 .zcode/AppData 提取）：api.zcode.ai、sso/open/dev/nopen/captcha.bigmodel.cn、api/cap/captcha/castatic/code.zhipuai.cn、api/captcha/static.geetest.com。顺带发现豆包（doubao.com，部分端点是腾讯/阿里海外 CDN 71.18.x/163.181.x）也在走代理，已加直连。ZCode 需完全退出重启才生效。
+
+## 2026-09-27（八）
+- **PC 也挂上了 exit node（用户自行启用，lulian）**。新链路：PC clash 的 DIRECT 流量（ZCode/bigmodel/geetest 等）会经隧道到 NAS 被 NAS 规则二次处理——而 bigmodel.cn 解析到阿里云日本 IP，NAS 原本会把它丢进代理 → 验证码 IP 不一致会复发。**修复 = 把 8 条国内直连规则（bigmodel/zhipuai/chatglm/geetest/geetestcdn/zcode.ai/doubao/vipmro）同步加到 NAS config rules 顶部**（备份 config.yaml.bak-cn-20260927），日志实证 `match DomainSuffix(bigmodel.cn) using DIRECT`。
+- 当前 PC 双跳链路已验证：ChatGPT = PC clash(新加坡隧道) 经 NAS 隧道转发 → 出口 SG 200 正常（略慢的双层代理）；国内 = NAS 判 DIRECT 出家宽。注意：①PC 挂 exit node 后 NAS 成为全部流量的单点，NAS 关机=电脑断网；②NAS 的 OpenAI 自动切换只服务走 NAS OpenAI 组的设备（手机），PC 的 ChatGPT 仍走自己 clash 的 Pluto 组；③更省层的备选方案（未实施）：PC 关系统代理，全流量交给 NAS 网关单层处理。
+- 诊断技巧：连接受时长影响抓不到时，用 `docker logs mihomo | grep 域名` 看 match 日志是最可靠的规则命中取证；`GET /rules` 可确认规则加载顺序。
