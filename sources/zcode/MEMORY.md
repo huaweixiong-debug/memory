@@ -73,3 +73,6 @@
 ## 2026-09-27（三）
 - OpenAI 候选池精简：用 /group/OpenAI/delay?url=chatgpt.com/cdn-cgi/trace 一次性批量实测 67 成员，51 个 ChatGPT 可达，剔 5 个香港（unsupported_country）+ 16 个死节点（西游云全部"直连"系列/美国1｜AI通用/美国2｜高速/美国｜高速/伊拉克/哈萨克斯坦/意大利/菲律宾/阿塞拜疆/马来西亚）后重建组为 46 成员（美国2 主力在前、按 trace 延迟升序：俄罗斯 374ms 最快，南美-马来西亚 393ms、台湾 543ms 次之）。重建后 monitor 巡检通过。备份 config.yaml.bak-openai-v3-20260927。
 - 附注：NAS mihomo 配置里同名单纯名（台湾/日本/德国等）= 南美原节点，"｜高速"等后缀名 = 西游云；延迟均为 NAS→节点→chatgpt trace 实测值。
+
+## 2026-09-27（四）
+- failover 脚本升级 v2（用户要求"故障时切最快的"）：切换逻辑从"按组内清单顺序切首个通过者"改为 `probe_group_ranked`——一次调用 `GET /group/OpenAI/delay?url=trace` 并发实测全部成员、按延迟升序、`jq map(select(.key != $old)) | first` 取最快者切换，日志格式 "automatic failover: A -> B (xxx ms, fastest of N verified)"。演练实证：强制故障后 42/46 存活、切俄罗斯 372ms（当次最快），reset 回美国2、monitor 通过。旧脚本备份 mihomo-openai-failover.sh.bak-v1。坑：sh 里 `${var%%<TAB>*}` 靠 jq 两段取值替代分隔符解析（节点名含 ASCII 竖线如 新加坡3|高速）。
