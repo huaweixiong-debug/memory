@@ -54,3 +54,8 @@
 
 ## 2026-09-26（三）
 - 南美 vs 西游云 ChatGPT 访问 A/B（用户要求快的用哪个）：西游云 TTFB 快 2.7 倍（trace 156ms vs 430ms，应用流量也能过），但 1MB 下载 3 次断流 2 次（IncompleteRead 中途断）；南美 3/3 稳定、同量级带宽（0.33-0.37MB/s）。ChatGPT 是 SSE 流式输出，稳定>单次延迟 → **判南美赢，保持系统代理 17890 不变**。西游云定位：TTFB 快但单落地 Oracle IP 断流+可用性风险，仅作备用。A/B 方法：临时实例 17891 + 系统代理切换后看 /connections 应用流量 + 双方各复测带宽 2 次。
+
+## 2026-09-26（四）
+- **NAS 网关链路修复（手机走 exit node 的目标打通）**：绿联 NAS（lulian 100.82.136.106）上本就跑着 mihomo v1.19.30（TUN+auto-route，双订阅：南美+西游云 72 节点，控制 API 100.82.136.106:9090 **无 secret**、tailnet 内可直访，SSH 22 开但本机公钥未授权 root）。exit node 客户端流量裸奔的根因 = tun.auto-redirect 未开（TUN 只抓 NAS 自身流量，不抓转发流量）。已运行时 PATCH /configs {"tun":{...,"auto-redirect":true}} 热修复，端到端验证：PC 开 exit node 后绕开本地代理直连，出口=日本 161.248.63.7（NAS mihomo 选中链路的真实出口），chatgpt.com trace 200，NAS 连接表可见 51 条来自 PC tailscale IP 的被代理连接。
+- **未持久化警告**：PATCH 仅运行时生效，NAS 重启/mihomo 重启后 auto-redirect 回落 false，需改配置文件（SSH 需用户授权）在 tun 块加 "auto-redirect": true。
+- 手机侧用法：iOS Tailscale → Exit Node 选 lulian 即可，无需其他 app；注意手机流量将全量经家里宽带+NAS mihomo（中国应用 GEOIP 直连不受影响），NAS 离线时手机会断外网。
