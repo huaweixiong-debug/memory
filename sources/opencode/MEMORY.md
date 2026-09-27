@@ -443,3 +443,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 文档（仅授权改这两份）：`README.md` 两处措辞改为区分离线试点副本与公共/上游产品仓库（后者未改、不依赖、无发布/生产批准）；`docs/pilot-compatibility.md` 新增 2026-09-28 复验章节（修订号、试点 ID、命令/结果表、两项已知失败、离线限制），并标注首轮旧计数已被取代
 - 审计：新增 `audit-records\TASK-1001-morocco-revalidation-audit.md` 与 `TASK-1002-ateq-revalidation-audit.md`（实际命令、修订/路径、结果、已知失败、试点原始产物哈希与保全声明）；未改试点 `.agent` 任何文件与状态（全部 mtime 早于会话开始；TASK-1002.md 哈希与既有评审记录一致）
 - 边界：无硬件/客户数据库/网络/部署/tag/发布/合并；未 push、未动 PR；PR 更新留给双评审通过后由 Codex 执行。遗留：镜像的 README/release.yml/tests 仍较旧——计划仅授权同步两个 src 文件，已在 packet 中标注为超出范围
+
+### 2026-09-28 Morocco 试点：Core 串口录制/回放集成测试（OpenCode executor）
+- 目标仓库（非 git）`\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-morocco-20260927`；Core 只读注入 `C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\lg-industrial-core\src`（经 PYTHONPATH，导入路径已确认命中该 src 而非 site-packages）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-morocco-serial-replay-integration`
+- 新增唯一文件 `tests/test_core_serial_recording.py`（131 行，SHA256 `5c8816b1…`）：真实 `app.ateq.SerialAteq` 用 Core `RecordingSerialFactory` + 内存假串口记录一条 `read_registers(0x0030, 13)` 事务（13 个合成寄存器，独立 CRC-16 参考实现生成合法 Modbus RTU 帧，经 pilot 自身 CRC 校验交叉验证），再用 `ReplaySerialFactory` 注入第二个 SerialAteq 回放；断言寄存器/原始帧逐字节一致、transcript JSONL 单行字段正确、`consumed=1 / remaining=0 / exhausted` 且再次读取抛 `SerialTranscriptExhausted`
+- 验证（Python 3.10.11，同一 PYTHONPATH）：计划命令 `pytest -q tests/test_core_serial_recording.py` → 1 passed（exit 0）；既有 focused Core adapter 套件 `tests/test_core_adapter.py` → 44 passed（exit 0；改前基线同为 44 passed）
+- 边界合规：未改应用源码/其他文件；未开 COM/硬件/网络/数据库；非 git 未 push；运行仅刷新 `.pytest_cache` 与 `__pycache__` 非源码产物；REVIEW_PACKET.md 内嵌 diff 已用脚本与目标文件逐行比对一致
+- 遗留：无；审查焦点（CRC 独立性、假串口表面贴合度、异常透传、范围保证）已写入 packet §8
