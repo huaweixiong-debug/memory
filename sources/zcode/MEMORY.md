@@ -114,3 +114,8 @@
 - 用户新增机场「魔戒」（NAS mihomo 的 proxy-provider `mojie`，订阅 21 节点，多个标"GPT"优化，url-test 组「魔戒-灾备」自动选优，当前新加坡-优化-GPT），并把 5 条 ChatGPT 规则改指向新 fallback 组「AI自动」。审查结论：**配置正确无需修改**——AI自动成员顺序 [OpenAI, 南美, 魔戒-灾备]（现有节点主力、魔戒最后兜底），日志实证 `chatgpt.com match DomainSuffix using AI自动[新加坡隧道]`。
 - 当前完整高可用链路（三层）：规则→AI自动(fallback, 120s 健康检查)→ ①OpenAI 组(46池, v3 failover: 最快+地区校验+2min巡检, 当前新加坡隧道) → ②南美组 → ③魔戒-灾备(21节点)。任一层故障自动降级到下一层，恢复后自动回切。
 - mojie 订阅源: https://74.82.196.10:5000/api/v1/client/subscribe?token=... (providers/mojie.yaml, exclude-filter 已滤香港/流量信息)。
+
+## 2026-09-27（十四）
+- **PC 代理升级为三机场架构（与 NAS 同构）**：NAS 的合并配置（南美+西游云内联节点 + mojie provider + OpenAI 46池 + AI自动 fallback + 国内直连规则 + respect-rules）移植到 PC（C:/Users/Public/nanmei/config.yaml，备份 config.yaml.bak-sanjie-20260927）。适配项：TUN enable:false（PC 用系统代理模式）、external-controller 127.0.0.1:8765、allow-lan:false、GeoSite.dat 从西游云目录复制、providers/mojie.yaml 用 docker exec 从 NAS 容器卷取（宿主机路径在 /var/lib/docker/volumes/...，须 exec 进容器 cat）。
+- PC failover 脚本 = NAS v3 的 Python 移植（C:/Users/Public/nanmei/openai_failover.py，monitor|reset|--force；地区校验经 127.0.0.1:17890 代理端口测试当前组选择；俄罗斯被正确拒绝）。计划任务 NanmeiOpenAIFailover（/SC MINUTE /MO 2 /RU SYSTEM，python 全路径 C:\Program Files\Python310\python.exe）。演练：俄拒→墨西哥(412ms)→复位美国2→巡检通过。
+- 实测三链全通：chatgpt.com 200（走 AI自动，fallback 层在 OpenAI(美国2)/南美(越南1) 间按健康自动挑）、open.bigmodel.cn 200 直连、models.opencode.ai 200（opencode 畅通）。PC 无 jq——failover 脚本用 Python 移植而非 bash+jq。
