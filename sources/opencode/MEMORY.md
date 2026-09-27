@@ -393,3 +393,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 状态机：`.agent/state/TASK-0004.json` → `IMPLEMENTED / ZCODE`，attempt=3 保留；下一棒 ZCode QA（须在 handoff 的 worktree 跑测试并把 argv/exit_code 写进报告与 attestation），再 Codex Reviewer
 - 本地提交 `340616b fix: bind task QA to executed worktree evidence`（5 文件）；**未 push**、未建真实 PR、未 merge/deploy、未改 `P:\Langguo_AI` 活动配置；`.agent/state` 属 gitignore 不提交
 - 并发提醒：本会话发现同一仓库有另一进程并发编辑（docs/README/implementation report 在会话中途出现），最终工作树与 HEAD 一致且 141 测试通过
+
+### 2026-09-27 LG Industrial 成本工作簿完整度修正（OpenCode executor，fix1b 恢复会话）
+- 目标源：`C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\cost-workbook\build-cost-tracker.mjs`；产物：`\\100.117.1.6\projects\Langguo_AI\company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\项目成本估算与实际记录.xlsx`（104,576B，空白模板）
+- 关键引擎事实（@oai/artifact-tool v2.8.59 公式求值，务必记住）：`0=""` 为 True（数值 0 与空串相等）；`COUNTIF(range,">=0")` 会把空单元格计入；`ISBLANK(0)=False`；公式返回空串时 `.values` 得 `""`；未使用单元格为 `null`；SUMIFS 文本条件可作用于公式结果列。结论：数值完整性一律用 ISNUMBER，禁止用 `=""`/`<>""` 判断数值单元格
+- 实现：BOM采购 P/Q、工时返工 R/S 行级状态（待补齐/已完整/待录实际/已录实际）；项目汇总 U/V（缺类别确认/待补齐/估算已确认；待录实际/部分已录/实际已录齐）；估算合计按类别完整性门控；实际合计仅汇总已录实际行并标注“累计已录”；偏差/偏差率仅估算与实际均完整后显示，估算为 0 时偏差率留空；确认零成本类别必须显式 0 行
+- QA：7 个可弃置场景（完整值、缺估算单价、缺实际单价、待录实际、部分实际+完整行、显式 0、无明细）+ 三次清空校验；`node build-cost-tracker.mjs` 退出码 0；demo/clean/saved 三次公式错误扫描均 0 命中；openpyxl 3.1.5 独立复核 4 表名、公式、条件格式、数据验证通过；保存文件无 TEST- 残留
+- 证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20260927-cost-workbook-fix1b`（REVIEW_PACKET.md、builder.diff、build-run.log、formula-probe.*）；基线计划与旧工作簿备份在 `...\runs\20260927-cost-workbook-fix1`
+- 注意：四个 `*-preview.png` 是带 TEST-901/902/903 演示状态行的渲染图（导出前已清空），另生成 4 张 `*-clean-preview.png` 证明空模板；产物 xlsx 公式无缓存值，Excel/WPS 打开时自动重算
