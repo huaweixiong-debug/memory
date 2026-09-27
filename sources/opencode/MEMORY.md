@@ -417,3 +417,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - CLI 手测：valid 0；`--ateq-test --program 2` → 2；`--preflight` → 2；`--mode live --config config/live.toml` → 2（DEF-1 守护保持）
 - 状态：`.agent/state/TASK-1002.json` → `IMPLEMENTED / ZCODE`，attempt=2；报告 `.agent/reports/TASK-1002-IMPLEMENTATION.md`；下一棒 ZCode QA → Codex Reviewer
 - 离线边界：未开物理 ATEQ/PLC/激光/数据库/网络；项目非 git 仓库，未 push、未部署；除实现文件、报告与 state 两字段外未改其他内容
+
+
+### 2026-09-27 西游云全灭定性 + 魔戒灾备接入 NAS mihomo（主力仍=南美越南1）
+- 西游云订阅整体失效（1/44 可用）：全组共用域名 hao1.11151115.xyz 被针对性阻断——国内直连全端口(933/11027/20793/26297/41224)不通、经海外节点可达（服务端活着）、DNS 轮换 IP 16.106.12.118↔18.182.51.250 新旧均被拦；判定服务商侧/墙，NAS 无责，西游组弃用
+- 教训：单域名承载全组=一墙全灭；delay 探测并发/晚高峰易假阴性（曾 0/44 与真流量 200 并存），可用性定论必须真流量状态码验证（chatgpt cdn-cgi/trace=200 且 api.openai.com/v1/models=401 为可用；403=被拦；44 覆盖网页+API 两个维度）
+- 魔戒（按量不限时）接入：官网 mojie.uk 国内可直连（mojie.com/mojie.cfd 被墙）、现价 ¥19.9/130G（博客旧价 14.9 已过期）、测试档 ¥1/1G 不可续费；NAS mihomo 已配 proxy-provider(mojie, interval 86400)——订阅 URL 用 clash.meta 类 UA 才返回 Clash YAML（mihomo 下载 UA 恰为 clash.meta/…，返回 base64 则 provider 解析失败）+ exclude-filter 滤掉香港节点与"剩余流量/套餐到期/过滤掉"信息行
+- 新组网：「魔戒-灾备」(url-test use mojie, 21 节点) ；「AI自动」fallback=OpenAI>南美>魔戒-灾备(interval 120)；5 条 OpenAI 域名规则(chatgpt/openai/oaistatic/oaiusercontent/livekit.cloud)→AI自动；MATCH,南美 不变
+- 验证：主链路 chatgpt=200/api=401；魔戒真流量（临时把 openai.com 规则指魔戒）api=401（新加坡-优化2-GPT）通过后已恢复
+- 备份：NAS config.yaml.bak-mojie-* / bak-wire-* / bak-t-* / bak-restore-*；南美订阅 10-07 到期（西游不续，魔戒作灾备）
