@@ -1,0 +1,7 @@
+# LG Industrial Core Morocco offline pilot acceptance — 2026-09-27
+
+- User-selected routing for this phase: OpenCode implements with opencode-go/deepseek-v4.1-flash variant max; Codex final acceptance uses GPT-6 Luna max.
+- Morocco isolated clone at C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\Morocco passed the GPT-6 Luna max review after tightening CoreRepositoryBridge: only a trusted FakeRepository configured as RunMode.SIMULATE may reach ProductRepositoryAdapter.mark_output_complete; explicit capabilities and non-Fake SIMULATE spies are rejected before side effects.
+- Morocco evidence: 38 focused Core adapter tests pass; full suite 160 pass with the same 2 documented baseline UI failures; SIMULATE smoke passes both with Core installed and with Core absent; LIVE remains blocked even when preflight_passed=True. Review packet: C:\Users\Administrator\.codex\opencode-executor\runs\20260927-morocco-core-pilot-fix4\REVIEW_PACKET.md.
+- ATEQ remains a separate isolated pilot and had already passed GPT-6 Luna max review in this phase. Neither product clone was committed or pushed; no device, production database, LIVE UI, or hardware acceptance was performed.
+- Keep the Core dependency out of each product project's tracked dependency/configuration files. Compare the Morocco and ATEQ adapter lessons before proposing wider platform rollout.
