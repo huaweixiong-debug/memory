@@ -1,0 +1,7 @@
+# LG Industrial Core Phase 1: hosted CI and ZCode queue status (2026-09-27)
+
+- The first-stage work now has a reviewed private Core branch and a draft PR: `huaweixiong-debug/lg-industrial-core`, branch `codex/lg-core-rename-foundation`, commit `0e0c3ad`.
+- Hosted GitHub Actions run `36305250036` passed the Python 3.10, 3.11, and 3.12 matrix, including Core tests, template tests, wheel/sdist build, and import check. The PR remains draft and unmerged; no version tag or release was created.
+- Offline validation evidence: Core 50 passed; template 5 passed; Morocco Core adapter tests 38 passed and full suite 160 passed with the same two documented baseline failures; ATEQ full suite 82 passed; compatibility checker passed for both pilots. No equipment or production database was contacted.
+- The ZCode automation returned `ZCODE_NO_WORK` because the scanned factory state files had no `IMPLEMENTED` / `ZCODE` item; relevant states remained `APPROVED` / `ORCHESTRATOR`. This was a queue-routing result, not a QA verdict on the Morocco/ATEQ copies. No task state was altered. To get ZCode coverage for these pilot copies, create appropriately scoped QA work items rather than reassigning unrelated factory tasks.
+- Remaining gates: hosted version-tag release workflow was not exercised (no tag/release); two Morocco baseline suite failures remain; real project estimate/actual cost data and field validation are still pending.
