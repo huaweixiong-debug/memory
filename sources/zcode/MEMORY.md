@@ -84,3 +84,6 @@
 ## 2026-09-27（六）
 - **ZCode 桌面版反复弹图片拖拽验证的根因与修复**：ZCode 的 API 走 open.bigmodel.cn（智谱），该域名 DNS 解析到阿里云日本 IP（47.245.63.126/47.74.41.78），GEOIP,CN 判不了 → 落 MATCH 走代理 → 智谱风控见境外机房 IP 强制人机验证。修复：Nanmei config rules: 顶部加 `DOMAIN-SUFFIX,bigmodel.cn/zhipuai.cn/chatglm.cn,DIRECT`（智谱全家直连）。验证：bigmodel→DIRECT、vipmro→GeoIP DIRECT（respect-rules 生效）、chatgpt→新加坡隧道。
 - **YAML 坑（重要）**：Nanmei config.yaml 的 rules 块是 2 空格缩进 `  - DOMAIN,...`；插零缩进规则时，YAML 会把后续缩进行当"纯量续行"折叠进上一条规则，clash 报 "proxy [xxx - yyy] not found" 且整个 rules 被并成一行假象。插规则必须复制现有行的缩进。改坏时用 config.yaml.bak-fakeip-20260927 恢复后重插。
+
+## 2026-09-27（七）
+- **ZCode 验证码"手动拖对也失败"的根因**：验证码是第三方 geetest.com（api/captcha/static.geetest.com），不在智谱直连规则里 → 验证码组件走代理（境外 IP）加载/校验、主 API 走直连（家宽 IP）→ **两端 IP 不一致，服务端绑定校验必失败**，与拖拽是否正确无关。修复：rules 顶部再加 geetest.com/geetestcdn.com/zcode.ai/doubao.com 四条 DIRECT（现共 7 条国内服务直连规则在最顶部）。ZCode 实际域名清单（从 .zcode/AppData 提取）：api.zcode.ai、sso/open/dev/nopen/captcha.bigmodel.cn、api/cap/captcha/castatic/code.zhipuai.cn、api/captcha/static.geetest.com。顺带发现豆包（doubao.com，部分端点是腾讯/阿里海外 CDN 71.18.x/163.181.x）也在走代理，已加直连。ZCode 需完全退出重启才生效。
