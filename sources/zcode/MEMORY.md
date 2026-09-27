@@ -76,3 +76,7 @@
 
 ## 2026-09-27（四）
 - failover 脚本升级 v2（用户要求"故障时切最快的"）：切换逻辑从"按组内清单顺序切首个通过者"改为 `probe_group_ranked`——一次调用 `GET /group/OpenAI/delay?url=trace` 并发实测全部成员、按延迟升序、`jq map(select(.key != $old)) | first` 取最快者切换，日志格式 "automatic failover: A -> B (xxx ms, fastest of N verified)"。演练实证：强制故障后 42/46 存活、切俄罗斯 372ms（当次最快），reset 回美国2、monitor 通过。旧脚本备份 mihomo-openai-failover.sh.bak-v1。坑：sh 里 `${var%%<TAB>*}` 靠 jq 两段取值替代分隔符解析（节点名含 ASCII 竖线如 新加坡3|高速）。
+
+## 2026-09-27（五）
+- **"国内网站走了代理"修复（vipmro.com 案例）**：根因链 = ①本机 Nanmei clash v1.18.9 的 geoip.metadb 文件坏（GEOIP 查询全失败）；②换好库后仍漏——**fake-ip 模式下 HTTP 代理路径的 GEOIP 判定拿到的是 fake-ip（destIP=198.18.x）**，所有无专属域名规则的国内 .com 站（vipmro/jd 无规则时）全落 MATCH 走代理；③redir-host 已被 mihomo 移除（改了会静默回退 fake-ip），升级核心 v1.18.9→v1.19.30 也没用。**最终修复 = dns 块加 `respect-rules: true` + `proxy-server-nameserver`**（NAS 网关配置一直有所以 NAS 路径从来没这问题），GEOIP 判定改用真实解析。验证：vipmro→GeoIP DIRECT(183.134.18.40)，jd DIRECT，chatgpt→新加坡隧道，Pluto 恢复新加坡隧道。
+- 附带变更：本机核心升级 v1.18.9→v1.19.30（clash.exe.bak-v1.18.9 留档），geoip.metadb 换为 NAS 容器同款（8.6MB），config 备份 config.yaml.bak-fakeip-20260927。诊断技巧：`curl -x 代理 https://IP/ -k` 纯 IP 连接可分离"GEOIP 库坏"vs"DNS 假 IP"两种故障；/dns/query 的应答受 respect-rules 影响。
