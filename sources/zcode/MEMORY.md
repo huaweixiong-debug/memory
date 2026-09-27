@@ -80,3 +80,7 @@
 ## 2026-09-27（五）
 - **"国内网站走了代理"修复（vipmro.com 案例）**：根因链 = ①本机 Nanmei clash v1.18.9 的 geoip.metadb 文件坏（GEOIP 查询全失败）；②换好库后仍漏——**fake-ip 模式下 HTTP 代理路径的 GEOIP 判定拿到的是 fake-ip（destIP=198.18.x）**，所有无专属域名规则的国内 .com 站（vipmro/jd 无规则时）全落 MATCH 走代理；③redir-host 已被 mihomo 移除（改了会静默回退 fake-ip），升级核心 v1.18.9→v1.19.30 也没用。**最终修复 = dns 块加 `respect-rules: true` + `proxy-server-nameserver`**（NAS 网关配置一直有所以 NAS 路径从来没这问题），GEOIP 判定改用真实解析。验证：vipmro→GeoIP DIRECT(183.134.18.40)，jd DIRECT，chatgpt→新加坡隧道，Pluto 恢复新加坡隧道。
 - 附带变更：本机核心升级 v1.18.9→v1.19.30（clash.exe.bak-v1.18.9 留档），geoip.metadb 换为 NAS 容器同款（8.6MB），config 备份 config.yaml.bak-fakeip-20260927。诊断技巧：`curl -x 代理 https://IP/ -k` 纯 IP 连接可分离"GEOIP 库坏"vs"DNS 假 IP"两种故障；/dns/query 的应答受 respect-rules 影响。
+
+## 2026-09-27（六）
+- **ZCode 桌面版反复弹图片拖拽验证的根因与修复**：ZCode 的 API 走 open.bigmodel.cn（智谱），该域名 DNS 解析到阿里云日本 IP（47.245.63.126/47.74.41.78），GEOIP,CN 判不了 → 落 MATCH 走代理 → 智谱风控见境外机房 IP 强制人机验证。修复：Nanmei config rules: 顶部加 `DOMAIN-SUFFIX,bigmodel.cn/zhipuai.cn/chatglm.cn,DIRECT`（智谱全家直连）。验证：bigmodel→DIRECT、vipmro→GeoIP DIRECT（respect-rules 生效）、chatgpt→新加坡隧道。
+- **YAML 坑（重要）**：Nanmei config.yaml 的 rules 块是 2 空格缩进 `  - DOMAIN,...`；插零缩进规则时，YAML 会把后续缩进行当"纯量续行"折叠进上一条规则，clash 报 "proxy [xxx - yyy] not found" 且整个 rules 被并成一行假象。插规则必须复制现有行的缩进。改坏时用 config.yaml.bak-fakeip-20260927 恢复后重插。
