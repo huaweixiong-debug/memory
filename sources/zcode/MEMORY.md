@@ -105,3 +105,7 @@
 - **failover v3：加地区校验**。用户实测"俄罗斯节点连不了 ChatGPT"——俄罗斯=OpenAI 制裁区，trace 探活只能测到 CF 边缘、测不出地区支持（与香港同类盲区）。修复：①巡检改用 `ios.chat.openai.com` 的响应体判断（含 unsupported_country=地区封锁→计失败；403 type:dc/200=可用——curl 指纹 403 不是拒绝信号）；②切换时遍历按延迟排序的候选，逐个"切换+地区校验"，首个通过者才落定，日志记 "region verified" / "candidate rejected: X (region blocked)"。演练实证：俄罗斯被拒→落加拿大(462ms)。
 - v3 引入过笔误（jq `{name: $node_name}` 应为 `{name: $name}`，变量名不一致导致全部 PUT 400），已修复重验。教训：sh 里 jq --arg 定义的变量名和 filter 引用必须一致；改完必须实跑演练不能只看语法。
 - OpenAI 组当前：加拿大(462ms, 地区校验通过)，主力仍为美国2（每日 03:00 复位，复位后若地区/连通失败会自动再切）。
+
+## 2026-09-27（十二）
+- **手机配对"无法连接到你的电脑"的根因 = PC 双层代理掐断长连接**：PC 同时开 exit node + 本机 clash 形成嵌套隧道，DF 大包测试 1472 字节丢 50%（有效 MTU 压到 ~1430），ChatGPT/Codex 桌面应用的 ws.chatgpt.com 中继 WebSocket 90 秒重连 1287 次（重试风暴），手机配对永远失败。修复 = PC 关 exit node 回归单层，ws 连接立刻长稳（60/60 采样持续在线）。结论固化：**PC 挂 NAS exit node 的双层架构对长连接（WS/SSH/SSE）有害，PC 用单层 clash、手机用 NAS exit node，各走各的**。诊断法：`curl --limit-rate` 抓 + /connections 按 start 时间统计重连频率；`ping -f -l` 分层测 MTU。
+- 错误演进对照（排查手机配对问题）：非预期SSL证书 → （修 geetest 直连）→ 配对失败无法连接电脑 → （关 PC exit node 单层化）→ 待用户确认。
