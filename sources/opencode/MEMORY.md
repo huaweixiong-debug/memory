@@ -401,3 +401,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - QA：7 个可弃置场景（完整值、缺估算单价、缺实际单价、待录实际、部分实际+完整行、显式 0、无明细）+ 三次清空校验；`node build-cost-tracker.mjs` 退出码 0；demo/clean/saved 三次公式错误扫描均 0 命中；openpyxl 3.1.5 独立复核 4 表名、公式、条件格式、数据验证通过；保存文件无 TEST- 残留
 - 证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20260927-cost-workbook-fix1b`（REVIEW_PACKET.md、builder.diff、build-run.log、formula-probe.*）；基线计划与旧工作簿备份在 `...\runs\20260927-cost-workbook-fix1`
 - 注意：四个 `*-preview.png` 是带 TEST-901/902/903 演示状态行的渲染图（导出前已清空），另生成 4 张 `*-clean-preview.png` 证明空模板；产物 xlsx 公式无缓存值，Excel/WPS 打开时自动重算
+
+
+### 2026-09-27 LG 成本工作簿 fix2：行状态必须依赖项目编号（reviewer FIX major）
+- 问题：BOM/工时明细行数值齐全但项目编号 A 为空时，行状态误报 已完整/已录实际，但该行无法归属任何项目、无法计入合计
+- 修复：BOM P/Q、工时 R/S 状态公式在行已开始且 A 为空时一律 待补齐；空行仍留空；有编号行保持原数值/显式 0 语义；项目级公式未改（无编号行本就不参与项目汇总）
+- QA：新增 S8（BOM 估算/实际缺编号行）与 S9（工时估算/实际缺编号行），断言四个状态为 待补齐 且 G/J/K/L/M 合计公式留空；S1–S7 全部保留通过；`node build-cost-tracker.mjs` 退出码 0，demo/clean/saved 三次公式错误扫描 0 命中，保存文件无 TEST- 残留；openpyxl 复核门控存在于 P5/Q5/R5/S5
+- 产物：同路径 xlsx 重生成（105,466B，SHA256 4f75385e…）；构建器 93dfdb17…；证据 runs\20260927-cost-workbook-fix2（REVIEW_PACKET.md、builder.diff、build-run.log、verify-openpyxl.log）
