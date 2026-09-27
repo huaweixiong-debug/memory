@@ -59,3 +59,8 @@
 - **NAS 网关链路修复（手机走 exit node 的目标打通）**：绿联 NAS（lulian 100.82.136.106）上本就跑着 mihomo v1.19.30（TUN+auto-route，双订阅：南美+西游云 72 节点，控制 API 100.82.136.106:9090 **无 secret**、tailnet 内可直访，SSH 22 开但本机公钥未授权 root）。exit node 客户端流量裸奔的根因 = tun.auto-redirect 未开（TUN 只抓 NAS 自身流量，不抓转发流量）。已运行时 PATCH /configs {"tun":{...,"auto-redirect":true}} 热修复，端到端验证：PC 开 exit node 后绕开本地代理直连，出口=日本 161.248.63.7（NAS mihomo 选中链路的真实出口），chatgpt.com trace 200，NAS 连接表可见 51 条来自 PC tailscale IP 的被代理连接。
 - **未持久化警告**：PATCH 仅运行时生效，NAS 重启/mihomo 重启后 auto-redirect 回落 false，需改配置文件（SSH 需用户授权）在 tun 块加 "auto-redirect": true。
 - 手机侧用法：iOS Tailscale → Exit Node 选 lulian 即可，无需其他 app；注意手机流量将全量经家里宽带+NAS mihomo（中国应用 GEOIP 直连不受影响），NAS 离线时手机会断外网。
+
+## 2026-09-27
+- **NAS auto-redirect 已持久化**：SSH 登录绿联 NAS（18913391330@100.82.136.106，DXP4800 PLUS/UGOS，本机公钥已装入其 authorized_keys 可免密；密码不入库）。mihomo 是 Docker 容器（host 网络），配置 /volume1/docker/mihomo/config.yaml（bind 挂载），已在 tun 块加 "auto-redirect: true"（备份 config.yaml.bak-20260926）并 docker restart 验证重启后仍生效；tailnet 其他设备（100.100.83.52/100.67.124.5）流量已被网关正常分流（国外走南美·越南1、国内直连）。
+- NAS 上还有既有的 mihomo-openai-failover.sh（crontab 每 2 分钟探测 chatgpt.com 自动切 "OpenAI" 组、每日 03:00 复位；纯 API 操作不碰配置文件，与本次修改无冲突；当前配置里无 OpenAI 组，脚本疑似休眠）。目录有大量 9-25/26 的配置实验备份（bak-before-no-autoredirect 等）说明 auto-redirect 之前是被人为去掉的。
+- **手机用法最终态**：iOS Tailscale → Exit Node 选 lulian 即可上 ChatGPT；NAS 离线则手机断外网。
