@@ -426,3 +426,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 新组网：「魔戒-灾备」(url-test use mojie, 21 节点) ；「AI自动」fallback=OpenAI>南美>魔戒-灾备(interval 120)；5 条 OpenAI 域名规则(chatgpt/openai/oaistatic/oaiusercontent/livekit.cloud)→AI自动；MATCH,南美 不变
 - 验证：主链路 chatgpt=200/api=401；魔戒真流量（临时把 openai.com 规则指魔戒）api=401（新加坡-优化2-GPT）通过后已恢复
 - 备份：NAS config.yaml.bak-mojie-* / bak-wire-* / bak-t-* / bak-restore-*；南美订阅 10-07 到期（西游不续，魔戒作灾备）
+### 2026-09-27 lg-industrial-core 发布 preflight（OpenCode executor，PR #1 draft）
+
+- 仓库/分支：`huaweixiong-debug/lg-industrial-core`，PR #1（draft/open），branch `codex/lg-core-rename-foundation`；OpenCode 会话 `ses_f1c75548dffe3RelD1U2j6bP9X`
+- 目标：给现有 Release workflow 加可验证、不发布的人工/PR rehearsal，同时保留严格的 tag-only GitHub Release 路径；仅允许改 `.github/workflows/release.yml` 与 `README.md`
+- 实现：`release.yml` 拆为 `ci`（复用 ci.yml）→ `package`（构建 wheel/sdist、tag 守卫、`dist` artifact 7 天保留）→ `publish`（仅 `push` 且 `refs/tags/v*`，`contents: write` 只在此 job）；workflow 级与 package job 均为 `contents: read`；触发新增 `pull_request: [main]` 和 `workflow_dispatch`；守卫用 bash heredoc + Python zipfile 读取唯一 wheel 的 `.dist-info/METADATA` 的 `Version`，要求 `tag == "v"+Version`，缺失/多个 wheel、缺 METADATA、缺 Version、不匹配均 fail-closed；README 新增 `## Release process` 说明三触发、rehearsal 不发布、artifact、写权限范围、守卫、推 tag 即发布 Release
+- 本地验证：PyYAML 结构 + 守卫 fixture 35/35 PASS（证据 local-verification.txt）；真实 wheel（临时副本 pip wheel，lg_industrial_core-0.1.0）跑工作流自带守卫 `v0.1.0`=exit 0、`v0.1.1`=exit 1；`git diff --check` exit 0
+- 推送/托管：commit `9f400ff` 推送至 PR 分支；PR 触发 Release run 36331055663 `success`（ci 3.10/3.11/3.12 + Package preflight pass，Publish skipped，artifact `dist` 22,165B）；手动 workflow_dispatch run 36331152276 `success` 同样跳过 publish；`gh release list` 空、`git ls-remote --tags` 空、PR 仍 draft/open——未建 tag/release、未 merge/deploy
+- 证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20260927-lg-core-release-preflight`（REVIEW_PACKET.md、implementation.diff、session.txt、hosted-* 证据）
+- 待办：plan 步骤 5/6 的 GPT-6 Luna high 中间评审与 max 终审由 Codex orchestrator 执行（不在 OpenCode 会话内）
