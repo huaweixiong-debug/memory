@@ -1,0 +1,8 @@
+# 2026-09-28 — LG Core final acceptance and model routing
+
+- User corrected the reviewer route: GPT-6 Terra is unavailable; Codex final acceptance uses GPT-6 at the highest available reasoning level.
+- Through 2026-10-01, ZCode GLM-5.3-Flash at its highest reasoning level is authorized for audit through the signed-in personal Coding Plan OAuth account only. Do not use API-key tokens.
+- ZCode CLI 0.16.9 has the Start Plan model in its saved configuration, but the headless runtime fails before request creation with no model selection. The current CLI check sent no inference request. The hourly ZCode worker is bound to factory-smoke-test and scans only IMPLEMENTED/ZCODE tasks; its no-work result is not a review of Core PR #2. A separate earlier ZCode Desktop OAuth static review of Core commit 8cf4aa0 is recorded in the roadmap ledger.
+- LG Industrial Core staged branch HEAD is 8f2a0c2; private PR #2 is open and Draft, with CI and package preflight passing. The Codex final review corrected the stale TASK-1007 report and approved the offline code/CI scope. PR remains unmerged and no release was published.
+- Cost workbook v3 is a five-sheet, 4,200-formula collection template with no real project entries. A real project and its estimate, purchase, labor, and rework sources are still needed before the cost pilot and Phase 2 expansion can be considered complete.
+- Offline Morocco and ATEQ evidence does not establish field or production acceptance. ATEQ point addresses and related station details still require field confirmation.
