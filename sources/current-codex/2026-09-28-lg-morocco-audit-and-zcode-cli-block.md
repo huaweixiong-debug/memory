@@ -1,0 +1,7 @@
+# 2026-09-28 Morocco audit and ZCode CLI follow-up
+
+Source: Codex current account. Date: 2026-09-28.
+
+- Morocco TASK-1004: the isolated one-folder candidate had byte-identical `default.toml` and `points.toml`; `--diagnose --mode simulate` and `--smoke-cycle --mode simulate` both exited 0. The raw `dist` also held a root EXE. TOCs sourced OpenSSL 3 DLLs from `D:\miniconda3\Library\bin`; their runtime need and staging policy remain unresolved, so no release approval.
+- Morocco TASK-1005: the in-project candidate lacks bundled `points.toml`, still contains `icudt78.dll` and `icuuc.dll`, and its EXE could not start from the shared project path (`Access is denied`; ACL has no `ExecuteFile`). Per the help-first gate, simulator commands were not run. Reports are preliminary and both states remain `REPAIR_REQUIRED / OPENCODE`; no package or production changes.
+- ZCode 0.16.9: the user authorized review via OAuth `account:bigmodel-start-plan/GLM-5.3-Flash` at `max`, forbidding API-Key tokens. The route was configured, API-Key env vars were blank for attempts, but headless returned `Select a model before continuing` before sending a model request. Failure reproduced on terminal and desktop surfaces and from a neutral Temp working directory. No ZCode verdict was produced.
