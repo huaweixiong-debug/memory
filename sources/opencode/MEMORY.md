@@ -500,3 +500,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：严格 UTF-8 解码通过、无 BOM/无 U+FFFD；与并行 final 快照逐字节相等；修正措辞与 `python_app/tools/package_preflight.py` 实现一致（exe：`is_file`+`st_size==0` 判空 @226-229；TOML：`files_identical` 大小+SHA256 @189-195/245-248，各自源文件映射 @31-32；ICU 门禁 @535-539；OpenSSL 来源 @541-581；`PREFLIGHT_PASS` 仅全过 @602-620）
 - 经验：本机 PowerShell 宿主缺 `Get-FileHash`/`Format-Hex`，用 `certutil -hashfile` + .NET/Python 替代；同一文件出现并行 executor 运行时（-clarification/-direct/-utf8 三个 run 目录），后启动方应核对 hash 后只做验证、不重复写入
 - 边界：未跑构建/预检/pytest；未动英文 README、代码、package、Git；非 git 未 push
+
+### 2026-09-28 南美第二晚整组故障 + 自动故障转移实战验证（魔戒兜底成功）
+- 9/28 晚：南美入口 hainiu56251454.com→dismt.zziot.life→123.253.227.51 全端口拒连（服务商侧，非DNS污染：Windows直连也被拒；日志 connection refused）→ NAS 南美20节点全灭、MATCH/节点选择路径 502
+- 「AI自动」fallback 实战生效：OpenAI组(南美)死→南美死→自动落到魔戒-灾备（日本节点），chatgpt 实测 200×3 稳定（0.5-4s）；魔戒按量卡价值验证
+- 西游域 hao1.11151115.xyz 仍存活但 IP 高频轮换（16.106.12.118→18.182.51.250→129.146.172.74），部分节点可连（日本1｜高速2310ms/韩国1｜高速2278ms/香港2｜高速446ms）；本机 Clash 混装西游(42 anytls)+南美(26)，一直用西游英国节点所以本地无感
+- 修复动作：节点选择组 南美-德日韩(死)→西游云；西游云选中→日本1｜高速；一般流量恢复 204。AI 路径维持魔戒（南美恢复前不切回）
+- 早前一次断连诱因：OpenAI组被切到「土耳其」节点（TR 非 OpenAI 支持地区），已切回新加坡隧道→后南美死自动转魔戒
+- 结论：fallback 链路设计经受实战；南美（10-07到期）不建议续；西游=轮换IP不稳定；魔戒=当前最可靠兜底
