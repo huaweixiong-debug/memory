@@ -508,3 +508,9 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复动作：节点选择组 南美-德日韩(死)→西游云；西游云选中→日本1｜高速；一般流量恢复 204。AI 路径维持魔戒（南美恢复前不切回）
 - 早前一次断连诱因：OpenAI组被切到「土耳其」节点（TR 非 OpenAI 支持地区），已切回新加坡隧道→后南美死自动转魔戒
 - 结论：fallback 链路设计经受实战；南美（10-07到期）不建议续；西游=轮换IP不稳定；魔戒=当前最可靠兜底
+
+### 2026-09-28 ZCode 独立评审状态纠正（OpenCode executor，文档-only）
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（branch `codex/lg-industrial-core-reconcile-20260928`，基线 HEAD `8f2a0c2`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-lg-zcode-cli-review-status`（plan.md + REVIEW_PACKET.md）
+- 唯一变更：`docs/pilot-compatibility.md` 的 `## Independent review state`（+5/−1）。纠正要点：①ZCode Desktop（GLM-5.3-Flash，reasoning `max`，BigModel OAuth）已于 2026-09-28 完成独立评审，范围 Core 源码 `8cf4aa0` + Morocco bridge，结论 PASS、无新代码缺陷，展示 Morocco 测试后撤回初始缺测疑虑；该评审未跑测试/未改文件/未评审后续文档-only 提交/未批准 merge/release。②CLI 0.16.9 无 `--model`，fresh headless（含 `--surface desktop`）与 resumed OAuth/max session 均在推理前失败：`Model creation failed`、cause `Select a model before continuing`；Desktop 默认 `account:bigmodel-start-plan/GLM-5.3-Flash`/max，属模型选择/运行时问题，明确不建议改用 API-key provider；未使用任何 API-key/token，CLI 无评审结论；物理设备/生产 DB/merge/release 边界保留
+- 验证：`git diff --check` exit 0（仅 LF→CRLF advisory，非空白错误）；`git status --short` 仅 ` M docs/pilot-compatibility.md` + 既有未跟踪 `.agent/`；按 plan 未跑测试；未动 PR/branch/config
+- 经验：memory-share 出现与 origin 完全相同的未跟踪并行产物 `sources/current-codex/2026-09-28-lg-final-core-acceptance-model-routing.md`（blob `bbbb3de9…`），核对一致后删除本地副本再 pull；本机 PowerShell 无 `Get-FileHash`，比对文件用 `git hash-object` vs `git rev-parse origin/main:<path>` 更可靠
