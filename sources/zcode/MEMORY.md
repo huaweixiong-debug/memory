@@ -123,3 +123,6 @@
 ## 2026-09-27（十五）
 - 已产出《三机场自动切换代理部署指南.md》（C:/Users/Administrator/Desktop/），供办公室电脑复现 PC 三机场架构。内容：架构图、config 关键段（PC 适配项/respect-rules/fallback 链）、openai_failover.py 完整脚本、从零部署命令（schtasks 三件套：NanmeiProxy 自启/NanmeiOpenAIFailover 2min/NanmeiOpenAIReset 03:00）、验证清单与合格标准、8 条踩坑记录（双层代理 MTU、v1.18 fake-ip bug、YAML 缩进、curl 403 误报、俄罗斯地区盲区等）、OpenAI 46 节点清单与刷新方法。
 - 办公室部署要点提醒：拷贝整个 nanmei 目录最省事（内核+数据文件+脚本），只需改 mojie 订阅 token；部署后按第六节验证清单跑。
+
+## 2026-09-28
+- PC 三机场运行次日：德国节点间歇抽风（当晚 5 次"1/2 探活失败后自恢复"，未触发连续 2 次切换），应用撞上失联窗口报 TLS 中断（自动重试自愈）。手动地区校验切换到英国(1351ms, 3/3 稳定)。存活池萎缩到 22/46（机场节点波动属常态，failover 体系正常工作）。经验：日志反复出现同节点 "1/2" 失败 = 该节点不稳的信号，看到就可手动换掉，不必等连续 2 次。
