@@ -450,3 +450,23 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证（Python 3.10.11，同一 PYTHONPATH）：计划命令 `pytest -q tests/test_core_serial_recording.py` → 1 passed（exit 0）；既有 focused Core adapter 套件 `tests/test_core_adapter.py` → 44 passed（exit 0；改前基线同为 44 passed）
 - 边界合规：未改应用源码/其他文件；未开 COM/硬件/网络/数据库；非 git 未 push；运行仅刷新 `.pytest_cache` 与 `__pycache__` 非源码产物；REVIEW_PACKET.md 内嵌 diff 已用脚本与目标文件逐行比对一致
 - 遗留：无；审查焦点（CRC 独立性、假串口表面贴合度、异常透传、范围保证）已写入 packet §8
+
+
+### 2026-09-28 lg-industrial-core stage 仓库对账（OpenCode executor）
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（分支 `codex/lg-industrial-core-reconcile-20260928`，基线 `be0ab16f`）；只读快照 `P:\Langguo_AI\repos\lg-industrial-core`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\lg-core-20260928-081401`（REVIEW_PACKET.md 2401 行，含完整 26 文件 diff）
+- 变更：21 个文件从快照字节级复制（SHA-256 全部一致）；删除 `src/xz_core`（5 文件）；新增 `src/lg_industrial_core`（含 recording.py）、`tests/test_recording.py`、`template/**`、`.github/workflows/{ci,release}.yml`；`.gitignore` 无需改（已覆盖生成物）
+- 文档修正：`docs/pilot-compatibility.md` 重写（日期 2026-09-28；明确改名非 name-only——同时引入 JSONL record/replay/compare 与 SIMULATE-first 模板；旧提交 pin 与旧套件数字删除；证据按当前 staging 路径+日期固定并写明非全周期/非生产结论）；README 证据指针同步
+- CI/发布：ci.yml 覆盖 Python 3.10–3.12 且 `workflow_call`；release.yml 由 `v*` tag 触发，release job `needs: ci`；本会话未创建 tag/release/合并/push，改动留工作区待 QA
+- 验证（隔离 Python 3.10.11 venv，`C:\Users\Administrator\AppData\Local\Temp\opencode\lg-core-venv310`）：core tests 50 passed；template 5 passed；`python -m build` 成功（wheel sha256 e0e3fce8…，sdist 8314d3fa…）；wheel 临时目录安装后 `import lg_industrial_core` OK、`import xz_core` ModuleNotFoundError；offline checker 对 `lg-pilot-morocco-20260927` 与 `lg-pilot-ateq-20260927` 均 PASS（ATEQ/PLC/repository/journal + label/mark adapter）
+- 试点保全：前后 manifest（路径+大小+mtime）完全一致；无硬件/数据库/网络副作用；生成物 build/dist/egg-info/cache 已在验证后清理
+- 遗留（未决）：当前 Morocco staging 的 `tests/test_core_serial_recording.py` 期望更新版 Core API（SERIAL_TRANSCRIPT_SCHEMA_VERSION / RecordingSerialFactory / ReplaySerialFactory / SerialTranscriptExhausted），不在本快照内——该 staging 超前于本快照；完整试点套件本轮未重跑（计划仅要求 checker）；等待 ZCode QA + Codex 终审后再由 orchestrator 推送/PR
+
+
+### 2026-09-28 lg-industrial-core stage 仓库对账（OpenCode executor）
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（分支 `codex/lg-industrial-core-reconcile-20260928`，基线 `be0ab16f`）；只读快照 `P:\Langguo_AI\repos\lg-industrial-core`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\lg-core-20260928-081401`（REVIEW_PACKET.md 2401 行，含完整 26 文件 diff）
+- 变更：21 个文件从快照字节级复制（SHA-256 全部一致）；删除 `src/xz_core`（5 文件）；新增 `src/lg_industrial_core`（含 recording.py）、`tests/test_recording.py`、`template/**`、`.github/workflows/{ci,release}.yml`；`.gitignore` 无需改（已覆盖生成物）
+- 文档修正：`docs/pilot-compatibility.md` 重写（日期 2026-09-28；明确改名非 name-only——同时引入 JSONL record/replay/compare 与 SIMULATE-first 模板；旧提交 pin 与旧套件数字删除；证据按当前 staging 路径+日期固定并写明非全周期/非生产结论）；README 证据指针同步
+- CI/发布：ci.yml 覆盖 Python 3.10–3.12 且 `workflow_call`；release.yml 由 `v*` tag 触发，release job `needs: ci`；本会话未创建 tag/release/合并/push，改动留工作区待 QA
+- 验证（隔离 Python 3.10.11 venv，`C:\Users\Administrator\AppData\Local\Temp\opencode\lg-core-venv310`）：core tests 50 passed；template 5 passed；`python -m build` 成功（wheel sha256 e0e3fce8…，sdist 8314d3fa…）；wheel 临时目录安装后 `import lg_industrial_core` OK、`import xz_core` ModuleNotFoundError；offline checker 对 `lg-pilot-morocco-20260927` 与 `lg-pilot-ateq-20260927` 均 PASS（ATEQ/PLC/repository/journal + label/mark adapter）
+- 试点保全：前后 manifest（路径+大小+mtime）完全一致；无硬件/数据库/网络副作用；生成物 build/dist/egg-info/cache 已在验证后清理
+- 遗留（未决）：当前 Morocco staging 的 `tests/test_core_serial_recording.py` 期望更新版 Core API（SERIAL_TRANSCRIPT_SCHEMA_VERSION / RecordingSerialFactory / ReplaySerialFactory / SerialTranscriptExhausted），不在本快照内——该 staging 超前于本快照；完整试点套件本轮未重跑（计划仅要求 checker）；等待 ZCode QA + Codex 终审后再由 orchestrator 推送/PR
