@@ -119,3 +119,7 @@
 - **PC 代理升级为三机场架构（与 NAS 同构）**：NAS 的合并配置（南美+西游云内联节点 + mojie provider + OpenAI 46池 + AI自动 fallback + 国内直连规则 + respect-rules）移植到 PC（C:/Users/Public/nanmei/config.yaml，备份 config.yaml.bak-sanjie-20260927）。适配项：TUN enable:false（PC 用系统代理模式）、external-controller 127.0.0.1:8765、allow-lan:false、GeoSite.dat 从西游云目录复制、providers/mojie.yaml 用 docker exec 从 NAS 容器卷取（宿主机路径在 /var/lib/docker/volumes/...，须 exec 进容器 cat）。
 - PC failover 脚本 = NAS v3 的 Python 移植（C:/Users/Public/nanmei/openai_failover.py，monitor|reset|--force；地区校验经 127.0.0.1:17890 代理端口测试当前组选择；俄罗斯被正确拒绝）。计划任务 NanmeiOpenAIFailover（/SC MINUTE /MO 2 /RU SYSTEM，python 全路径 C:\Program Files\Python310\python.exe）。演练：俄拒→墨西哥(412ms)→复位美国2→巡检通过。
 - 实测三链全通：chatgpt.com 200（走 AI自动，fallback 层在 OpenAI(美国2)/南美(越南1) 间按健康自动挑）、open.bigmodel.cn 200 直连、models.opencode.ai 200（opencode 畅通）。PC 无 jq——failover 脚本用 Python 移植而非 bash+jq。
+
+## 2026-09-27（十五）
+- 已产出《三机场自动切换代理部署指南.md》（C:/Users/Administrator/Desktop/），供办公室电脑复现 PC 三机场架构。内容：架构图、config 关键段（PC 适配项/respect-rules/fallback 链）、openai_failover.py 完整脚本、从零部署命令（schtasks 三件套：NanmeiProxy 自启/NanmeiOpenAIFailover 2min/NanmeiOpenAIReset 03:00）、验证清单与合格标准、8 条踩坑记录（双层代理 MTU、v1.18 fake-ip bug、YAML 缩进、curl 403 误报、俄罗斯地区盲区等）、OpenAI 46 节点清单与刷新方法。
+- 办公室部署要点提醒：拷贝整个 nanmei 目录最省事（内核+数据文件+脚本），只需改 mojie 订阅 token；部署后按第六节验证清单跑。
