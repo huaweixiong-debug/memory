@@ -471,3 +471,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证（隔离 Python 3.10.11 venv）：core 129 passed（含串口测试）；template 5 passed；build wheel/sdist 成功（wheel sha256 dea061eb…）；wheel 临时目录安装后串口导出齐全、`import xz_core` ModuleNotFoundError；checker `PASS Morocco` + `PASS ATEQ-F620-Laser`；两个试点各自 `tests/test_core_serial_recording.py` 在 PYTHONPATH 目标 src 优先下均 1 passed（导入路径已确认命中目标 src）
 - 保全：试点副本与源项目 before/after manifest（路径+大小+mtime）一致；合成内存串口，无 COM/硬件/网络/数据库；生成物已清理；工作区未提交
 - 遗留：完整试点套件本轮未重跑（只跑计划要求的 checker+串口测试）；等待 ZCode QA + Codex 终审后再推送/PR
+
+### 2026-09-28 lg-industrial-core 公共身份契约 is_bound_to（OpenCode executor）
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（分支 codex/lg-industrial-core-reconcile-20260928）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-lg-core-target-identity`（REVIEW_PACKET.md）
+- 变更仅 2 文件、纯新增 39 行：`src/lg_industrial_core/adapters.py` 新增 `ProductRepositoryAdapter.is_bound_to(target)->bool`，仅以 `is` 比较私有 `_target`（身份而非相等），docstring 声明为受支持的身份检查；`tests/test_core_primitives.py` 新增 2 测试（相同/不同目标；相等但不同一目标，验证 fail-closed，且断言不触发完成方法）
+- 验证（Python 3.10.11，PYTHONPATH 前置仓库 src+template，导入解析命中仓库 src 而非 site-packages 陈旧 0.1.0 构建）：focused `tests/test_core_primitives.py` 28 passed；全量 `tests template/tests` 136 passed（含模板测试），均 exit 0
+- 边界：未改其他文件；`.agent/` 既有未跟踪状态保持不动；无硬件/数据库/LIVE/发布/合并/ATEQ/Morocco 改动；工作区未提交
+- 经验：UNC 工作区 PowerShell 中 `\Microsoft.PowerShell.Core\FileSystem::\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928` 含 provider 前缀 `Microsoft.PowerShell.Core\FileSystem::` 会使 PYTHONPATH 失效，须用 `(Get-Location).ProviderPath`
+- 遗留：无功能遗留；Morocco 试点改用该公共接口属后续独立交接
