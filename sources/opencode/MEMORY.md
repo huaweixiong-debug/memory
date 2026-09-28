@@ -479,3 +479,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 边界：未改其他文件；`.agent/` 既有未跟踪状态保持不动；无硬件/数据库/LIVE/发布/合并/ATEQ/Morocco 改动；工作区未提交
 - 经验：UNC 工作区 PowerShell 中 `\Microsoft.PowerShell.Core\FileSystem::\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928` 含 provider 前缀 `Microsoft.PowerShell.Core\FileSystem::` 会使 PYTHONPATH 失效，须用 `(Get-Location).ProviderPath`
 - 遗留：无功能遗留；Morocco 试点改用该公共接口属后续独立交接
+
+### 2026-09-28 Morocco 试点改用 Core 公共身份契约 is_bound_to（OpenCode executor，is_bound_to 交接）
+- 目标仓库（非 git）`\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-morocco-20260927`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-lg-morocco-public-api`（REVIEW_PACKET.md + verification.log；基线两份备份在 `...\baseline\`）
+- 变更仅两文件：`python_app/app/core_adapter.py`（`CoreRepositoryPort` 增加 `is_bound_to(target)->bool`；`CoreRepositoryBridge.__init__` 改为 `getattr(core_adapter,"is_bound_to",None)` 存在+可调用+返回真 才通过，否则 `PermissionError`；不再读 `_target`）；`python_app/tests/test_core_adapter.py`（`_RecordingCoreAdapter` 删除 `_target` 镜像，新增 `is_bound_to` 委派给 `self.inner`；新增 focused `test_core_repository_bridge_rejects_adapter_without_public_identity_api`；保留 mismatched-target 测试）
+- 验证（Python 3.10.11，`PYTHONPATH=P:\Langguo_AI\repos\lg-industrial-core-stage-20260928\src`，`lg_industrial_core.__file__` 确认命中 staged src 而非 site-packages）：focused `tests/test_core_adapter.py` 15 passed（基线 14）；全量 `pytest tests -q -p no:cacheprovider` 109 passed（基线 108），均 exit 0
+- 边界合规：未改 Core 源/`.agent/`/ATEQ/硬件/生产 DB/LIVE；未动普通 service 构造或离线 builder；非 git 未 push；SIMULATE/Fake/capability/exact-type 门控与委派行为不变
+- 备注：两文件中唯一 `_target` 子串现仅出现在保留测试的函数名 `..._mismatched_adapter_target`（非属性访问）；若 `is_bound_to` 抛异常会原样透传而非转 `PermissionError`，已列入 packet §8 审查焦点
