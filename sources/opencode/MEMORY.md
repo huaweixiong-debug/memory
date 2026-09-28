@@ -486,3 +486,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证（Python 3.10.11，`PYTHONPATH=P:\Langguo_AI\repos\lg-industrial-core-stage-20260928\src`，`lg_industrial_core.__file__` 确认命中 staged src 而非 site-packages）：focused `tests/test_core_adapter.py` 15 passed（基线 14）；全量 `pytest tests -q -p no:cacheprovider` 109 passed（基线 108），均 exit 0
 - 边界合规：未改 Core 源/`.agent/`/ATEQ/硬件/生产 DB/LIVE；未动普通 service 构造或离线 builder；非 git 未 push；SIMULATE/Fake/capability/exact-type 门控与委派行为不变
 - 备注：两文件中唯一 `_target` 子串现仅出现在保留测试的函数名 `..._mismatched_adapter_target`（非属性访问）；若 `is_bound_to` 抛异常会原样透传而非转 `PermissionError`，已列入 packet §8 审查焦点
+
+### 2026-09-28 ATEQ 试点全周期合成串口录制/回放（OpenCode executor）
+- 目标仓库（非 git）`\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-ateq-20260927`（`P:\Langguo_AI` 同源）；Core 只读注入 staged `P:\Langguo_AI\repos\lg-industrial-core-stage-20260928\src`（PYTHONPATH）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-ateq-full-cycle-replay`
+- 唯一变更文件 `tests/test_core_serial_recording.py`（3917→9093B，sha256 `681326a9…`→`f3a41d03…`；+136/−7）：新增 `test_serial_ateq_records_and_replays_full_cycle`——四个合成 CRC 帧（StepCode 4/5/6/65525，终帧 status=0x0001 OK）驱动真实 `SerialAteq.run()`（恰好 4 次 0x0030/13 轮询），经 `RecordingSerialFactory` 写入同一 JSONL，再 `ReplaySerialFactory` 回放；断言 AteqResponse/Measurement 相等（pressure 84.0 kPa 取 StepCode=6 快照、leakage 0.025 mL/min 取终帧、Result.OK）、recorded/consumed=4、请求帧地址数量与四帧逐行存在、耗尽后再 run 抛 `SerialTranscriptExhausted`；`_MemorySerial` 扩展为帧队列（单帧 bytes 构造兼容），既有单读测试函数体未动
+- 验证（Python 3.10.11 + staged Core src）：目标 `pytest -q tests/test_core_serial_recording.py` → **2 passed**（exit 0）；全量 `pytest -q` → **92 passed**（exit 0）；补充 collect-only 证明新测试真实收集；证据 `verification-{targeted,full,collect}.txt`、`session-diff.patch`、`REVIEW_PACKET.md`
+- 边界：未改生产代码/Core/配置/其他文件；纯内存假串口，无 COM/硬件/网络/数据库；非 git 未 push；pytest 仅刷新 `tests/__pycache__` 缓存产物；合成帧在 docstring/注释中明确标注非现场证据
+- 待办：plan 的 Review 段（ZCode CLI GLM-5.3-Flash 只读评审）由 executor 流程后置执行，本会话未跑
