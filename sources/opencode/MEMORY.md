@@ -493,3 +493,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证（Python 3.10.11 + staged Core src）：目标 `pytest -q tests/test_core_serial_recording.py` → **2 passed**（exit 0）；全量 `pytest -q` → **92 passed**（exit 0）；补充 collect-only 证明新测试真实收集；证据 `verification-{targeted,full,collect}.txt`、`session-diff.patch`、`REVIEW_PACKET.md`
 - 边界：未改生产代码/Core/配置/其他文件；纯内存假串口，无 COM/硬件/网络/数据库；非 git 未 push；pytest 仅刷新 `tests/__pycache__` 缓存产物；合成帧在 docstring/注释中明确标注非现场证据
 - 待办：plan 的 Review 段（ZCode CLI GLM-5.3-Flash 只读评审）由 executor 流程后置执行，本会话未跑
+
+### 2026-09-28 Morocco README_CN 打包预检章节中文澄清（OpenCode executor，utf8 复核）
+- 目标仓库（非 git）`\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-morocco-20260927`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260928-morocco-readme-zh-clarification-utf8`（REVIEW_PACKET.md、encoding_verification.txt、diff_lines.txt、README_CN.md.baseline/final）
+- 变更（由并行 `...-direct` 流水线于 19:15:37 落盘，本 utf8 会话只验证、未改写）：`README_CN.md` 第 19 行——"校验嵌套 exe、…与源文件逐字节一致" 改为 "检查嵌套 exe 存在且非空，校验 config/default.toml、config/points.toml 与各自源文件逐字节一致"；基线 sha256 `d700b5ab…`（1633B）→ `ef78cb08…`（1662B），24 行仅此行不同（LF）
+- 验证：严格 UTF-8 解码通过、无 BOM/无 U+FFFD；与并行 final 快照逐字节相等；修正措辞与 `python_app/tools/package_preflight.py` 实现一致（exe：`is_file`+`st_size==0` 判空 @226-229；TOML：`files_identical` 大小+SHA256 @189-195/245-248，各自源文件映射 @31-32；ICU 门禁 @535-539；OpenSSL 来源 @541-581；`PREFLIGHT_PASS` 仅全过 @602-620）
+- 经验：本机 PowerShell 宿主缺 `Get-FileHash`/`Format-Hex`，用 `certutil -hashfile` + .NET/Python 替代；同一文件出现并行 executor 运行时（-clarification/-direct/-utf8 三个 run 目录），后启动方应核对 hash 后只做验证、不重复写入
+- 边界：未跑构建/预检/pytest；未动英文 README、代码、package、Git；非 git 未 push
