@@ -126,3 +126,7 @@
 
 ## 2026-09-28
 - PC 三机场运行次日：德国节点间歇抽风（当晚 5 次"1/2 探活失败后自恢复"，未触发连续 2 次切换），应用撞上失联窗口报 TLS 中断（自动重试自愈）。手动地区校验切换到英国(1351ms, 3/3 稳定)。存活池萎缩到 22/46（机场节点波动属常态，failover 体系正常工作）。经验：日志反复出现同节点 "1/2" 失败 = 该节点不稳的信号，看到就可手动换掉，不必等连续 2 次。
+
+## 2026-09-28（二）
+- **opencode 失联根因与修复**：①opencode.ai 域名原来不在容灾链里，流量挂在南美组的选择（越南1，当晚又死）上；②已加规则 `- DOMAIN-SUFFIX,opencode.ai,AI自动`（在 chatgpt 规则前），opencode 与 ChatGPT 同享三层容灾。验证：models.opencode.ai 经 英国→OpenAI→AI自动 返回 200。
+- 当晚南美机场整体下线（入口 again，21 节点全探活失败 504）——容灾自动绕开（OpenAI 组用西游云的英国节点），机场恢复后自动回归。**Windows curl 测 HTTPS 报 CRYPT_E_REVOCATION_OFFLINE 是 schannel 吊销检查失败（OCSP 域名路由到死节点），加 `--ssl-no-revoke` 即可验证；Node/Electron 应用（opencode/OpenCode）用 OpenSSL 不做此检查，不受影响。**
