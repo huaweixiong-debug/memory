@@ -462,3 +462,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 遗留（未决）：当前 Morocco staging 的 `tests/test_core_serial_recording.py` 期望更新版 Core API（SERIAL_TRANSCRIPT_SCHEMA_VERSION / RecordingSerialFactory / ReplaySerialFactory / SerialTranscriptExhausted），不在本快照内——该 staging 超前于本快照；完整试点套件本轮未重跑（计划仅要求 checker）；等待 ZCode QA + Codex 终审后再由 orchestrator 推送/PR
 
 
+
+
+### 2026-09-28 lg-industrial-core 串口字节转录补齐（OpenCode executor，follow-up）
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（分支 `codex/lg-industrial-core-reconcile-20260928`，基线 `be0ab16f`）；只读源项目 `C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\lg-industrial-core` 修订 `eea4d2087f630f46a18541ec2aafb8362eff56ed`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\lg-core-serial-20260928-084652`（REVIEW_PACKET.md 3996 行，含自 be0ab16 的完整 28 文件 diff）
+- 补齐内容：从源修订复制 `src/lg_industrial_core/serial_recording.py`（529 行）、`tests/test_serial_recording.py`（793 行）、`__init__.py` 串口导出（8 个）、`release.yml` 发布预检（tag/version 守卫）与 README 串口章节；同时更新 `tests/test_core_primitives.py`/`tests/test_recording.py` 到源修订版；保留首轮全部有效改动
+- 文档：README 明确区分通用 JSONL 事件录制与串口字节转录，写明 synthetic-only 边界；`docs/pilot-compatibility.md` 重写为本次目标检出+两个试点副本的新证据（不再引用旧修订/旧计数）
+- 验证（隔离 Python 3.10.11 venv）：core 129 passed（含串口测试）；template 5 passed；build wheel/sdist 成功（wheel sha256 dea061eb…）；wheel 临时目录安装后串口导出齐全、`import xz_core` ModuleNotFoundError；checker `PASS Morocco` + `PASS ATEQ-F620-Laser`；两个试点各自 `tests/test_core_serial_recording.py` 在 PYTHONPATH 目标 src 优先下均 1 passed（导入路径已确认命中目标 src）
+- 保全：试点副本与源项目 before/after manifest（路径+大小+mtime）一致；合成内存串口，无 COM/硬件/网络/数据库；生成物已清理；工作区未提交
+- 遗留：完整试点套件本轮未重跑（只跑计划要求的 checker+串口测试）；等待 ZCode QA + Codex 终审后再推送/PR
