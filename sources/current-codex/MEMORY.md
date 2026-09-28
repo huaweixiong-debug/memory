@@ -1081,3 +1081,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 
 - Added bounded continuous-daemon verification on `feature/github-issue-intake`. Final review found the subprocess test could write Python bytecode into the repository; OpenCode fixed it with `-B`, `PYTHONDONTWRITEBYTECODE`, a temporary cache prefix and working directory, and a repository `.pyc` snapshot assertion. The repair is preserved as attempt 1.
 - ZCode independently passed 14 focused tests and 84 offline tests; GPT-6 Luna/high final review approved TASK-0003. Commit `a90be26` was pushed; PR #1 remains open and unmerged, and both hosted Windows CI checks passed. Deployment and industrial writes remained disabled.
+
+## 2026-09-28 — LG Industrial Core phase one
+
+- Renamed the package to `lg-industrial-core` / `lg_industrial_core`; added JSONL event and serial-transcript record/replay, a SIMULATE-first template, CI for Python 3.10–3.12, and a version-gated release workflow. Offline Core/template tests passed (129/5); Morocco and ATEQ interface checks and serial transcript tests passed. Full pilot suites and live/production validation remain out of scope.
+- Commit `61ba67f` is on `codex/lg-industrial-core-reconcile-20260928`; Draft PR #2 in private `huaweixiong-debug/lg-industrial-core` is open and unmerged. Hosted CI passed for 3.10/3.11/3.12 and Release package preflight; release publishing was skipped because no version tag was created. Wheel/sdist build and isolated import are recorded in the implementation evidence, but were not independently reproduced in the ZCode QA environment because its offline builder dependency was unavailable.
+- For project-scoped ZCode QA, keep all reads/writes within the specified repository. If packaging prerequisites are missing, do not search system/pip caches or install from the network; report the reproduction gap and use in-scope evidence.
+- Temporary model routing preference: through 2026-10-01, use ZCode desktop GLM-5.3-Flash at highest reasoning on the personal Coding Plan OAuth route for review; do not spend API-key tokens. Codex final acceptance uses GPT-6 at highest reasoning; Terra is not available.
