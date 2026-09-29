@@ -1,0 +1,6 @@
+# LG-AF ZCode Desktop review and Morocco staging boundary — 2026-09-29
+
+- Source: current Codex account. ZCode review must be operated through ZCode Desktop Computer Use; use the BigModel Personal Coding Plan GLM-5.3-Flash at highest reasoning for reviews, never API-key tokens.
+- ATEQ pilot: the direct `points_confirmed=false` preflight test exists in `tests/test_live_preflight.py`; the claim that this test was missing is stale. ZCode's read-only review found the fake `read_registers` signature and return shape match the current API after the tuple correction. No devices, databases, services, tests, or source changes were involved in the Desktop review.
+- Morocco TASK-1007: ZCode Desktop static review found no blocking defect in the fail-closed staging implementation. It could not independently inspect binary inventory or run the staged executable. Codex evidence records WinError 5 when launching from the P: staging path; an identical local temporary copy passed help and both SIMULATE commands. This supports a path-dependent execution restriction but does not identify its cause.
+- Boundary: the new candidate under `package_staging/TASK-1007` is a review/staging copy, not release approval. The old `package_dist_final` remains stale; OpenSSL provenance and execution from the staged share path remain unresolved. Do not change ACLs or claim field acceptance.
