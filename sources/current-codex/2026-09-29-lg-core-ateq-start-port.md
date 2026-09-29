@@ -1,0 +1,10 @@
+# LG Industrial Core ATEQ start-capability split
+
+Date: 2026-09-29
+Source: Codex current account
+
+- The Core staging change separates the base ATEQ program/result contract (`AteqPort`) from software-start capability (`AteqStartPort`). This supports Morocco's active `python_app`, where the PLC starts the tester and the ATEQ adapter has no software-start method. The template `SimulatedStation` explicitly requires `AteqStartPort`. `FakeAteqResponse` now gives the simulated response concrete `passed: bool` and `value: float` fields.
+- Offline Python 3.10 verification: Core 132 passed; template 5 passed; Morocco active app 139 passed; separate Morocco root suite 171 passed; ATEQ-F620-Laser 92 passed. Structural compatibility checks passed for the Morocco adapters and ATEQ-F620-Laser adapters. The ATEQ SIMULATE smoke cycle returned success with one record and one mark. No PLC, ATEQ, physical equipment, or production database was accessed.
+- ZCode Desktop used GLM-5.3-Flash at highest reasoning. The UI recorded switching from the experience plan to the BigModel personal plan; its full-diff read-only review returned `PASS — 未发现实质代码缺陷`. It also confirmed the typed response correction. No CLI or API-key tokens were used. ZCode did not run tests, commands, or change files. The F620 pilot's project-side migration of software-start consumers to `AteqStartPort` was outside the pasted diff and remains unverified by that static review.
+- Core code commit `4210796` and documentation evidence commit `09d24ae` were pushed to private PR #2. At head `09d24ae`, CI passed on Python 3.10/3.11/3.12 and Package preflight passed; GitHub Release publication was skipped. PR remains open and draft; no merge or release was performed.
+- Remaining roadmap gates include Morocco's old package candidate issues, confirming ATEQ live point mapping and hardware details, and obtaining a complete estimate-versus-actual cycle for the Yida 014 cost pilot. Offline acceptance does not authorize field or production use.
