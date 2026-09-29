@@ -1,0 +1,6 @@
+# ZCode CLI failover behavior — 2026-09-29
+
+- On this Windows machine, ZCode CLI 0.16.9 supports one-shot prompts with -p, file inputs with repeated --attach, and safety mode selection with --mode plan. The CLI help has no separate --model or reasoning-effort switch; provider_config.json held account:bigmodel-start-plan / GLM-5.3-Flash with reasoningLevel=max.
+- Short one-shot inference and one-file attachment summary succeeded on Start Plan. Later repeated Model creation failed errors were handled by the local zcode-failover.ps1 after it was updated to default to plan mode and retry the same provider once before fallback. The configured individual Coding Plan fallback returned the short test response and became the persistent default; use the script PlanStart argument to switch providers.
+- Multi-file code review through CLI can take several minutes and may return no verdict. An earlier scoped ZCode review passed but identified a cycle_id mismatch; the Core template and Traceability copy were fixed and their Python 3.10 suites passed (137 combined Core/template, 43 Traceability). A post-fix ZCode follow-up timed out and is not a PASS.
+- The failover script persistently rewrites only the default model selection, so provider switches affect later CLI and desktop sessions. Never store or print credential values in project notes.
