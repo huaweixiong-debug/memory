@@ -523,3 +523,9 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证（Python 3.10.11；PYTHONPATH=staged `lg-industrial-core-stage-20260928\src`）：focused 3 文件 40 passed（exit 0，日志 `focused_tests.log`）；全量 `pytest -q` 126 passed（exit 0，日志 `full_suite.log`）；FIX-1 会话 diff 仅 5 文件（main.py/ui.py 与 pre-edit 快照逐字节一致，diff exit 0）；累计 diff 对原始 baseline：composition +86/-10、main +10/-4、ui +11/-2、ui_replica +31/-5、3 个测试 +147/+72/+168
 - 关键经验：检查集合类报告（`all([])==True`）必须做完整性/重复/集合相等校验，不能用 truthiness 或 `.passed` 放行；无 git 项目用 `git diff --no-index` 对 baseline（exit 1 = 有差异，exit 0 = 相同）；PowerShell 拼 Markdown 时数组字面量里 `'```' + 'diff'` 会被逗号拆分，先赋值再入数组
 - 边界：未启动 LIVE、未接触硬件/DB/凭据/生产文件/网络；测试全为离线 mock/bomb；未动任务状态、凭据、部署、live 配置或 staged Core；未在 LIVE 模式运行 app/main.py
+
+### 2026-09-29 本机 GitHub 登录不上 -> 本机Clash github精准直连修复
+- 根因：浏览器走系统代理 127.0.0.1:17890 -> 本地mihomo规则 DOMAIN-KEYWORD,github->节点选择->西游云，西游系节点IP高频轮换期间歇秒断（000/3s），登录页+assets加载失败；直连本身可达（200 x 9/9）
+- 修复：C:\Users\Public\nanmei\config.yaml 插入3条 DOMAIN github.com / api.github.com / github.githubassets.com -> DIRECT（githubusercontent及其余github资源留代理防raw被墙），API热重载 PUT /configs?force=true，body必须 --data-binary @file 传递（PS5.1直接传JSON会被引号转义弄坏报 Body invalid）
+- 验证：代理路径 login 4/4=200、api=200、git ls-remote正常、chatgpt 200未受影响；备份 config.yaml.bak-github-direct-20260929-223700
+- 遗留：google/youtube/gstatic 仍走 节点选择->西游（不稳）；本地AI自动=OpenAI->菲律宾一（南美死）但chatgpt实测200；如github直连被墙删3条规则重载即回代理
