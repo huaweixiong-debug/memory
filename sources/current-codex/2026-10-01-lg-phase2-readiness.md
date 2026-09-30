@@ -32,3 +32,10 @@ Source: current Codex account.
 - `P:\Langguo_AI\repos` is accessible. Reference Morocco and ATEQ repositories are clean on `main` at `b54c4eb` and `c22accd`; named pilot folders on the share are file copies without Git metadata.
 - Recursive search of the reference and pilot folders found no authoritative PLC/electrical point-table or alarm-matrix XLSX/PDF/DOCX files. The cost workbook remains a blank template with no project actuals supplied.
 - The local readiness artifact `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-lg-roadmap-phase2-readiness.md` now includes the corrected Core PR CI counts, optional synthetic SQLite evidence, current share state, and remaining gates. Hardware, customer databases, and production use remain unapproved.
+
+## 2026-10-01 ATEQ Core serial replay review and cost candidate
+
+- The isolated ATEQ pilot gained one synthetic-only serial integration test through the existing SerialAteq.read_registers adapter. The focused test passed and the complete ATEQ suite reached 93 passed using the exact Core PR #2 source; ZCode independently reviewed it read-only and found no blocking or important issue. Its stale line references in the evidence packet were corrected.
+- ZCode ran through the project-local zcode-failover.ps1 in plan mode. Start Plan account:bigmodel-start-plan / GLM-5.3-Flash at max succeeded, so the provider stayed on Start Plan and no failover occurred. No API-key credentials were used.
+- The company output folder contains cost workbook v7 with YIDA-014-2026 as a candidate: one complete BOM estimate line, incomplete numeric labor estimate, and no completed actual-cost rows. The source workbook remains untouched; this is not an estimate-to-actual result.
+- ATEQ serial evidence is synthetic and offline only; physical instrument, point map, port parameters, and production acceptance remain unverified.
