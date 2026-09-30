@@ -130,3 +130,8 @@
 ## 2026-09-28（二）
 - **opencode 失联根因与修复**：①opencode.ai 域名原来不在容灾链里，流量挂在南美组的选择（越南1，当晚又死）上；②已加规则 `- DOMAIN-SUFFIX,opencode.ai,AI自动`（在 chatgpt 规则前），opencode 与 ChatGPT 同享三层容灾。验证：models.opencode.ai 经 英国→OpenAI→AI自动 返回 200。
 - 当晚南美机场整体下线（入口 again，21 节点全探活失败 504）——容灾自动绕开（OpenAI 组用西游云的英国节点），机场恢复后自动回归。**Windows curl 测 HTTPS 报 CRYPT_E_REVOCATION_OFFLINE 是 schannel 吊销检查失败（OCSP 域名路由到死节点），加 `--ssl-no-revoke` 即可验证；Node/Electron 应用（opencode/OpenCode）用 OpenSSL 不做此检查，不受影响。**
+
+## 2026-09-30
+- PC ChatGPT 掉线事件复盘：加拿大节点 17:00-20:00 半残 3 小时（trace 通但 ios 端点超时，region_check 连续失败 92 次未触发切换——因组测速同时 504，脚本 bug 把错误码 {'__err__':504} 当成假候选 "__err__"，导致 "no region-supported node available (1 tried)" 无效切换）。20:00 后自愈（trace/ios 均恢复）。
+- 脚本修复：ranked() 对 api() 错误返回（含 __err__ 键）必须返回空列表，并对候选名做 '__err__' 过滤。已修复并验证（巡检通过计数清零）。
+- 运维经验：日志里 "probe failed: X (N/2)" 的 N 超过 2 还在涨 = 切换一直没成功，此时先手动跑一次组测速（/group/OpenAI/delay）看是真全灭还是脚本 bug；应用端 TLS 中断重试报错通常等自愈即可。
