@@ -3,6 +3,9 @@
 Source: current Codex account.
 
 - ZCode CLI 0.16.9 is available at `C:\Users\Administrator\AppData\Roaming\npm\zcode.cmd`; the default selection was verified as `account:bigmodel-start-plan / GLM-5.3-Flash`.
-- Added `C:\Users\Administrator\Documents\Codex\zcode-failover.ps1`. It invokes the configured ZCode account provider in plan mode, switches only on a non-zero CLI exit with a recognized quota-exhaustion message, then retries once using `account:bigmodel-individual-coding-plan`. It does not call an API endpoint or supply an API key.
-- The explicit `-PlanStart account:bigmodel-start-plan` command selects Start Plan again. The default is changed only after a quota marker is recognized.
-- PowerShell parsing, representative quota/non-quota classifier cases, the Start Plan wrapper smoke call, and the unchanged Start Plan default were verified. Actual quota exhaustion and the personal-plan retry were not exercised; matching remains dependent on the CLI's emitted error text.
+- The wrapper is `C:\Users\Administrator\Documents\Codex\zcode-failover.ps1`. It invokes the account provider in plan mode, switches only on a non-zero CLI exit with a recognized quota marker, then retries once using `account:bigmodel-individual-coding-plan`. It does not supply an API key.
+- Fixed config replacement: `File.Replace(..., $null)` failed in this PowerShell/.NET environment. The script now uses a unique temporary backup path, atomically replaces the provider config, and removes the backup.
+- Added explicit CLI error-code matching for `quota_exceeded`, `coding_plan_required`, and known quota/billing codes.
+- Verified PowerShell parsing; a mock `quota exceeded` response and code-only `coding_plan_required` each switched and retried once; a mock authentication error kept Start Plan selected and returned the original failure.
+- A real short plan-mode request returned `收到`; the current default remained Start Plan. No API key was used or displayed.
+- Actual quota exhaustion and a real personal-plan retry were not exercised. The failover path is verified with mock CLI output; recognition of any new server error format may need a matching rule.
