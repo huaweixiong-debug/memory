@@ -529,3 +529,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复：C:\Users\Public\nanmei\config.yaml 插入3条 DOMAIN github.com / api.github.com / github.githubassets.com -> DIRECT（githubusercontent及其余github资源留代理防raw被墙），API热重载 PUT /configs?force=true，body必须 --data-binary @file 传递（PS5.1直接传JSON会被引号转义弄坏报 Body invalid）
 - 验证：代理路径 login 4/4=200、api=200、git ls-remote正常、chatgpt 200未受影响；备份 config.yaml.bak-github-direct-20260929-223700
 - 遗留：google/youtube/gstatic 仍走 节点选择->西游（不稳）；本地AI自动=OpenAI->菲律宾一（南美死）但chatgpt实测200；如github直连被墙删3条规则重载即回代理
+
+### 2026-09-30 lg-traceability-pilot README 源引用校正（OpenCode executor）
+
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-traceability-pilot-20260927`（UNC，映射 P:）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260930-traceability-source-ref`（REVIEW_PACKET.md、pytest-3.10/3.14.log、cli\* 6 日志 + 3 个 SQLite + exports\cycle-1.jsonl、README.before/after.md）
+- 唯一变更：README.md 两处——①开头 "approved LG Industrial Core template" 改为 "local traceability pilot copied from the current LG Industrial Core template source while Core PR #2 remains Draft"；②Core 源 head `925935222c252eed0e06fd2bc936e70cfa78b3b6` → `a56177405c3b7d30085d14f20dcf0e17f85a7bd9`（= PR #2 headRefOid，只读 `gh pr view 2` 确认 OPEN + isDraft=true，本地 Core HEAD 同 commit）
+- 验证：会话 diff 恰 2 hunks（+4/-3），README blob `3b39eec2…`→`5891645a…`（before 反推重建哈希 = executor baseline 哈希）；pytest 对 Core staged src @a561774：3.10 43 passed、3.14 43 passed（exit 0）；CLI（py -3.10，证据目录内 fresh DB/export）：成功循环 exit 0 / completed=true / labels printed 1 → query 5 事件有序 → replay 5 事件无设备；`--fail-step first` exit 1 / test_failed / 无 label_receipt 事件；`--print-rejected` exit 1 / label_rejected / receipt accepted=false；两失败路径均 completed=false、labels printed=0
+- 经验：无 commit 时证明"仅改两处"的可靠做法——从当前文件反推 pre-session 内容存证据目录，`git hash-object` 必须等于 executor baseline 哈希，再 `git diff --no-index` before/after
+- 边界：未动 pilot 代码/测试/Core/Morocco/provider；未提交或推送 pilot 仓库；GitHub 仅公开只读元数据查询
