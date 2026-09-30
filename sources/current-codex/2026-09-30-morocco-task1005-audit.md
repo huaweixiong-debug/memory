@@ -1,0 +1,6 @@
+# 2026-09-30 — Morocco TASK-1005 package audit
+
+- In-project `package_dist_final/LeakTest2Channels` currently has one nested EXE (61,178,180 bytes; SHA-256 `428DFE7EF87CD493892293263ADB7CB55129BA8BE17B8F3EC410EE8D25CC8974`), packaged `default.toml`, no `points.toml`, and ICU/OpenSSL DLLs. The current in-project installer spec requires the point map.
+- The required help-first attempt (`--help`) was denied before process start from `P:`. No simulator command was run; runtime remains unverified. The cause may be share policy, ACL, MOTW, or another Windows policy; do not change ACL based on this evidence.
+- TASK-1005 remains `REPAIR_REQUIRED / OPENCODE`; the report was updated with current inventory and an attached-text-only ZCode CLI review. ZCode confirmed the missing point map/spec mismatch supports the decision and that the report does not claim PASS or release approval. It did not independently inspect binaries or run the candidate.
+- The review identified that some in-project review-package files read during collection were outside TASK-1005's named file list. The report now discloses them and excludes their contents from the task verdict. No production service or hardware was contacted.
