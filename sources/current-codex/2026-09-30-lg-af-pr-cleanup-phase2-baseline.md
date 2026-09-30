@@ -1,0 +1,9 @@
+# 2026-09-30 — LG-AF PR cleanup and Phase 2 evidence
+
+Source: Codex current account. Addendum to the ongoing company roadmap.
+
+- GitHub private Core PR #1 was the older overlapping draft and retained the `xz_core` compatibility package. PR #2 removes it and contains the current Core implementation; #1 was closed as superseded and #2 was marked Ready for review at head `b2c40bb81d8f4f3c88c21caae3c6394b63297f46`. CI for Python 3.10/3.11/3.12 and Package preflight passed; no merge or release occurred.
+- Against current Core, Morocco source tests passed 179 + packaged-app tests 141, ATEQ 129, and Traceability 43. Fake adapter compatibility passed for Morocco and ATEQ-F620-Laser. Traceability synthetic CLI success/query/replay exited 0; failed first test and rejected print exited 1 with zero fake labels.
+- Traceability baseline (line endings/BOM normalized): 4/5 copied template Python files unchanged; the fifth retained 114 original lines and added 53; 326/379 paired template lines retained (86.0%), or 326/1,897 of all current pilot Python lines (17.2%); `pyproject.toml` retained 11/13 lines (84.6%). These are textual reuse metrics only.
+- The V7 cost capture workbook remains current, but its YIDA-014 record has a 7,980 RMB estimate only. No actual BOM quantities/prices, labor/rework hours, invoice/payment evidence, or completed full BOM was found, so actual totals remain blank rather than zero.
+- Morocco `package_dist_final` still lacks the required `points.toml`; project-share execution of `--help` is denied before process start, so no simulator run is claimed. A rebuilt package needs its own full help/SIMULATE gate. ATEQ field points/ports are still placeholders pending a confirmed electrical point table. All evidence remains offline and does not approve field/LIVE use.
