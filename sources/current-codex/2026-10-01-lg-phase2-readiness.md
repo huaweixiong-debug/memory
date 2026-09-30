@@ -45,3 +45,7 @@ Source: current Codex account.
 - Simulated Core absence with a temporary import blocker outside the repo: the optional module reported 1 skipped (running only that module exits 5 because pytest collected no runnable tests); combined with tests/test_core.py, 11 passed and 1 skipped; complete suite passed 124 with 2 skipped, exit 0. Use the full suite as the public CI gate.
 - ZCode read-only review returned PASS after two timed-out attempts and one concise successful attempt. The project failover script stayed on Start Plan account:bigmodel-start-plan / GLM-5.3-Flash at max; no API-key plan or fallback was used.
 - Codex final acceptance: only the planned test import block changed relative to the captured baseline; all 44 test functions remain. No app/dependency/CI file, hardware, or production service changed.
+### ATEQ no-Core suite check
+
+- With the pinned Core PR #2 source, ATEQ focused serial Replay passed 1 and the full suite passed 93.
+- With the external Core import blocker, the serial Replay module skipped as intended; the full ATEQ suite passed 64 with 2 skips and exit 0. No ATEQ project file changed for this check.
