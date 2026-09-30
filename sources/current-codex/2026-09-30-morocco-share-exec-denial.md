@@ -1,0 +1,6 @@
+# 2026-09-30 — Morocco share execution denial isolated
+
+- Read-only ACL and stream checks on the Morocco candidate EXE showed the file ACL grants `Everyone` Read only and grants no Execute permission to the running user; the parent directory has Read/Execute. No `Zone.Identifier` stream was listed.
+- An exact local copy (210 files, 216,481,347 bytes, identical EXE SHA-256 `428DFE7EF87CD493892293263ADB7CB55129BA8BE17B8F3EC410EE8D25CC8974`) inherited local execute rights. Its help, `--diagnose --mode simulate`, and `--smoke-cycle --mode simulate` all exited 0; the smoke path used Fake Repository/Printer/ATEQ and generated two synthetic records and labels.
+- This isolates the share launch failure to missing execute permission at the file ACL boundary. No ACL was changed. The old candidate still lacks the required points.toml and includes ICU DLLs; local SIMULATE success is not release or field acceptance. TASK-1005 remains `REPAIR_REQUIRED / OPENCODE`.
+- Evidence is in `C:\Users\Administrator\.codex\opencode-executor\runs\20260930-morocco-share-launch-diagnostic\`; the roadmap ledger and TASK-1005 report cross-reference the isolated diagnostic.
