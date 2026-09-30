@@ -26,3 +26,9 @@ Source: current Codex account.
 - The local Traceability pilot now offers an optional SQLite repository for synthetic trace rows and Core event envelopes; memory remains the default unless an explicit `--database` path is passed. The adapter is local-only, SIMULATE/Fake-only, schema-versioned, rejects unversioned non-empty or newer-schema files, and enforces unique serials in SQLite. Current NG/duplicate/recovery behavior remains provisional demo policy; no customer codes are allowed until retention and workflow rules are confirmed.
 - Traceability suite: `27 passed` with the exact LG Industrial Core PR #2 source on PYTHONPATH. The default memory CLI and explicit SQLite CLI both reached `TRACEABLE`; reopening the SQLite file recovered one completed row and six events. This is local prototype evidence, not a production MES integration.
 - The long SQLite-specific ZCode review request produced no verdict and was interrupted after waiting; a subsequent short `zcode-failover.ps1 -Mode plan` smoke prompt returned successfully. Provider remained `account:bigmodel-start-plan/GLM-5.3-Flash`; no fallback or API key was used.
+
+## 2026-10-01 shared-drive refresh
+
+- `P:\Langguo_AI\repos` is accessible. Reference Morocco and ATEQ repositories are clean on `main` at `b54c4eb` and `c22accd`; named pilot folders on the share are file copies without Git metadata.
+- Recursive search of the reference and pilot folders found no authoritative PLC/electrical point-table or alarm-matrix XLSX/PDF/DOCX files. The cost workbook remains a blank template with no project actuals supplied.
+- The local readiness artifact `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-lg-roadmap-phase2-readiness.md` now includes the corrected Core PR CI counts, optional synthetic SQLite evidence, current share state, and remaining gates. Hardware, customer databases, and production use remain unapproved.

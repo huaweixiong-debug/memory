@@ -9,3 +9,8 @@ Source: current Codex account.
 - Verified PowerShell parsing; mock `quota exceeded` and code-only `coding_plan_required` each switched and retried once; a mock authentication error kept Start Plan selected and returned the original failure. An isolated switch-back test changed the default from individual to Start Plan, retained GLM-5.3-Flash, and left no backup file.
 - A real short plan-mode request returned `收到`; the current default remained Start Plan. No API key was used or displayed.
 - Actual quota exhaustion and a real personal-plan retry were not exercised. The failover path is verified with mock CLI output; recognition of any new server error format may need a matching rule.
+
+## Follow-up: project script selection
+
+- The Morocco project copy `P:\Langguo_AI\repos\lg-pilot-morocco-20260927\zcode-failover.ps1` differs from the older `C:\Users\Administrator\Documents\Codex\zcode-failover.ps1`; use the project copy when the user refers to `.\zcode-failover.ps1` from the project. The project version invokes `zcode.cjs` directly with JSON output and Start Plan first.
+- A real read-only plan-mode smoke request through the project copy returned `收到`; the default remained `account:bigmodel-start-plan / GLM-5.3-Flash`. No API key was supplied and no provider switch occurred. Actual quota exhaustion remains untested.
