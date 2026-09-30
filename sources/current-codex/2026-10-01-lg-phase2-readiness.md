@@ -39,3 +39,9 @@ Source: current Codex account.
 - ZCode ran through the project-local zcode-failover.ps1 in plan mode. Start Plan account:bigmodel-start-plan / GLM-5.3-Flash at max succeeded, so the provider stayed on Start Plan and no failover occurred. No API-key credentials were used.
 - The company output folder contains cost workbook v7 with YIDA-014-2026 as a candidate: one complete BOM estimate line, incomplete numeric labor estimate, and no completed actual-cost rows. The source workbook remains untouched; this is not an estimate-to-actual result.
 - ATEQ serial evidence is synthetic and offline only; physical instrument, point map, port parameters, and production acceptance remain unverified.
+## 2026-10-01 Morocco optional-Core verification
+
+- Removed only the developer-specific Core source path injection in the isolated Morocco Core adapter test and gated its Core import with pytest.importorskip. With exact Core PR #2 source, the focused module passed 44 tests and Morocco passed 168 with 1 existing skip.
+- Simulated Core absence with a temporary import blocker outside the repo: the optional module reported 1 skipped (running only that module exits 5 because pytest collected no runnable tests); combined with tests/test_core.py, 11 passed and 1 skipped; complete suite passed 124 with 2 skipped, exit 0. Use the full suite as the public CI gate.
+- ZCode read-only review returned PASS after two timed-out attempts and one concise successful attempt. The project failover script stayed on Start Plan account:bigmodel-start-plan / GLM-5.3-Flash at max; no API-key plan or fallback was used.
+- Codex final acceptance: only the planned test import block changed relative to the captured baseline; all 44 test functions remain. No app/dependency/CI file, hardware, or production service changed.
