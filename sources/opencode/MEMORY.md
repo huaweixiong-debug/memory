@@ -539,3 +539,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：Python 3.10（CI 版本，pytest 9.1.1）`PYTHONPATH=src` 下 focused `tests/test_recording.py` 48 passed、Core `pytest -q tests` 137 passed；Python 3.14 focused 48 passed。注意：plan 写的项目根 `pytest -q` 会收集 `template/tests/test_template.py` 报 `No module named 'app'`，该失败在基线即存在且与本次无关；CI 实际是根 `pytest -q tests/` + template 目录内单独跑
 - 经验：本机默认 `python`（miniconda）无 pytest，须显式用 `C:\Program Files\Python310\python.exe`/`C:\Python314\python.exe`；`2**53` ULP=2，验证精度塌缩要用 `2**54`（ULP=4）才可靠
 - 边界：仅离线单测改动，未触碰硬件/DB/网络/打包/发布/GitHub；保留用户既有改动 `docs/pilot-compatibility.md`(M) 与未跟踪 `.agent/`；未 commit/push，未改 PR 状态
+
+### 2026-09-30 同上 FIX-1 轮（OpenCode executor，Terra + Codex 追加发现）
+
+- 证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260930-core-numeric-comparison-fix1`（plan.md + fix.md + REVIEW_PACKET.md）；同一工作树、两文件、未 commit
+- Terra 问题（major）：中间版 helper 的 OverflowError 兜底无条件 `Fraction(other_value)`，混合 int 与 `+inf/-inf` 抛 OverflowError，与 `NaN` 抛 ValueError → 巨大 int vs 非有限 float 不安全
+- Codex 追加：混合 int/float 先转 float 再兜底，大整数能装进 float 仍丢精度（`2**54+1` vs `float(2**54+1)` 被判相等）
+- 修复：混合路径改为对有限值一律用精确有理比较 `abs(Fraction(int) - Fraction(float)) > Fraction(tol)`，不再转 float；非有限 float 前置处理——`math.isnan` → False（IEEE 差值不超容差），`math.isinf` → `math.inf > tol`（有限容差报告超出）。float/float 与 int/int 分支不变
+- 测试：新增公开 `compare()` 混合精度塌缩 1 例 + 直接 helper 非有限 6 例（±inf/NaN/NaN 顺序无关/inf 容差/有限塌缩）；Python3.10 focused 55 passed、Core 144 passed，Python3.14 focused 55 passed
+- 方法经验：同一工作树多轮未提交时，会话级 diff 需重建 pre 映像：复制当前文件到临时目录、用 edit 反做本轮改动，再 `git diff --no-index`；用 blob 哈希核对（pre `recording.py`=5c3be72、`test_recording.py`=13ca1a5 与上轮 post 一致）证明基线精确
+- 边界：同前，仅两文件、离线，保留用户改动；未 commit/push
