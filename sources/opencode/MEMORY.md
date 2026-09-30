@@ -529,3 +529,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复：C:\Users\Public\nanmei\config.yaml 插入3条 DOMAIN github.com / api.github.com / github.githubassets.com -> DIRECT（githubusercontent及其余github资源留代理防raw被墙），API热重载 PUT /configs?force=true，body必须 --data-binary @file 传递（PS5.1直接传JSON会被引号转义弄坏报 Body invalid）
 - 验证：代理路径 login 4/4=200、api=200、git ls-remote正常、chatgpt 200未受影响；备份 config.yaml.bak-github-direct-20260929-223700
 - 遗留：google/youtube/gstatic 仍走 节点选择->西游（不稳）；本地AI自动=OpenAI->菲律宾一（南美死）但chatgpt实测200；如github直连被墙删3条规则重载即回代理
+
+### 2026-09-30 lg-industrial-core 数值比较精度/溢出修复（OpenCode executor）
+
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928`（branch `codex/lg-industrial-core-reconcile-20260928`，基线 HEAD `a5617740`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20260930-core-numeric-comparison`（plan.md + REVIEW_PACKET.md）
+- 根因：`recording.py::_deep_compare` 数值分支用 `abs(float(a)-float(b)) > tol`。① 两个 int 先转 float，`2**54+1` 与 `2**54+2` 都塌缩为同一 float，零容差下被误判相等；② 超 float 范围的巨大 int（如 `10**400`）转换抛 `OverflowError`
+- 修复（仅 `src/lg_industrial_core/recording.py`）：新增 `_numbers_exceed_tolerance(a,b,tol)`；int/int 走精确 `abs(a-b) > tol`；float/float 保持原式；int/float 混合仍用原 float 语义，仅在 `OverflowError` 时退回 `fractions.Fraction` 精确有理比较。bool 分支与 mismatch 结构不变
+- 测试：`tests/test_recording.py` 新增 5 个回归测试（2**54 相邻整数、容差收纳、10**400 相等/相邻、10**400 vs 1.0），基线复现 5 failed（含 OverflowError），修复后全绿
+- 验证：Python 3.10（CI 版本，pytest 9.1.1）`PYTHONPATH=src` 下 focused `tests/test_recording.py` 48 passed、Core `pytest -q tests` 137 passed；Python 3.14 focused 48 passed。注意：plan 写的项目根 `pytest -q` 会收集 `template/tests/test_template.py` 报 `No module named 'app'`，该失败在基线即存在且与本次无关；CI 实际是根 `pytest -q tests/` + template 目录内单独跑
+- 经验：本机默认 `python`（miniconda）无 pytest，须显式用 `C:\Program Files\Python310\python.exe`/`C:\Python314\python.exe`；`2**53` ULP=2，验证精度塌缩要用 `2**54`（ULP=4）才可靠
+- 边界：仅离线单测改动，未触碰硬件/DB/网络/打包/发布/GitHub；保留用户既有改动 `docs/pilot-compatibility.md`(M) 与未跟踪 `.agent/`；未 commit/push，未改 PR 状态
