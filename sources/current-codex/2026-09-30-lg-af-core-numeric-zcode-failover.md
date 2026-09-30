@@ -1,0 +1,10 @@
+# 2026-09-30 — LG-AF Core numeric comparison and ZCode failover routing
+
+Source: Codex current account.
+
+- User requested future ZCode reviews use `P:\Langguo_AI\repos\lg-pilot-morocco-20260927\zcode-failover.ps1` instead of direct `zcode -p`. Current provider stayed `account:bigmodel-start-plan` / `GLM-5.3-Flash` / `max`; no API-key token was used. The wrapper only persists a plan switch for recognized quota errors; timeout and ordinary transient failures do not switch. Real exhausted-quota fallback remains untested.
+- On 2026-09-30 the wrapper's short readiness prompt succeeded, but substantive attached code-review prompts (142 KB, 40 KB, 12.7 KB) timed out at 240/180/120 seconds. The wrapper terminated those process trees and preserved Start Plan. Do not count these timeouts as quota exhaustion or proof of fallback.
+- LG Industrial Core staged branch `codex/lg-industrial-core-reconcile-20260928`, HEAD `a56177405c3b7d30085d14f20dcf0e17f85a7bd9`: local uncommitted fix in `recording.py` compares integer-only values exactly, finite mixed int/float values using `Fraction`, and explicitly handles mixed NaN/±inf. Five initial and seven FIX-1 regression cases cover large-int precision, overflow, mixed precision, tolerance, and non-finite helper behavior.
+- Verification: Python 3.10 focused `tests/test_recording.py` 55 passed and Core `tests/` 144 passed; Python 3.14 focused 55 passed; scoped `git diff --check` exit 0. Intermediate GPT-5.6 Luna/high returned FIX once then PASS after the single repair round. OpenCode used `opencode-go/deepseek-v4.1-flash`/high, same session `ses_f0f34919dffegiJTD9e6uWhliZ`.
+- The code fix remains local and is not included in remote PR #2. Existing `docs/pilot-compatibility.md` modification and `.agent/` untracked directory were preserved; no merge, release, or project push occurred.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20260930-core-numeric-comparison-fix1\REVIEW_PACKET.md`; the company roadmap ledger has a dated addendum with the same boundary and ZCode result.
