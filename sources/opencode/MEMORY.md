@@ -549,3 +549,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 测试：新增公开 `compare()` 混合精度塌缩 1 例 + 直接 helper 非有限 6 例（±inf/NaN/NaN 顺序无关/inf 容差/有限塌缩）；Python3.10 focused 55 passed、Core 144 passed，Python3.14 focused 55 passed
 - 方法经验：同一工作树多轮未提交时，会话级 diff 需重建 pre 映像：复制当前文件到临时目录、用 edit 反做本轮改动，再 `git diff --no-index`；用 blob 哈希核对（pre `recording.py`=5c3be72、`test_recording.py`=13ca1a5 与上轮 post 一致）证明基线精确
 - 边界：同前，仅两文件、离线，保留用户改动；未 commit/push
+
+### 2026-10-01 ATEQ Core 串口录制/回放集成测试（OpenCode executor）
+
+- 目标仓库 `C:\Users\Administrator\Documents\Codex\2026-09-27-lg-industrial-phase1\ATEQ`（branch `codex/ateq-core-pilot`，HEAD `c22accd`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-ateq-core-serial-replay`（plan.md + REVIEW_PACKET.md）
+- 仅新增 `tests/test_core_serial_replay.py`：测试内合成 Modbus RTU fn-03 从站（内存端点、独立本地 `_crc16`，严格校验 8 字节帧/CRC/从站/功能码/地址/数量），用 Core PR#2 的 `RecordingSerialFactory` 把一次真实 `SerialAteq.read_registers(0x0030,4)` 录制到 pytest tmp 下的 JSONL，再用 `ReplaySerialFactory` 回放同一适配器调用，断言寄存器值、原始响应字节一致、恰好 1 笔事务、transcript 全部消费（consumed=total=1、exhausted）
+- 保持公开仓库无私有依赖：模块级 `pytest.importorskip("lg_industrial_core")`（与既有 test_core_adapters.py 同一模式）；验证用 `PYTHONPATH=%LOCALAPPDATA%\Temp\lgcore_pr2_414c93d\src` + `C:\Program Files\Python310\python.exe`（3.10.11 / pytest 9.1.1）：compileall 0、focused 1 passed 0.06s、全量 `pytest -q tests/` 93 passed 2.82s
+- 边界：合成 Replay 证据仅证明离线字节级回放，不等价于物理仪器/点表/端口/产线验收；保留用户既有改动（`app/composition.py`、`app/main.py`、`app/station.py` 已修改，`tests/__init__.py`、`tests/test_core_adapters.py` 未跟踪）；未 commit/push
