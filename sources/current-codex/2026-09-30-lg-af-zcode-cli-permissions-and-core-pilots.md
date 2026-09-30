@@ -1,0 +1,11 @@
+# 2026-09-30 — LG-AF Core, pilot verification, and ZCode CLI
+
+Source: Codex current account. This note records outcomes from the continuing LG Industrial Core roadmap work.
+
+- Core recording comparison fix is commit `b2c40bb81d8f4f3c88c21caae3c6394b63297f46` on private `huaweixiong-debug/lg-industrial-core` PR #2. PR remains OPEN/Draft; CI for Python 3.10/3.11/3.12 and package preflight passed. No merge or release occurred.
+- Against that Core source, offline tests passed: Morocco root 179, Morocco packaged-app suite 141, ATEQ 129, Traceability 43. The Core Fake adapter compatibility checker passed for Morocco and ATEQ-F620-Laser. No hardware or production service was accessed.
+- The Morocco `package_dist_final` candidate remains stale: it lacks the point map required by the current spec and contains ICU DLLs. Running its `--help` from the project share is blocked before process start with Windows Access Denied; dependent SIMULATE commands were correctly not run. TASK-1005 remains `REPAIR_REQUIRED / OPENCODE`. Any rebuilt package needs its own full help and SIMULATE verification.
+- User asked that ZCode model calls use `zcode-failover.ps1` with Start Plan first and account OAuth, without API-key tokens. The wrapper was used; it did not switch plans. ZCode CLI can provide text review, but its Bash/Edit/Write tools reported `No permission client configured`; use it for supplied-text packet review unless that headless tool-permission setup is fixed. Do not change ZCode configuration or bypass denied task permissions without explicit task scope.
+- Traceability README's Core source revision was synchronized to the tested Core commit. Only its one hash token changed; Luna/high intermediate review and Codex final verification passed.
+
+Outstanding gates: Core PR review/merge decision, a valid/rebuilt Morocco package candidate, confirmed ATEQ field point/port data, and actual estimate-to-actual cost records. Current evidence remains offline and does not authorize field/LIVE use.
