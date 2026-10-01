@@ -1,0 +1,8 @@
+# 2026-10-01 Traceability Core PR #2 README pin and ZCode failover wrapper
+
+Source: Codex current account.
+
+- In the isolated Traceability pilot copy, replaced the stale sibling Core source reference with explicit `LG_INDUSTRIAL_CORE_SOURCE` documentation pinned to Core PR #2 HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`, plus a `Path.samefile` import-source assertion. ZCode plan review returned PASS; its caveats were the machine-specific example path and that the path assertion does not independently validate Git HEAD.
+- Codex accepted the README and copied only that file into the original non-Git pilot. Source and destination SHA-256 matched (`F18FCD23634AD7ED24C4808315F7ED4F2739D96983BBFE456FB5B34FC39D2250`). Import provenance passed and all 27 offline tests passed in both the isolated copy and original pilot. No devices, production databases, or customer records were used; no project commit, PR merge, or deployment occurred.
+- ZCode was invoked through `C:\Users\Administrator\Documents\Codex\zcode-failover.ps1 -Mode plan`. The full multiline review prompt exceeded Windows command-line length; two file-access prompts stalled and were stopped; a compact single-line prompt with the actual review details produced a PASS. These were ordinary CLI failures, not quota errors: provider remained `account:bigmodel-start-plan/GLM-5.3-Flash`; no fallback/provider-config switch or API-key path was used.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-traceability-core-head-pin-isolated\FINAL_REVIEW.md` and `ZCODE_REVIEW.md`.
