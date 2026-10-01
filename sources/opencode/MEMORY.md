@@ -575,3 +575,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复轮（同会话同文件）：ZCode wrapper `plan` 模式 PASS，两条 low 建议已改——两个 SerialAteq 实例改用 try/finally 关闭（run 抛错也关）；`_SyntheticReadOnlyEndpoint.read` 对响应长度 != 请求长度直接抛 ValueError（不再静默切片），两帧 transcript 断言不变
 - 修复轮验证：仅重跑 focused `tests/test_core_serial_replay.py` 1 passed（0.27s），按指示未重跑全量（此前全量 169 passed 1 skipped 属修复前版本）；`git diff --check` 干净；REVIEW_PACKET.md 与 implementation.diff 已按最终文件（239 行）刷新
 - 边界：仅离线字节级传输回放证明，非物理仪器/产线验收；Codex focused 复验与终审留给外层；未 commit/push 项目改动
+
+### 2026-10-01 lg-traceability-pilot README Core pin 刷新（OpenCode executor）
+
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-traceability-pilot-20260927`（branch `main`，HEAD `14aebaf8`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-traceability-core-pin-update`（plan.md + README.before/after + patch.diff + REVIEW_PACKET.md）
+- 仅改 `README.md` 两个区域：① 引言删除 "Core PR #2 remains Draft"，改为基于 Core PR #2 精确修订 `a822e5a2fa24d2a5a7cec3d0c2457a8b7312515f`；② Setup 的 PYTHONPATH 与说明从共享 stage `P:\...\lg-industrial-core-stage-20260928\src`（`b2c40bb...`）改为已验证 Core 源 `C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix\src`（同修订），保留"源码方式、非安装包"表述与全部 SIMULATE-only/synthetic 边界
+- 验证：改前 SHA256 `14a28315…` = plan 基线（改前副本一致）；改后 `1d558c57…`；`git diff --check` exit 0；旧令牌 `b2c40bb`/`Draft`/`lg-industrial-core-stage` 在 README 中已无匹配，新修订与新路径各出现 2 次；git status 前后与基线完全一致（既有脏文件与未跟踪项保留未动）；session diff 仅 2 hunk（+9/−7），用改前字节副本 `git diff --no-index` 隔离
+- 边界：文档-only，未跑测试（源码/测试未变；该 Core 修订 Python 3.10/3.14 各 43 passed 与合成 CLI 冒烟在 plan 基线中刚验证）；未 commit/push 项目；未触碰 app/configs/`.agent`
+- 经验：会话前文件已脏时，先复制 pre 映像到证据目录再编辑，用 `git diff --no-index` 可得纯净 session diff；本机 PowerShell 仍无 `Get-FileHash`（用 certutil）；PS5.1 `>` 重定向 diff 输出为 UTF-16 会被判 binary，须 `Out-File -Encoding ascii`
