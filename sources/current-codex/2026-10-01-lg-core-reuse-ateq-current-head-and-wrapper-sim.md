@@ -1,0 +1,9 @@
+# 2026-10-01 — LG Industrial Core reuse baseline, ATEQ replay, and ZCode wrapper simulation
+
+Source: Codex current account.
+
+- Static same-relative-path exact-text baseline for Core template `a822e5a2fa24d2a5a7cec3d0c2457a8b7312515f`: 267 normalized nonblank/non-comment Python lines; Morocco matches 4 (1.50%), ATEQ matches 3 (1.12%). This is a conservative text lower bound, not behavioral or total platform reuse. Both pilots independently import shared Core adapters and the recording/replay package.
+- `pyproject.toml` leaf settings: Morocco 1/4 common paths equal (25%; 1/7 template-field coverage); ATEQ 2/5 (40%; 2/7 coverage). Core scaffold has no equipment point/config files, so point-map reuse cannot be inferred. Details and file hashes are in the local run report.
+- ATEQ `tests/test_core_serial_replay.py` was independently revalidated with both `PYTHONPATH` and `LG_INDUSTRIAL_CORE_SOURCE` pinned to exact Core `a822e5a2fa24d2a5a7cec3d0c2457a8b7312515f`: focused 1 passed; all ATEQ tests 93 passed on Python 3.10.11. Test remains synthetic/offline. Existing ATEQ working changes were preserved.
+- The Morocco project `zcode-failover.ps1` was exercised with a temporary fake profile and fake CLI: synthetic `insufficient_quota` switches Start Plan to personal Coding Plan and retries successfully; synthetic 429 retries twice on Start Plan without switching; manual `-PlanStart` switches back; unknown JSON fields survive. No ZCode API or plan tokens were used. Actual exhausted quota/server response remains untested. Current real default was read as Start Plan / GLM-5.3-Flash / max.
+- GitHub LG Industrial Core PR #2 at head `a822e5a2fa24d2a5a7cec3d0c2457a8b7312515f` remains OPEN, non-draft, mergeable, with Python 3.10/3.11/3.12 and Package preflight checks successful; release publishing skipped for PR. It has no recorded review decision and was not merged or released.
