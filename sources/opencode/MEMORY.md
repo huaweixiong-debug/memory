@@ -583,3 +583,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：改前 SHA256 `14a28315…` = plan 基线（改前副本一致）；改后 `1d558c57…`；`git diff --check` exit 0；旧令牌 `b2c40bb`/`Draft`/`lg-industrial-core-stage` 在 README 中已无匹配，新修订与新路径各出现 2 次；git status 前后与基线完全一致（既有脏文件与未跟踪项保留未动）；session diff 仅 2 hunk（+9/−7），用改前字节副本 `git diff --no-index` 隔离
 - 边界：文档-only，未跑测试（源码/测试未变；该 Core 修订 Python 3.10/3.14 各 43 passed 与合成 CLI 冒烟在 plan 基线中刚验证）；未 commit/push 项目；未触碰 app/configs/`.agent`
 - 经验：会话前文件已脏时，先复制 pre 映像到证据目录再编辑，用 `git diff --no-index` 可得纯净 session diff；本机 PowerShell 仍无 `Get-FileHash`（用 certutil）；PS5.1 `>` 重定向 diff 输出为 UTF-16 会被判 binary，须 `Out-File -Encoding ascii`
+
+### 2026-10-01 Morocco 单/双测模式压力输出写保护（OpenCode executor）
+
+- 目标仓库 `C:\Users\Administrator\Documents\Codex\2026-10-01-morocco-mode-pressure-write-guard`（隔离 worktree，branch `codex/morocco-mode-pressure-write-guard-20261001`，HEAD `b54c4eb12f7271a60b4a1cc7ad67a87088dfe2f7`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-morocco-mode-pressure-write-guard`（plan.md + REVIEW_PACKET.md）
+- 变更仅 3 个允许文件：`app/plc.py` 删除未获点表/OPC 支持的 `POINTS["test_mode"]` 别名（M0.5/M0.4，实为 A/B 正负压开启）；`app/ui_replica.py` 删除 `_sync_test_mode_signal` 方法、`_test_mode_signal_value` 缓存及所有自动写调用（startup、mode_changed、production_scan×2、restore_validation、validation_started），保留本地模式状态、冻结拒绝、按钮文本与 `CAL_MODE_FROZEN` 日志；`tests/test_ui_replica_structure.py` 旧“模式位写入”测试替换为 `_WriteSpyPlc` 写监视测试 `test_single_dual_selection_does_not_write_pressure_points`（monkeypatch `ui_replica.FakePlc`，覆盖构造启动与 A/B 单双测切换，断言压力点位零写入且位值不变）
+- 验证（须显式用 `C:\Program Files\Python310\python.exe`；本机默认 python 无 pytest/PySide6）：focused 2 passed；全量 `pytest -q` 122 passed 2 failed；两失败为既存基线问题（`package_dist_final` exe 缺失、中文界面既有 `Mx.x` 标签含 `M` token），用 `git stash` 在纯净 HEAD 复跑同样 2 failed，与本次无关；`git diff --check` 干净；`rg` 对 `POINTS["test_mode"]`、`_sync_test_mode_signal`、`TEST_MODE_PLC_SIGNAL`、`_test_mode_signal_value` 在 app/tests 全部 NO_MATCHES；`POINTS["pressure"]` 仍为 A(0,5)/B(0,4)
+- 边界：全部离线 SIMULATE/Fake 路径；未跑 LIVE/preflight/--live-ui，未接 PLC/串口/DB/硬件；项目未 commit/push，终审交外层
