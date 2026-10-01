@@ -135,3 +135,8 @@
 - PC ChatGPT 掉线事件复盘：加拿大节点 17:00-20:00 半残 3 小时（trace 通但 ios 端点超时，region_check 连续失败 92 次未触发切换——因组测速同时 504，脚本 bug 把错误码 {'__err__':504} 当成假候选 "__err__"，导致 "no region-supported node available (1 tried)" 无效切换）。20:00 后自愈（trace/ios 均恢复）。
 - 脚本修复：ranked() 对 api() 错误返回（含 __err__ 键）必须返回空列表，并对候选名做 '__err__' 过滤。已修复并验证（巡检通过计数清零）。
 - 运维经验：日志里 "probe failed: X (N/2)" 的 N 超过 2 还在涨 = 切换一直没成功，此时先手动跑一次组测速（/group/OpenAI/delay）看是真全灭还是脚本 bug；应用端 TLS 中断重试报错通常等自愈即可。
+
+## 2026-10-01
+- ChatGPT 掉线再排查：本次根因不是节点而是 **clash.exe 内核进程在 20:30 前后死亡**（17890/8765 全无监听，系统代理仍指向 17890 → 所有走代理的应用断网）；本机直连正常（bigmodel.cn 200、DNS 正常）证明非物理网络。崩溃前 failover 日志已连续 27 次 "no alive node"（机场链路整体不可达约 1 小时），20:30:11 后日志停更 = mihomo API 也不通 = 内核已死（脚本 api() 的 URLError 未捕获，静默崩溃不留日志）。
+- 修复一条命令：`schtasks /run /TN NanmeiProxy`。恢复后"韩国"节点 region check 通过（Python urllib 指纹能过，curl 会 403 type=dc 误报）、chatgpt.com trace 200、api.openai.com 401（未带 key 的正常应答）。9-30 修的 ranked() 假候选 bug 未复发。
+- 判别口诀：ChatGPT 掉线先 `netstat -ano | grep 17890` 看监听——**无监听 = 内核死了，直接 schtasks /run /TN NanmeiProxy 秒恢复；有监听才去查节点/机场**。注意 NanmeiProxy 是 ONSTART 任务：机器不重启就不会自动拉起中途死掉的进程；failover 巡检任务日志停更（尤其整点后无新行）本身就是"内核死了"的信号。
