@@ -7,3 +7,4 @@ Source: Codex current account.
 - ZCode read-only review through the project failover wrapper returned PASS using Start Plan GLM-5.3-Flash / max; no fallback to the personal Coding Plan and no API-key tokens. Real quota-exhaustion fallback remains untested.
 - PR #2 at this commit is OPEN and unmerged. Python 3.10/3.11/3.12 CI, reusable Release CI, and Package preflight succeeded; publishing the GitHub Release was skipped for the PR event. No hardware, production database, or customer network was accessed.
 - Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-core-template-gitignore\REVIEW_PACKET.md`.
+- After pushing that PR head, revalidated both isolated pilots with Core `src` pinned through `PYTHONPATH` and `LG_INDUSTRIAL_CORE_SOURCE`: Morocco Python 3.10 `169 passed, 1 skipped`; ATEQ `93 passed`. Their untracked-inclusive git status sets were unchanged. These are offline fake tests, not field acceptance.
