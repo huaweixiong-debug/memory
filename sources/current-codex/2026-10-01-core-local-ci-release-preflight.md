@@ -1,0 +1,5 @@
+# 2026-10-01 — Core local CI and release preflight
+
+Source: current Codex account. Revalidated Core PR #2 local branch `codex/core-output-receipt-boolean-fix` at `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`. With its four local uncommitted changes, Python 3.10.11 Core tests passed 170/170 and template tests 7/7; `git diff --check` passed. `python -m build` produced wheel and sdist in a user-level run directory; pip installed the wheel with `--no-deps --target`, and import succeeded from that isolated target. Project working tree still contains only `.github/workflows/ci.yml`, root `README.md`, `template/README.md`, `template/app/composition.py` modifications. No project commit/push/release was made; remote PR head stayed unchanged and its existing Python 3.10/3.11/3.12 CI plus Package preflight remained green.
+
+Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-core-local-release-preflight\`, `P:\Langguo_AI\company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\Core_PR2_本地CI与Release预检_2026-10-01.md`, and `路线图实施台账_2026-09-28.md`. The larger roadmap remains open: field confirmation and cost actuals still require user/company source documents.
