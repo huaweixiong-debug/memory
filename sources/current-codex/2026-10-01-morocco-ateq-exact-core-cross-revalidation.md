@@ -1,0 +1,7 @@
+# 2026-10-01 — Morocco and ATEQ exact Core cross-revalidation
+
+Source: current Codex account. Re-ran both isolated pilots against the exact LG Industrial Core PR #2 checkout HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`, with both `PYTHONPATH` and `LG_INDUSTRIAL_CORE_SOURCE` pointing to that checkout's `src`; imports were confirmed from that path. Python 3.10.11 results: Core 170 passed, template 7 passed, Morocco root tests 169 passed/1 skipped, Morocco `python_app/tests` 60 passed/1 skipped, ATEQ tests 102 passed. Both Morocco skips are package-layout checks gated on absent `package_dist_final` EXE in the source-only copy. Git status before/after each pilot stayed identical. All checks were offline/Fake/Replay. Morocco ports remain unconfirmed; ATEQ points and ports remain unconfirmed; no LIVE field test is proven.
+
+Core local release preflight at the same HEAD: wheel and sdist built; isolated `pip --target` wheel import passed. Four Core edits remain uncommitted/unpushed; GitHub PR #2 remote head and existing checks are unchanged. Do not treat remote green CI as coverage of those local diffs.
+
+Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-morocco-ateq-cross-revalidation\`, `C:\Users\Administrator\.codex\opencode-executor\runs\20261001-core-local-release-preflight\`, and `P:\Langguo_AI\company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\Morocco_ATEQ_Core_PR2交叉复验_2026-10-01.md`.
