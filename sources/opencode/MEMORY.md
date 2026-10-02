@@ -641,3 +641,14 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：Python 3.10.11 本地 Core 源 43 passed exit 0；`git diff --check` exit 0；项目 status 前后 13 项一致；Core HEAD `6f2591f…` + 5 脏路径不变；fix 基线哈希与上轮验收后哈希一致（无漂移）
 - 注意：本轮要求记录的 ZCode GLM-5.3-Flash/high 复审在限时等待内无输出，其先前模型设置已恢复；本轮无 ZCode 结论
 - 边界：纯文档修正，未 commit/push/publish；不据此宣称 QA_PASS 或生产就绪
+
+### 2026-10-02 lg-industrial-core 当前工作树 Phase 1 发布基线验证（OpenCode executor）
+
+- 目标仓库 `C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix`（branch `codex/core-output-receipt-boolean-fix`，HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`，等于 PR #2 head 分支 `codex/lg-industrial-core-reconcile-20260928`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-roadmap-core-fresh-validation`（plan.md + REVIEW_PACKET.md + 全部日志）
+- 保留 5 文件既存脏 diff（36+/21−：ci.yml `permissions: contents: read`、README 模板段落、template/README、template/app/composition.py 去掉 `SimulatedStation.policy`、template/tests/test_template.py 新增 fake-only 断言）；本会话零项目改动；`git apply --check --reverse baseline.patch` exit 0 证明工作树与基线完全一致；项目 diff 对象 SHA `2b21609…` 前后不变，status 快照一致
+- 预录测试（按 plan 未重跑）：Core 170 passed、template 8 passed；`git diff --check` exit 0（plan 引用的 diff-check.log 实际缺失，本会话重建）
+- 构建（Python 3.10.11，`C:\Program Files\Python310\python.exe`；仅在 disposable copy `build-src`）：`python -m build --sdist --wheel` exit 0，隔离环境 setuptools 84.0.0；产物 `lg_industrial_core-0.1.0-py3-none-any.whl`（sha256 `020750d4…`）/ `.tar.gz`（`af9cbcc9…`）；wheel 仅含 `lg_industrial_core` 包，METADATA Name/Version 0.1.0/Requires-Python >=3.10 正确
+- 安装验证：`pip install --no-deps --target install-target` + `python -I` 导入解析到 target（非全局），`importlib.metadata` version 0.1.0，35 个 `__all__` 符号全可解析；无 `__version__` 属性（仅元数据版本，非缺陷）
+- 名称审计：`xz-industrial-core`/`xz_core` 仅剩 `docs/pilot-compatibility.md:63` 历史说明，无别名/导入；同行为 allowlist 外文档仍写 "SIMULATE-first template"，与改后 Fake-only 模板不符 → 未改，建议后续单独修
+- 远端边界：PR #2 head 6f2591f 的 CI（3.10/3.11/3.12 + Package preflight）2026-10-01 全绿；5 文件未提交 diff 未 push、无远端 CI 覆盖；本会话未 commit/push/merge
+- 经验：`Tee-Object` 对无输出命令不创建文件（`git diff --check`/`git apply --check` 成功时无 stdout），日志需显式写命令+exit code；本机构建/导入验证统一用 py310，不用默认 miniconda py3.13
