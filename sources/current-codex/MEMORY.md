@@ -1134,3 +1134,11 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Current user routing preference: DeepSeek V4.1 Flash / OpenCode CLI / max executes; ZCode CLI / GLM-5.3-Flash Coding Plan / high reviews; Codex GPT-6 Luna at highest effort coordinates and performs final acceptance.
 - Roadmap gates remain open: cost receipts and native Excel/WPS recalculation are unverified; Morocco/ATEQ live point and port flags remain unconfirmed. Offline suite success does not authorize LIVE use.
 - Details/evidence: `2026-10-02-lg-core-combined-local-validation-and-routing.md`.
+
+## 2026-10-02 — LG Industrial Core five-file local validation
+
+- At PR #2 local head 6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7, OpenCode DeepSeek V4.1 Flash/max reviewed the existing five-file patch and made zero project edits; diff remained byte-identical. Python 3.10.11 suites passed with PYTHONPATH bound to checkout source: Core 170 and template 8; git diff --check passed.
+- The first root run used a stale machine-wide install and failed collection; it was not counted. Offline editable installation was unavailable because wheel/bdist_wheel is missing. Corrected tests imported the exact local source.
+- ZCode GLM-5.3-Flash/high CLI attempts returned no review text; no ZCode PASS. Codex separately found no concrete defect in the complete diff. The local patch remains uncommitted and is not covered by hosted PR checks; no push/PR/release/LIVE action occurred.
+- Safety: avoid raw-line searches of .zcode/cli/provider_config.json; this session accidentally surfaced an embedded API key in tool output. It was not used or stored in memory; user was advised to rotate it. Parse only allowlisted nonsecret model/provider/effort fields.
+- Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261002-core-template-five-file-finalize\.

@@ -1,0 +1,8 @@
+# 2026-10-02 — LG Industrial Core five-file local validation
+
+- Rechecked the five-file local patch at PR #2 head 6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7. OpenCode CLI with DeepSeek V4.1 Flash/max reviewed it and made zero project edits; the working diff remained byte-identical to its session-start snapshot.
+- Python 3.10.11 verification used PYTHONPATH explicitly bound to the exact checkout: Core 170 passed, template 8 passed, and git diff --check passed. A first root run imported a stale machine-wide install and failed collection, so it was excluded. Offline editable-install preparation failed because wheel/bdist_wheel is absent.
+- ZCode CLI GLM-5.3-Flash/high review attempts returned no review text or verdict. No ZCode PASS is claimed. Codex separately reviewed the complete local diff and found no concrete defect.
+- The five changes remain uncommitted and outside the pushed PR head; no commit, push, PR update, release, or LIVE/field operation occurred. Hosted checks do not cover the local diff. Cost evidence and Morocco/ATEQ point/port gates remain open.
+- Safety lesson: .zcode/cli/provider_config.json can contain a custom-provider API key on a minified JSON line. A broad search inadvertently printed it to a tool result in this session; the value is not stored here and was not used. The user was advised to rotate it. Future checks should parse and print only allowlisted provider/model/effort fields, never raw config lines.
+- Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261002-core-template-five-file-finalize\ (REVIEW_PACKET.md, test logs, CODEX_FINAL.md).
