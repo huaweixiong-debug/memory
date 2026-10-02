@@ -1124,3 +1124,13 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Python 3.10.11 template suite: baseline 7 passed; after change 8 passed. A negative control confirmed the patched symbol is the live lookup used by `demonstrate_live_gate()`. Only `template/tests/test_template.py` gained this test; the other four pre-existing dirty diffs were verified identical. No staging, commit, push, or PR update.
 - ZCode CLI reported GLM-5.3-Flash but did not expose reasoning effort; its bounded read-only review returned no text and no PASS. Codex accepted the one-test local change; review does not cover the other dirty changes or approve push/merge/release.
 - Details: `2026-10-02-lg-core-fake-only-template-test.md`.
+
+
+## 2026-10-02 — LG Industrial Core PR #2 combined local validation and model routing
+
+- In the exact local PR-head checkout `codex/core-output-receipt-boolean-fix` at `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`, the combined Core and template suite passed: 178 passed in 0.44s on Python 3.10.11. `git diff --check` passed; five existing unstaged changes and their file hashes were unchanged across the run.
+- The five-file candidate remains local and uncommitted; hosted PR checks belong to the pushed head and do not verify these working-tree edits. GitHub PR #2 remains open at head `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`; hosted Python 3.10–3.12 checks and package preflight passed. No PR update, merge, release, device, database, or customer-network operation occurred.
+- ZCode CLI was asked for a read-only review of the packet and diff using GLM-5.3-Flash Coding Plan/high; it produced no review text after about 90 seconds and was stopped. Record no ZCode PASS. Codex reviewed the bounded candidate and found no actionable defect; this does not replace missing reviewer output or CI/build checks on the dirty candidate.
+- Current user routing preference: DeepSeek V4.1 Flash / OpenCode CLI / max executes; ZCode CLI / GLM-5.3-Flash Coding Plan / high reviews; Codex GPT-6 Luna at highest effort coordinates and performs final acceptance.
+- Roadmap gates remain open: cost receipts and native Excel/WPS recalculation are unverified; Morocco/ATEQ live point and port flags remain unconfirmed. Offline suite success does not authorize LIVE use.
+- Details/evidence: `2026-10-02-lg-core-combined-local-validation-and-routing.md`.
