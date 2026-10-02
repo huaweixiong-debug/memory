@@ -633,3 +633,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 仅改 2 个允许文件：`README.md` 删除固定 SHA `a822e5a…` 与用户绝对路径，Setup 改为调用方占位符 `<pilot-root>;<core-src>`、要求源导出 `AteqStartPort`、要求记录 Core HEAD+dirty；`.agent/reports/TASK-0001-TEST.md` 顶部纯插入 `## Superseding revalidation — 2026-10-02`（34 行），记录：安装包缺 `AteqStartPort` 收集失败、本地源码 43 passed（Python 3.10.11）、Core HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7` + 5 个脏路径、任务态实为 APPROVED/ORCHESTRATOR、范围无设备/客户网/生产库/LIVE；旧报告作为历史证据原样保留
 - 验证：无 PYTHONPATH 时安装包收集失败 exit 2；本地源码 `py -3.10 -B -m pytest -q -p no:cacheprovider --tb=short tests/` 43 passed exit 0；`git diff --check` exit 0；项目 status 前后 13 项完全一致（仅 README 内容变化）；Core HEAD/脏路径前后不变
 - 边界：纯文档修正，未 commit/push/publish；不据此宣称 QA_PASS 或生产就绪；未动 app/tests/pyproject/任务状态/路线门禁
+
+### 2026-10-02 溯源试点复审修正 fix1（OpenCode executor）
+
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-traceability-pilot-20260927`（HEAD `14aebaf` 未变，未 commit/push）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-traceability-evidence-correction-fix1`；承接上一轮 run `20261002-traceability-evidence-correction` 的 plan/packet
+- 两项精确修正：`README.md` 将 "expected to be dirty during review" 改为 "Each verification record should include the Core HEAD and working-tree status, because uncommitted changes affect the tested source"（2+/2-）；`.agent/reports/TASK-0001-TEST.md` superseding 节新增 `.agent` inventory 条目（4+），更正旧说法 ".agent 仅含 state/TASK-0001.json"，明确报告自身位于 `.agent/reports/TASK-0001-TEST.md` 且除此之外无任务定义/SPEC/实现报告文件；历史正文原样保留
+- 验证：Python 3.10.11 本地 Core 源 43 passed exit 0；`git diff --check` exit 0；项目 status 前后 13 项一致；Core HEAD `6f2591f…` + 5 脏路径不变；fix 基线哈希与上轮验收后哈希一致（无漂移）
+- 注意：本轮要求记录的 ZCode GLM-5.3-Flash/high 复审在限时等待内无输出，其先前模型设置已恢复；本轮无 ZCode 结论
+- 边界：纯文档修正，未 commit/push/publish；不据此宣称 QA_PASS 或生产就绪
