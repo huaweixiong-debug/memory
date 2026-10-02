@@ -140,3 +140,9 @@
 - ChatGPT 掉线再排查：本次根因不是节点而是 **clash.exe 内核进程在 20:30 前后死亡**（17890/8765 全无监听，系统代理仍指向 17890 → 所有走代理的应用断网）；本机直连正常（bigmodel.cn 200、DNS 正常）证明非物理网络。崩溃前 failover 日志已连续 27 次 "no alive node"（机场链路整体不可达约 1 小时），20:30:11 后日志停更 = mihomo API 也不通 = 内核已死（脚本 api() 的 URLError 未捕获，静默崩溃不留日志）。
 - 修复一条命令：`schtasks /run /TN NanmeiProxy`。恢复后"韩国"节点 region check 通过（Python urllib 指纹能过，curl 会 403 type=dc 误报）、chatgpt.com trace 200、api.openai.com 401（未带 key 的正常应答）。9-30 修的 ranked() 假候选 bug 未复发。
 - 判别口诀：ChatGPT 掉线先 `netstat -ano | grep 17890` 看监听——**无监听 = 内核死了，直接 schtasks /run /TN NanmeiProxy 秒恢复；有监听才去查节点/机场**。注意 NanmeiProxy 是 ONSTART 任务：机器不重启就不会自动拉起中途死掉的进程；failover 巡检任务日志停更（尤其整点后无新行）本身就是"内核死了"的信号。
+
+## 2026-10-02
+- ChatGPT 断联第三次排查：内核活着（昨日 PID 43188 未死，17890/8765 正常监听），**根因是节点抖 + 应用卡死**——"韩国"节点夜间 4 次单次探活失败（21:40/22:14/00:54/02:12，均自愈），ChatGPT 桌面端的 WebSocket 被掐后自己不重连，界面显示断联而链路实际健康。用户重启 ChatGPT 应用即可恢复。
+- 节点换血：组测速 /group/OpenAI/delay 再次 504（大量死节点拖垮批量测试，与 9-30 相同）；改用逐节点 /proxies/{名}/delay 3 次连测选稳。结果：主力"美国2"和"英国"已死；"台湾"延迟最低（259-372ms）但 ios 端点地区校验不过（延迟好≠能用）；最终选"韩国"（346-382ms、3/3 稳定、region 通过），"菲律宾一"为备选（462ms，实际出口也是 KR）。**再次验证：低延迟节点必须过 ios.chat.openai.com 地区校验才能用。**
+- 当晨机场整体拥堵：节点抖动频繁（chatgpt trace 一次 000 一次 200 交替）、兜底组"西游云-德日韩"死、github 时通时断（走 MATCH→节点选择，非 AI 链）。mihomo API 被多组 URLTest 测速挤到间歇超时，openai_failover.py 的 api() 遇 API 超时会抛异常裸崩（exit 1，下轮巡检自愈但会漏记日志）——后续可给 api() 加 try/except 返回 {'__err__': ...}。
+- 排查工具坑：Windows curl 对 chatgpt.com 的 000 需先加 --ssl-no-revoke 排除 schannel 吊销误报（本次又误判一次）；排除后仍 000 才是真断。
