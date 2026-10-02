@@ -1107,3 +1107,12 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Updated only the V9 roadmap revalidation report and gate overview with independent in-memory formula-engine evidence; the cost phase gate remains open because native Excel/WPS recalculation and actual-cost receipts are unverified or missing.
 - The V9 workbook stayed byte-identical (134,131 bytes; SHA-256 EE46A126C5C4D437E5CE5DA1699E0763F071946E42D2E4AB87414F53227304F8). Output scope was exactly two Markdown files; UTF-8 and 47 documentation/scope checks passed. No code, PR, CI, device, production, or release action occurred.
 - ZCode CLI confirmed custom:bigmodel-plan/GLM-5.3-Flash, but its attached review returned no review text after repeated cache-control warnings and was stopped; no ZCode PASS. Codex completed final acceptance. Details: 2026-10-02-langguo-roadmap-v9-evidence-sync.md.
+
+
+## 2026-10-02 — Langguo Morocco/ATEQ exact-Core offline rerun
+
+- Re-ran current offline pilot suites against Core PR #2 source `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7` (`src` clean at that head): Morocco root 169 passed/1 skipped, Morocco `python_app/tests` 60 passed/1 skipped, ATEQ 102 passed; Python 3.10.11. The two Morocco skips are package-layout checks because `package_dist_final` build output is absent from the source-only copy; they remain skips.
+- Morocco/ATEQ test worktree status snapshots were identical before and after; LIVE/point/port flags remain unconfirmed (`ports_confirmed=false`; ATEQ also `points_confirmed=false`). No device, database, customer network, package, or release action occurred.
+- Appended evidence-only addenda to the roadmap revalidation report and gate overview. Output scope was exactly those two Markdown files; prior bytes, strict UTF-8, and existing line endings were preserved. No phase gate, cost state, or PR state advanced. Cost receipts and native Excel/WPS verification remain open; PR #2 remains unmerged.
+- ZCode CLI returned no review text after two bounded read-only attempts; no ZCode PASS. Codex accepted only the documentation/evidence integrity after checking the source JSON, logs, status snapshots, flags, and exact output scope.
+- Details/evidence: `2026-10-02-langguo-morocco-ateq-offline-revalidation.md`.
