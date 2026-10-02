@@ -1,0 +1,6 @@
+# Langguo Core PR2 and roadmap sync — 2026-10-03
+
+- User-requested model routing: OpenCode CLI with DeepSeek V4.1 Flash / max executes; ZCode CLI with GLM-5.3-Flash / Coding Plan / high performs read-only review; Codex coordinates and gives final acceptance.
+- Core PR #2 local corrections remain uncommitted and unpushed on `codex/core-output-receipt-boolean-fix` at base `6d278e8`. Final local verification recorded Core 193 passed, serial recording 73 passed, template 8 passed, and two concurrency regressions passed in 10 consecutive runs. GLM static review passed; this is not GitHub approval, and remote `reviewDecision` remains empty.
+- Four roadmap Markdown documents received append-only 2026-10-03 evidence updates. Byte-prefix verification passed and only the four planned documents changed. The earlier 627-pass immutable snapshot evidence remains separate from later local fixes; no roadmap gate advanced.
+- Morocco port and ATEQ point/port source confirmations remain open. The V9 workbook was not touched by this sync.
