@@ -652,3 +652,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 名称审计：`xz-industrial-core`/`xz_core` 仅剩 `docs/pilot-compatibility.md:63` 历史说明，无别名/导入；同行为 allowlist 外文档仍写 "SIMULATE-first template"，与改后 Fake-only 模板不符 → 未改，建议后续单独修
 - 远端边界：PR #2 head 6f2591f 的 CI（3.10/3.11/3.12 + Package preflight）2026-10-01 全绿；5 文件未提交 diff 未 push、无远端 CI 覆盖；本会话未 commit/push/merge
 - 经验：`Tee-Object` 对无输出命令不创建文件（`git diff --check`/`git apply --check` 成功时无 stdout），日志需显式写命令+exit code；本机构建/导入验证统一用 py310，不用默认 miniconda py3.13
+
+### 2026-10-02 同上 fix1：pilot-compatibility 模板术语修正（OpenCode executor）
+
+- 证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-roadmap-core-fix1`（plan.md + REVIEW_PACKET.md + pre/post 副本 + SHA/字节级校验 + diff/日志）；同一会话续作
+- 唯一改动 `docs/pilot-compatibility.md:63`：`the SIMULATE-first template` → `the Fake-only template with a separately demonstrated fail-closed RuntimePolicy gate`；xz 历史名称说明与 no-aliases 声明原样保留；其余 5 个既存改动逐字节不变（五文件 diff 哈希 `2b21609…` 前后一致）
+- 验证：pre-edit 副本 SHA256 `BA046DF9…`（16820 B）与改前原文件逐字节相同；post SHA256 `0BB03344…`（16877 B）；单一 hunk 1+/1−；`git diff --check` exit 0；无尾随空白；无 BOM 变化、CRLF=108 不变；`SIMULATE-first` 全树 0 匹配
+- 边界：Markdown-only，未重跑测试/构建（Core 170/template 8 与 run1 wheel/sdist 仍适用；`docs/` 不参与打包）；未 commit/push；远端 CI 仍只覆盖已提交 head `6f2591f`
+- REVIEW_PACKET：`C:\Users\Administrator\.codex\opencode-executor\runs\20261002-roadmap-core-fix1\REVIEW_PACKET.md`
