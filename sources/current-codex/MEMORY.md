@@ -1094,3 +1094,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode 独立复核 PR_BODY_DRAFT.md：PASS，六条 Summary 全部对照提交树 6f2591f 属实；只读 gh 实测确认 PR OPEN/MERGEABLE、head 6f2591f/base be0ab16、CI run 36803886601 与 Release run 36803886868 均 success——关闭了 REVIEW_PACKET §7.4 的 run ID 溯源缺口。详见 `2026-10-02-lg-core-pr2-body-draft-review.md`。
 - 非阻塞建议：Summary 可补一句最新提交（template/.gitignore ignore 规则）；确认有意删去旧正文的 Traceability 27 tests 等行。
 - 运维：`gh run view` 在本机易 unexpected EOF（解析 workflow 的第二请求）；用 `gh api .../actions/runs/<id>` 更稳。
+
+## 2026-10-02 — Cost workbook V9 independent formula-engine audit
+
+- Isolated `formulas[excel]==1.3.4` calculated 4,200/4,200 formulas in memory on a byte-identical copy; 0 unresolved/errors; 10/10 cached values matched. Excel/WPS recalculation and actual-cost evidence remain open.
+- Corrected the report to qualify two unsupported-extension warnings and describe shared XML tags without implying a group count. ZCode GLM-5.3-Flash/high Individual Coding Plan review was not sent because the model was unresolved in Provider Registry; no PASS or settings change.
+- Details and evidence: `2026-10-02-cost-workbook-v9-independent-formula-audit.md`.
