@@ -597,3 +597,14 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 测试：扩展 `test_restart_restores_in_progress_dual_validation_without_pressure_writes`，断言启动中文“双测 A/B”，并依次 `language_changed` 中文→English→Français→中文 断言 `Dual Test`/`Test double`，每次断言 checked、validation_started、test_mode=dual、phase=WAIT_NG、locked 不变；保留 `_WriteSpyPlc` 对 M0.5/M0.4 无写、读为 False 的断言。先红后绿（红：`assert '单测 A' == '双测 A'`）
 - 验证（Python 3.10，离线 FakePlc）：focused 1 passed；`tests/test_ui_replica_structure.py` 全量 21 passed；`git diff --check` exit 0；本会话仅动 `app/ui_replica.py` 与 `tests/test_ui_replica_structure.py` 两个允许文件（`app/plc.py` 既有护栏改动未动）
 - 边界：未 commit/push/merge/部署；未接 LIVE PLC/ATEQ/DB/串口/打印
+
+### 2026-10-02 lg-industrial-core HEAD `1ef62df` 离线重验（OpenCode executor）
+
+- 目标：在精确本地 Core HEAD 上刷新 pilot-compatibility 证据，不发布、不改 phase gate
+- 执行边界：OpenCode 仅编辑 disposable snapshot `C:\Windows\Temp\LGCoreRevalidate20261002`；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-lg-core-head-revalidation`；canonical `\\100.117.1.6\projects\Langguo_AI\repos\lg-industrial-core-stage-20260928` branch `codex/lg-industrial-core-reconcile-20260928` HEAD `1ef62df17919c41dd04ced7d35eb9e6878554438`
+- 源状态：本地 `origin/pr-2` 仍为 `6f2591f…`，canonical 领先 3 commits；PR 仍在旧 head；未 push/未跑该 HEAD 的远端 CI
+- 会话唯一项目文件改动：snapshot `docs/pilot-compatibility.md` 仅追加 `## 2026-10-02 offline revalidation at Core HEAD 1ef62df`；pre-run SHA256 `129C00A8…`（22798 bytes）验证通过后才 copy-back 到 canonical；post SHA256 `608A3791…`
+- 离线结果（Python 3.10.11，`PYTHONPATH`/`LG_INDUSTRIAL_CORE_SOURCE` 均指 snapshot `src`，import `samefile=True`）：Core 149 passed；template 5 passed；Morocco root 179 passed；Morocco `python_app` 141 passed；ATEQ 129 passed；compatibility checker 对 module-only `pilot-inputs` PASS；canonical `git diff --check` exit 0；`python -m build` 产出 sdist/wheel 到 evidence dist；`pip --no-deps --target installed` 后 isolated import 成功且无 `xz_core`
+- 关键经验：Morocco `app/plc.py` 在 import 时 `POINTS = _legacy_points(load_points())`，module-only pilot-inputs 必须带上 `config/points.toml`（路径为 `parents[2]/config/points.toml`，对应 `pilot-inputs\config\points.toml`）；source/copy SHA-256 与 manifest 一致后 checker 才 PASS；映射盘路径只用于 pytest suite，checker 用本地 copies 规避 UNC cwd 子进程问题
+- 边界：仅离线/Fake/Replay；未动硬件/COM/生产 DB/PR/merge/tag/release；V9 estimate-to-actual workbook 未改（搜索范围内无该文件）；canonical 仍保留 pre-existing `M docs/pilot-compatibility.md` 与 `?? .agent/`
+- REVIEW_PACKET：`C:\Users\Administrator\.codex\opencode-executor\runs\20261002-lg-core-head-revalidation\REVIEW_PACKET.md`
