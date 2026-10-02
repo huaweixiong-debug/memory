@@ -1100,3 +1100,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Isolated `formulas[excel]==1.3.4` calculated 4,200/4,200 formulas in memory on a byte-identical copy; 0 unresolved/errors; 10/10 cached values matched. Excel/WPS recalculation and actual-cost evidence remain open.
 - Corrected the report to qualify two unsupported-extension warnings and describe shared XML tags without implying a group count. ZCode GLM-5.3-Flash/high Individual Coding Plan review was not sent because the model was unresolved in Provider Registry; no PASS or settings change.
 - Details and evidence: `2026-10-02-cost-workbook-v9-independent-formula-audit.md`.
+
+
+## 2026-10-02 — Langguo AI roadmap V9 evidence sync
+
+- Updated only the V9 roadmap revalidation report and gate overview with independent in-memory formula-engine evidence; the cost phase gate remains open because native Excel/WPS recalculation and actual-cost receipts are unverified or missing.
+- The V9 workbook stayed byte-identical (134,131 bytes; SHA-256 EE46A126C5C4D437E5CE5DA1699E0763F071946E42D2E4AB87414F53227304F8). Output scope was exactly two Markdown files; UTF-8 and 47 documentation/scope checks passed. No code, PR, CI, device, production, or release action occurred.
+- ZCode CLI confirmed custom:bigmodel-plan/GLM-5.3-Flash, but its attached review returned no review text after repeated cache-control warnings and was stopped; no ZCode PASS. Codex completed final acceptance. Details: 2026-10-02-langguo-roadmap-v9-evidence-sync.md.
