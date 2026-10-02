@@ -12,3 +12,8 @@
 2. 发生重复内容时，以较新的记录和更具体的记录为准。
 3. 需要追溯时保留来源（Codex 账号 1 / Codex 账号 2 / OpenCode）和原始会话 ID。
 4. 不把脱敏后的 memory 当作完整原文；完整上下文仍以各自原始 rollout 为准。
+
+## 跨 Agent 执行与审核路由（2026-10-02）
+
+- 用户指定：OpenCode CLI 使用 DeepSeek v4.1 Flash / max 执行；ZCode CLI 使用 GLM-5.3-Flash Coding Plan / high 审核；Codex 使用 GPT-6 Luna / 极高推理负责总协调与终审。
+- 用户偏好：对已经明确授权的操作，不重复要求用户点击确认。
