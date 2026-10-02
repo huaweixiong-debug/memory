@@ -626,3 +626,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - package-layout：两处 `test_ui_sol_round2.py::test_table_header_geometry_and_canonical_package_layout` 用 `-v` 单测复证 PASS（补充验证，非重跑套件）；`package_dist_final\LeakTest2Channels\LeakTest2Channels.exe` 存在（61,178,180 B，2026-09-28，SHA256 `428dfe7e…`），根下裸 exe 不存在的断言成立
 - 状态不变：前后 manifest 逐项一致（根 1009、`python_app` 340 文件）、6 个保护文件 SHA-256 全同；import 探针 `app` 分别解析到根/`python_app`，`lg_industrial_core` 两处均解析到精确 Core `src`
 - 边界：纯离线验证，无编辑/构建/复制/EXE 执行；旧 EXE 不代表当前源码、非新建包；不推进 LIVE/现场门禁（`config/live.toml` `ports_confirmed=false` 未变）
+
+### 2026-10-02 溯源试点 README/QA 报告证据纠正（OpenCode executor）
+
+- 目标仓库 `\\100.117.1.6\projects\Langguo_AI\repos\lg-traceability-pilot-20260927`（映射盘 `P:\Langguo_AI\repos\lg-traceability-pilot-20260927`；git HEAD `14aebaf` 未变，未 commit/push）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-traceability-evidence-correction`（plan.md + REVIEW_PACKET.md + 会话 diff/日志/baseline）
+- 仅改 2 个允许文件：`README.md` 删除固定 SHA `a822e5a…` 与用户绝对路径，Setup 改为调用方占位符 `<pilot-root>;<core-src>`、要求源导出 `AteqStartPort`、要求记录 Core HEAD+dirty；`.agent/reports/TASK-0001-TEST.md` 顶部纯插入 `## Superseding revalidation — 2026-10-02`（34 行），记录：安装包缺 `AteqStartPort` 收集失败、本地源码 43 passed（Python 3.10.11）、Core HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7` + 5 个脏路径、任务态实为 APPROVED/ORCHESTRATOR、范围无设备/客户网/生产库/LIVE；旧报告作为历史证据原样保留
+- 验证：无 PYTHONPATH 时安装包收集失败 exit 2；本地源码 `py -3.10 -B -m pytest -q -p no:cacheprovider --tb=short tests/` 43 passed exit 0；`git diff --check` exit 0；项目 status 前后 13 项完全一致（仅 README 内容变化）；Core HEAD/脏路径前后不变
+- 边界：纯文档修正，未 commit/push/publish；不据此宣称 QA_PASS 或生产就绪；未动 app/tests/pyproject/任务状态/路线门禁
