@@ -1116,3 +1116,11 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Appended evidence-only addenda to the roadmap revalidation report and gate overview. Output scope was exactly those two Markdown files; prior bytes, strict UTF-8, and existing line endings were preserved. No phase gate, cost state, or PR state advanced. Cost receipts and native Excel/WPS verification remain open; PR #2 remains unmerged.
 - ZCode CLI returned no review text after two bounded read-only attempts; no ZCode PASS. Codex accepted only the documentation/evidence integrity after checking the source JSON, logs, status snapshots, flags, and exact output scope.
 - Details/evidence: `2026-10-02-langguo-morocco-ateq-offline-revalidation.md`.
+
+
+## 2026-10-02 — LG Core Fake-only template boundary test
+
+- In the exact PR-head checkout `codex/core-output-receipt-boolean-fix` at `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`, added a focused template regression test that replaces `app.composition.RuntimePolicy` with a raising stub and successfully runs `SimulatedStation.create()` plus one fake cycle. Existing SIMULATE/LIVE policy tests remain separate.
+- Python 3.10.11 template suite: baseline 7 passed; after change 8 passed. A negative control confirmed the patched symbol is the live lookup used by `demonstrate_live_gate()`. Only `template/tests/test_template.py` gained this test; the other four pre-existing dirty diffs were verified identical. No staging, commit, push, or PR update.
+- ZCode CLI reported GLM-5.3-Flash but did not expose reasoning effort; its bounded read-only review returned no text and no PASS. Codex accepted the one-test local change; review does not cover the other dirty changes or approve push/merge/release.
+- Details: `2026-10-02-lg-core-fake-only-template-test.md`.
