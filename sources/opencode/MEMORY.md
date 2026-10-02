@@ -608,3 +608,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 关键经验：Morocco `app/plc.py` 在 import 时 `POINTS = _legacy_points(load_points())`，module-only pilot-inputs 必须带上 `config/points.toml`（路径为 `parents[2]/config/points.toml`，对应 `pilot-inputs\config\points.toml`）；source/copy SHA-256 与 manifest 一致后 checker 才 PASS；映射盘路径只用于 pytest suite，checker 用本地 copies 规避 UNC cwd 子进程问题
 - 边界：仅离线/Fake/Replay；未动硬件/COM/生产 DB/PR/merge/tag/release；V9 estimate-to-actual workbook 未改（搜索范围内无该文件）；canonical 仍保留 pre-existing `M docs/pilot-compatibility.md` 与 `?? .agent/`
 - REVIEW_PACKET：`C:\Users\Administrator\.codex\opencode-executor\runs\20261002-lg-core-head-revalidation\REVIEW_PACKET.md`
+
+### 2026-10-02 Claude Desktop 第三方网关切原生 1P 模式（OpenCode）
+
+- 目标：本机 Claude Desktop（MSIX v1.37937）从 MiMo/DeepSeek 第三方网关切回 Anthropic 原生（用户有 Pro/Max 订阅）
+- 机制（逆向 app.asar 得出）：`%LOCALAPPDATA%\Claude-3p\configLibrary\` 每个 profile JSON 的 `inferenceProvider`（gateway/anthropic/bedrock/vertex/foundry）；`_meta.json.appliedId` 决定生效 profile；`claude_desktop_config.json.deploymentMode`（1p/3p）为总开关——设 inferenceProvider 即激活 3p。官方一键切换 IPC `applyAnthropicApiShortcut`：写 `{"inferenceProvider":"anthropic"}` profile → appliedId 指它 → mode 3p；anthropic 凭据自动解析为 interactive（登录流）
+- 实操：新建 profile（`5495133b...`）+ appliedId 指向 + 重启 → 日志 `3P mode active {provider:'anthropic'}`、`inference apiHost=https://api.anthropic.com`；UI 弹 "Use your Claude API account" → 点 "Or sign in with Claude.ai" → 写 `deploymentMode:1p` + 清会话凭据 + 自动重启 → 停在 Sign In 页（邮箱/Google 登录需用户亲自完成）
+- 回滚：`Claude-3p\configLibrary.bak-20261002-140324` 全量备份；appliedId 改回 1994d39d（mimo）+ deploymentMode 改回 3p
+- 坑与经验：①应用"自行退出"真相=auto-updater 每次启动 ~30s 发现 Claude 2.19675 并下载（staged 未装上，循环）或模式切换/登录触发的 relaunch，均走正常 beforeQuit 非崩溃；②UI 自动化点击必须真前台：minimize/restore + ALT keybd_event + SetForegroundWindow 并验证 GetForegroundWindow==目标，否则点击落上层窗口；PrintWindow(flag=2) 截图不依赖前台；mouse_event 前必设 Cursor.Position；③PS5.1：方法调用作实参须括号包裹，日志被占用用 FileStream(FileShare=ReadWrite)
+- 关联：本机 Clash 已加 claude.ai/claude.com/anthropic.com → AI自动 三规则（bak-claude-20261002-132809）；DeepSeek 中转 ~/.claude/settings.json 备份 bak-deepseek-20261002-133029
+- 状态：deploymentMode=1p 已落地，待用户完成 claude.ai 登录即为原生订阅模式
