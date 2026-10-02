@@ -1088,3 +1088,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Commit `61ba67f` is on `codex/lg-industrial-core-reconcile-20260928`; Draft PR #2 in private `huaweixiong-debug/lg-industrial-core` is open and unmerged. Hosted CI passed for 3.10/3.11/3.12 and Release package preflight; release publishing was skipped because no version tag was created. Wheel/sdist build and isolated import are recorded in the implementation evidence, but were not independently reproduced in the ZCode QA environment because its offline builder dependency was unavailable.
 - For project-scoped ZCode QA, keep all reads/writes within the specified repository. If packaging prerequisites are missing, do not search system/pip caches or install from the network; report the reproduction gap and use in-scope evidence.
 - Temporary model routing preference: through 2026-10-01, use ZCode desktop GLM-5.3-Flash at highest reasoning on the personal Coding Plan OAuth route for review; do not spend API-key tokens. Codex final acceptance uses GPT-6 at highest reasoning; Terra is not available.
+
+## 2026-10-02 — LG Core PR #2 正文草稿独立复核
+
+- ZCode 独立复核 PR_BODY_DRAFT.md：PASS，六条 Summary 全部对照提交树 6f2591f 属实；只读 gh 实测确认 PR OPEN/MERGEABLE、head 6f2591f/base be0ab16、CI run 36803886601 与 Release run 36803886868 均 success——关闭了 REVIEW_PACKET §7.4 的 run ID 溯源缺口。详见 `2026-10-02-lg-core-pr2-body-draft-review.md`。
+- 非阻塞建议：Summary 可补一句最新提交（template/.gitignore ignore 规则）；确认有意删去旧正文的 Traceability 27 tests 等行。
+- 运维：`gh run view` 在本机易 unexpected EOF（解析 workflow 的第二请求）；用 `gh api .../actions/runs/<id>` 更稳。
