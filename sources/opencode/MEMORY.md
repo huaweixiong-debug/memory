@@ -618,3 +618,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 坑与经验：①应用"自行退出"真相=auto-updater 每次启动 ~30s 发现 Claude 2.19675 并下载（staged 未装上，循环）或模式切换/登录触发的 relaunch，均走正常 beforeQuit 非崩溃；②UI 自动化点击必须真前台：minimize/restore + ALT keybd_event + SetForegroundWindow 并验证 GetForegroundWindow==目标，否则点击落上层窗口；PrintWindow(flag=2) 截图不依赖前台；mouse_event 前必设 Cursor.Position；③PS5.1：方法调用作实参须括号包裹，日志被占用用 FileStream(FileShare=ReadWrite)
 - 关联：本机 Clash 已加 claude.ai/claude.com/anthropic.com → AI自动 三规则（bak-claude-20261002-132809）；DeepSeek 中转 ~/.claude/settings.json 备份 bak-deepseek-20261002-133029
 - 状态：deploymentMode=1p 已落地，待用户完成 claude.ai 登录即为原生订阅模式
+### 2026-10-02 Morocco 全树 package-layout 复检（OpenCode executor）
+
+- 目标仓库 `P:\Langguo_AI\repos\lg-pilot-morocco-20260927`（UNC `\\100.117.1.6\projects\...`，非 git；完整树含 `package_dist_final`）；证据目录 `C:\Users\Administrator\.codex\opencode-executor\runs\20261002-morocco-full-tree-package-layout-recheck`（plan.md + evidence\* + REVIEW_PACKET.md）
+- Core 源：`C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix` HEAD `6f2591f12d5dcb8c0dcfa1c38b88300a6a6201b7`，`src` tree `9d592b5f958dafa6ebeb39e38f919166e4fdb1c3`，`src` 前后均 clean；仓库其余 `template/`、README 等脏文件为既存未动
+- 执行：Python 3.10.11（`C:\Program Files\Python310\python.exe`，pytest 9.1.1，PySide6 6.11.1）；`PYTHONPATH`/`LG_INDUSTRIAL_CORE_SOURCE` 指向精确 Core `src`，`PYTHONDONTWRITEBYTECODE=1`，`QT_QPA_PLATFORM=offscreen`（另加 `PYTHONIOENCODING=utf-8` 仅为日志可读）；根套件 `179 passed`、`python_app` `141 passed`，均 exit 0、stderr 0 字节、零跳过
+- package-layout：两处 `test_ui_sol_round2.py::test_table_header_geometry_and_canonical_package_layout` 用 `-v` 单测复证 PASS（补充验证，非重跑套件）；`package_dist_final\LeakTest2Channels\LeakTest2Channels.exe` 存在（61,178,180 B，2026-09-28，SHA256 `428dfe7e…`），根下裸 exe 不存在的断言成立
+- 状态不变：前后 manifest 逐项一致（根 1009、`python_app` 340 文件）、6 个保护文件 SHA-256 全同；import 探针 `app` 分别解析到根/`python_app`，`lg_industrial_core` 两处均解析到精确 Core `src`
+- 边界：纯离线验证，无编辑/构建/复制/EXE 执行；旧 EXE 不代表当前源码、非新建包；不推进 LIVE/现场门禁（`config/live.toml` `ports_confirmed=false` 未变）
