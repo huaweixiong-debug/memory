@@ -146,3 +146,8 @@
 - 节点换血：组测速 /group/OpenAI/delay 再次 504（大量死节点拖垮批量测试，与 9-30 相同）；改用逐节点 /proxies/{名}/delay 3 次连测选稳。结果：主力"美国2"和"英国"已死；"台湾"延迟最低（259-372ms）但 ios 端点地区校验不过（延迟好≠能用）；最终选"韩国"（346-382ms、3/3 稳定、region 通过），"菲律宾一"为备选（462ms，实际出口也是 KR）。**再次验证：低延迟节点必须过 ios.chat.openai.com 地区校验才能用。**
 - 当晨机场整体拥堵：节点抖动频繁（chatgpt trace 一次 000 一次 200 交替）、兜底组"西游云-德日韩"死、github 时通时断（走 MATCH→节点选择，非 AI 链）。mihomo API 被多组 URLTest 测速挤到间歇超时，openai_failover.py 的 api() 遇 API 超时会抛异常裸崩（exit 1，下轮巡检自愈但会漏记日志）——后续可给 api() 加 try/except 返回 {'__err__': ...}。
 - 排查工具坑：Windows curl 对 chatgpt.com 的 000 需先加 --ssl-no-revoke 排除 schannel 吊销误报（本次又误判一次）；排除后仍 000 才是真断。
+
+## 2026-10-02（二）
+- conda create 报 repo.anaconda.com ReadTimeout 的真相：.condarc 里 TUNA 镜像早已配好，但 **conda 25.x 的 ToS 检查无视镜像配置、硬编码访问 repo.anaconda.com/pkgs/{main,r}/terms.json**；而 conda 继承全局 HTTPS_PROXY=127.0.0.1:17890 → 撞上抖动的代理。实测 repo.anaconda.com **直连是通的**（200 但 ~10s），TUNA/USTC/阿里云直连反而全超时，BFSU 北外镜像直连最快（0.12s）。
+- 修复三件套：①.condarc 渠道全部切 BFSU（备份 .condarc.bak-20261002）；②用户 NO_PROXY 追加 repo.anaconda.com,mirrors.bfsu.edu.cn（setx，新终端生效）让 conda 流量绕开代理；③pip.ini 的 TUNA pypi 源同因不可达切 BFSU（https://mirrors.bfsu.edu.cn/pypi/web/simple）。验证：conda create -n stepai python=3.12 成功（D:\miniconda3\envs\stepai，Python 3.12.15），pip 下载 smoke test 通过。
+- 经验：**镜像配置好了≠流量真走镜像**——工具还会继承全局代理环境变量；国内镜像/CDN 域名进 NO_PROXY 是通用修法。今晨该机直连网络本身也对部分国内目标（TUNA/USTC/aliyun）劣化，BFSU 独活，属运营商侧抖动。
