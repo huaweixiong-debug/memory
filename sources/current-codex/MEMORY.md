@@ -1190,3 +1190,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - The new indirect tuple-cycle regression test passed locally and received a ZCode read-only PASS limited to that test. No phase gate advanced; field points/ports and actual-cost evidence remain open, and capabilities 7–10 remain deferred.
 - Rough progress remains about 30% of the ten-capability roadmap / 75% of the foundation batch; no official workload weighting exists.
 - Details: `2026-10-04-langguo-core-pr2-latest-validation.md`.
+## 2026-10-04 — Langguo Core PR #2 template package gate
+
+- PR head 88a5b6e passed ZCode read-only review without blocking findings; CI and Release package checks passed all Python 3.10–3.12 jobs, including the installed-template composition smoke.
+- PR remains open without a formal review decision. Field point/port and actual-cost gates remain open; no phase gate advanced.
+- Rough roadmap estimate is about 33% (30–35% range) across ten equally weighted capabilities; no official workload weighting exists.
+- Details: 2026-10-04-langguo-core-template-package-gate.md.
