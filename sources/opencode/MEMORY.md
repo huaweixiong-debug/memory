@@ -678,3 +678,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 结论："有二阶段检测"无公开证据；"二阶段一定比 YOLO 准"技术上已过时（现代 YOLO 已追平/反超常见 Faster R-CNN 实现；工业精度更取决于数据/标注/分辨率/阈值）。验证动作：要其给出具体架构名 + 本数据 A/B 指标，或自行同数据对比高精度版 vs 标准版 vs YOLOv8x/11x
 - 另一可能口径：其 SDK demo README 第 7 条"目标定位 + OCR"是真两段流水线（先检测 ROI 再 OCR），可能被销售表述为"两阶段"
 
+
+## 2026-10-03 opencode - YiDa Faster/Cascade R-CNN experiment helper
+
+- Project: `D:\ultralytics-main` (non-Git). Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-rcnn-ab`.
+- Implemented only 5 allowed new files from plan.md: `mvp_inference/plugins/mmdet_detector.py` plus experiment helpers under `inference_results/yida_faster_cascade_compare_20261003/` (prepare_data.py, benchmark.py, environment.yml, README.md).
+- Data path fixed: `D:\YiDa002.v17i.yolo26` (YOLO 0=F 1=U; train 470/valid 132/test 66). YOLO baseline checkpoint: `weightm_260419\weights\best.pt` (evaluate as-is).
+- prepare_data.py COCO conversion validated clean on all three splits (no label errors).
+- Training was intentionally NOT launched this pass. Isolated env still required: Python 3.8 + torch 2.1.0+cu121 + mmcv 2.1.0 Windows wheel + mmengine 0.10.7 + mmdet 3.3.0. Existing conda `mmdetection` env is incompatible (mmcv 1.7.2).
+- REVIEW_PACKET.md written to the evidence run directory (not the project root). Project root and evidence path must not be confused.
+- Follow-up: create isolated env, run `benchmark.py --stage check-env`, then `--stage train --allow-train`, then eval/select/report. Do not substitute another detector if R-CNN cannot fit; record blocker.

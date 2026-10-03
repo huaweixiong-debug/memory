@@ -1142,3 +1142,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode GLM-5.3-Flash/high CLI attempts returned no review text; no ZCode PASS. Codex separately found no concrete defect in the complete diff. The local patch remains uncommitted and is not covered by hosted PR checks; no push/PR/release/LIVE action occurred.
 - Safety: avoid raw-line searches of .zcode/cli/provider_config.json; this session accidentally surfaced an embedded API key in tool output. It was not used or stored in memory; user was advised to rotate it. Parse only allowlisted nonsecret model/provider/effort fields.
 - Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261002-core-template-five-file-finalize\.
+
+## 2026-10-03 — Langguo AI cost workbook V10 editability and gate status
+
+- V10 is the current editable template; V9 is unchanged. WPS-only workbook verification and a disposable 30/30 synthetic probe passed the bounded review, but Microsoft Excel and real cost evidence remain unverified. Cost acceptance and all later roadmap gates remain open.
+- Four roadmap/audit documents received a dated status sync. No Core PR, device, LIVE, production, or release state advanced.
+- Details: 2026-10-03-langguo-cost-workbook-v10-editability-and-gates.md.

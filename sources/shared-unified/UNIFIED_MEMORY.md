@@ -17,3 +17,9 @@
 
 - 用户指定：OpenCode CLI 使用 DeepSeek v4.1 Flash / max 执行；ZCode CLI 使用 GLM-5.3-Flash Coding Plan / high 审核；Codex 使用 GPT-6 Luna / 极高推理负责总协调与终审。
 - 用户偏好：对已经明确授权的操作，不重复要求用户点击确认。
+
+## 2026-10-03 OpenCode - YiDa detector comparison helper
+
+- Implemented optional Faster R-CNN / Cascade R-CNN offline comparison helper for YiDa F/U without editing existing pipelines.
+- Stable conclusion: R-CNN candidates must stay isolated from existing conda envs; train/eval later in `yida-mmdet-ab-20261003`.
+- Limitations encoded in report helper: small shared-context test split; detection/count metrics are not end-to-end slot accuracy.
