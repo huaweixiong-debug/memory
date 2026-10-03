@@ -696,3 +696,15 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - Fixed 4 terra issues: (1) valid threshold persist before single test pass; (2) official pycocotools COCOeval only, no custom AP fallback; (3) check-env requires CUDA + MMCV NMS on selected CUDA device; (4) mmdet_detector passes runtime Config to init_detector.
 - Changed only: mmdet_detector.py, benchmark.py, README.md. Unchanged: prepare_data.py, environment.yml. Training not launched.
 - Unresolved: isolated env creation, CUDA check-env runtime, full valid/test eval, metric-filled Chinese report.
+
+## 2026-10-03 opencode - YiDa best-checkpoint metric key fix (executor)
+
+- Target project root exactly `D:\ultralytics-main`; evidence run directory exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-checkpoint-keyfix`. Do not confuse these paths.
+- Implemented plan exactly. Intentional source edits limited to two allowed files: `inference_results/yida_faster_cascade_compare_20261003/benchmark.py` and `README.md`.
+- Metric key fixed: generated CheckpointHook now uses `save_best='coco/bbox_mAP'` (was `bbox_mAP`). Constants: `BEST_COCO_METRIC_KEY`, `STABLE_BEST_CHECKPOINT_NAME='best_valid_bbox_map.pth'`.
+- MMEngine handoff: after successful train only, `stage_train` discovers `best_coco_bbox_mAP_epoch_<N>.pth` (MMEngine replaces `/` with `_` in metric key), preserves original via copy-not-move, copies stable path to both `experiments/<model>/` and `checkpoints/<model>/best_valid_bbox_map.pth`. Missing best checkpoint => clear failure, no substitute.
+- Verification without training: syntax compile OK; `--stage gen-configs` regenerated configs with new key; focused temp-file checks 9/9 passed (`checkpoint_handoff_checks.json`); protected production hashes unchanged (prepare_data.py, environment.yml, YOLO best.pt, dataset, mvp_inference production files); no new project weights; train still refused without `--allow-train`.
+- Verification side effects only: regenerated `generated_configs/*` + manifests + `metrics/gen_configs.json` (plan-required gen-configs step).
+- REVIEW_PACKET: `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-checkpoint-keyfix\REVIEW_PACKET.md`. Terra no longer used per user; Codex does final bounded review.
+- Follow-up: real train in isolated env `yida-mmdet-ab-20261003` still pending; after train confirm `best_coco_bbox_mAP_epoch_*.pth` preserved and stable `best_valid_bbox_map.pth` created, then eval/select/report.
+
