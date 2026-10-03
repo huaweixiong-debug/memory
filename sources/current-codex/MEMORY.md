@@ -1165,3 +1165,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Bounded search found the existing Morocco point workbook but no source resolving M0.5/M0.4 semantics; no independent ATEQ point/electrical document was found. Both ATEQ point configs remain explicit Morocco-derived placeholders.
 - Live flags remain fail-closed (`Morocco ports_confirmed=false`; `ATEQ points_confirmed=false` and `ports_confirmed=false`). Three roadmap documents record the search and preserve exact prior bytes; no phase gate advanced.
 - Details: `2026-10-03-langguo-pilot-ssot-source-search.md`.
+## 2026-10-04 — Langguo Core PR #2 documentation sync and roadmap progress
+
+- PR #2 head `a34886e` contains documentation only; CI 3.10–3.12 and Release Package preflight passed. PR remains open with no formal GitHub review decision; no roadmap gate advanced.
+- Exact wheel smoke evidence is from previous head `983bea8`; the new head's Release artifact was not separately smoke-tested. ZCode CLI review attempts timed out without a verdict.
+- Overall status estimate: about 30% of the ten-capability roadmap and about 75% of the current foundation batch; no official weighting exists. Field point/port and actual-cost evidence remain open.
+- Details: `2026-10-04-langguo-core-pr2-doc-sync-progress.md`.
