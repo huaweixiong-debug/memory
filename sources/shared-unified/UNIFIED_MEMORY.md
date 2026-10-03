@@ -29,3 +29,9 @@
 - Valid-threshold persistence must precede any test inference; report consumes a single frozen-threshold test result.
 - Official detection metrics must use pycocotools COCOeval; custom AP approximations are rejected.
 - Isolated MMDetection env still required (Py3.8 + torch2.1 cu121 + mmcv2.1 Windows wheel + mmdet3.3); existing mmdetection env remains incompatible.
+
+## 2026-10-03 ZCode - 本机蓝牙音箱断续排查
+
+- 硬件拓扑：蓝牙 BARROT USB 加密狗与 Realtek 8832CU USB WiFi 6 网卡同挂在唯一一个 USB 3.0 根集线器（无独立 USB 2.0 控制器）；USB 3.0 高速传输辐射 2.4GHz 干扰蓝牙，是音箱（猫王·小王子）断断续续的主因。
+- 已做改动：USB 3.0 根集线器 MSPower_DeviceEnable 置为 False（关闭"允许计算机关闭此设备以节省电源"，可逆）；USB 选择性暂停原本已禁用；蓝牙服务 bthserv/BthAvctpSvc 正常，驱动无崩溃日志。
+- 待办：用带屏蔽的 USB 延长线把蓝牙狗挪离 WiFi 网卡再验证；若仍断续，考虑重配对音箱或更新 BARROT 驱动。
