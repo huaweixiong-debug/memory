@@ -1160,3 +1160,8 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - V14 corrects stale BOM supplier-source notes against contract XS20260924; 7,980 RMB is tracked as a contractual procurement commitment, not paid or recognized actual cost. Actual quantity/unit-price and payment/invoice/delivery/acceptance evidence remain missing.
 - The V13→V14 audit found 4,200 formulas and caches unchanged; only two BOM text cells changed. The cost gate and all roadmap phase gates remain open.
 - ZCode custom BigModel plan GLM-5.3-Flash/high timed out after 300 seconds with no verdict; configuration was restored byte-for-byte. Codex passed the bounded final review. Details: `2026-10-03-langguo-v14-supplier-contract-source-correction.md`.
+## 2026-10-03 — Langguo pilot SSOT source search
+
+- Bounded search found the existing Morocco point workbook but no source resolving M0.5/M0.4 semantics; no independent ATEQ point/electrical document was found. Both ATEQ point configs remain explicit Morocco-derived placeholders.
+- Live flags remain fail-closed (`Morocco ports_confirmed=false`; `ATEQ points_confirmed=false` and `ports_confirmed=false`). Three roadmap documents record the search and preserve exact prior bytes; no phase gate advanced.
+- Details: `2026-10-03-langguo-pilot-ssot-source-search.md`.
