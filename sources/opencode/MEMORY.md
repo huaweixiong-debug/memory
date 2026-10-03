@@ -765,3 +765,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 测试：新增 4 个回归测试（任意对象、real-like 端口、Fake 子类、冻结重赋值），最终 12 passed；负对照（仅 stash composition.py）4 个新测试全部失败，证明守卫有效。
 - 环境偏差：计划原命令从仓库根运行时 `app` 不在 sys.path，基线同样失败（预先存在的问题）；验证用等价命令在 PYTHONPATH 追加 `template` 后通过。9 个无关已修改文件前后 hash 完全一致。
 - REVIEW_PACKET 已写入证据目录；ZCode/Terra 未调用（按计划由 Codex 做最终 bounded review）。
+
+## 2026-10-03 opencode: 路线图门禁总览当前态刷新（executor）
+
+- Target project root exactly `C:\CodexScratch\20261003-roadmap-gate-overview-refresh\workspace`；evidence run directory exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-roadmap-gate-overview-refresh-isolated`（两者不可混淆）。
+- 仅改快照 `10项能力路线图门禁总览_2026-10-01.md`：更新日期→2026-10-03；表行 1–5、8 刷新为 2026-10-03 证据（远端 PR #2 head `6d278e8…` 不变、本地 11 个未提交路径、wheel `076c49…` 18,657 字节、Traceability Fake-only guard 54/16、V14 工作簿 `D020986F…`）；首条基线 bullet 与输入第 1 条更新（显式发布授权门）；`对应证据` 增 2 条；行 6/7/9/10 与第二条 bullet 不变；`## 2026-10-01 Core 状态补充` 起始后缀逐字节保留（SHA-256 `85703be1…`）。
+- Before SHA-256 `E1F7525D...C4AB64` → after `220f02bd...F0FFF93F`；替换 9 行 + 插入 2 行；CRLF 44 不变、LF 152→154；无 BOM。
+- apply 脚本首跑因审计断言过严在写盘前中止（无副作用），修正后通过；certutil 与独立复核 PASS。未运行测试；Terra 未调用。
+- REVIEW_PACKET：`...\REVIEW_PACKET.md`（含完整 diff、字节保留、行尾校验与事实来源披露）。
