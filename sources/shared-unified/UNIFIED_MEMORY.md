@@ -35,3 +35,9 @@
 - 硬件拓扑：蓝牙 BARROT USB 加密狗与 Realtek 8832CU USB WiFi 6 网卡同挂在唯一一个 USB 3.0 根集线器（无独立 USB 2.0 控制器）；USB 3.0 高速传输辐射 2.4GHz 干扰蓝牙，是音箱（猫王·小王子）断断续续的主因。
 - 已做改动：USB 3.0 根集线器 MSPower_DeviceEnable 置为 False（关闭"允许计算机关闭此设备以节省电源"，可逆）；USB 选择性暂停原本已禁用；蓝牙服务 bthserv/BthAvctpSvc 正常，驱动无崩溃日志。
 - 待办：用带屏蔽的 USB 延长线把蓝牙狗挪离 WiFi 网卡再验证；若仍断续，考虑重配对音箱或更新 BARROT 驱动。
+
+## 2026-10-03 Codex 当前账号路由更新
+
+- 来源：Codex 当前账号；用户在当前会话直接明确。
+- 最新偏好：GPT-6 Luna 为最高指挥官，负责协调、审查裁定和最终验收；不再使用 GPT-5.6 Terra。
+- 该明确指令优先于旧路由记录中涉及 Terra 的安排。代码执行者仍按任务提供的 AGENTS.md 和明确授权决定；本次项目由 OpenCode 实施、GPT-6 Luna 最终验收。
