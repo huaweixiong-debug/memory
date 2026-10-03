@@ -1,0 +1,6 @@
+# 2026-10-03 — Langguo V11 cost workbook pagination review
+
+- Preserved V10 as-is (SHA-256 `3737ab5cf7f184aa0b1eceac17b08b5391a81741dd96c6310c6a11b7af803d16`) and created independent V11 `项目成本估算与实际记录_试点版_v11_打印布局优化.xlsx` (SHA-256 `94f374481e17a9f0d23f09e4314d7ef479228d3fd3afe4e3e2290b78eac10729`).
+- A4 landscape print areas, repeated header rows, and one-page-wide settings reduce the WPS ET COM PDF preview from 76 pages to 13. V11 retains all 4,200 formulas, cached and literal values, validations, protection, unlocked input-cell counts, and freeze panes from V10. Automatic/full recalculation flags remain enabled.
+- The compact wide-sheet print scaling is tight; treat the workbook as digital-entry-first. Microsoft Excel rendering was not verified. No real YIDA-014 cost vouchers were added, so the estimate-to-actual gate remains open and no roadmap phase advanced.
+- Evidence: `P:\Langguo_AI\company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\10项能力路线图复验_2026-10-02.md` §21 and run folder `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-lg-cost-workbook-print-layout-v11\`.
