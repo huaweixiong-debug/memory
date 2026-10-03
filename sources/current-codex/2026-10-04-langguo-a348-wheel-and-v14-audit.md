@@ -1,0 +1,8 @@
+# Langguo exact PR wheel smoke and V14 workbook audit — 2026-10-04
+
+- Release run 37135369292 targeted PR #2 head a34886ecffafdb8a7d532827f2d899e44459beb6. Its 18,735-byte wheel SHA-256 is 49CE65338B5129CDA8901A2178142AD798CA0390082870209A384A13241DDB19; its 31,629-byte sdist SHA-256 is D8D3978A0BCE336512E4975EC8BE4EE12209C639B9446C65FF674C6A3AF6ADE1.
+- Python 3.10.11 installed that exact wheel offline; Morocco label and ATEQ-F620-Laser mark Fake/in-memory adapter smokes passed. The 20 copied inputs (117,258 bytes) matched source/copy manifest hashes before and after. This is not a pytest rerun or field acceptance.
+- Documentation-only head d19e6abd41579bfedc99bc72c5a697cb7aa28966 is current; CI 37136940583 and Release 37136940743 passed, Package preflight passed, publish skipped. Core source remains 349c6f8. Formal GitHub reviewDecision is empty; no merge or gate advancement occurred.
+- Read-only V14 audit confirms file hash D020986F47AE7F7C41A1FF4E7016263096E94644F8DBEE16BDABA423BE73AE87, 4,200 formulas, and blank BOM actual quantity/unit-price and labor actual-hours/rate input ranges. This is a capture template; actual procurement/labor/rework evidence remains missing.
+- Rough status estimate remains about 30% of the full ten-capability roadmap, or about 75% of the current foundation batch; no official workload weighting exists. Morocco semantic/port and independent ATEQ point/port evidence remain open; capabilities 7–10 stay deferred.
+- Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261004-corepr2-a348-wheel-pilot-compatibility\REVIEW_PACKET.md and C:\Users\Administrator\.codex\opencode-executor\runs\20261004-langguo-v14-current-audit\REVIEW_PACKET.md.

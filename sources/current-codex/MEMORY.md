@@ -1171,3 +1171,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Exact wheel smoke evidence is from previous head `983bea8`; the new head's Release artifact was not separately smoke-tested. ZCode CLI review attempts timed out without a verdict.
 - Overall status estimate: about 30% of the ten-capability roadmap and about 75% of the current foundation batch; no official weighting exists. Field point/port and actual-cost evidence remain open.
 - Details: `2026-10-04-langguo-core-pr2-doc-sync-progress.md`.
+## 2026-10-04 — Langguo exact PR wheel and V14 workbook audit
+
+- Exact Release wheel from head a34886e passed isolated offline Morocco label and ATEQ mark Fake adapter smoke; current doc-only head d19e6ab has green CI and Release/Package preflight.
+- V14 read-only audit confirms 4,200 formulas and blank actual BOM/labor inputs. It remains a capture template, not a completed actual-cost cycle.
+- Overall estimate remains about 30% of ten capabilities / 75% of the current foundation batch; no official weighting. Field point/port, formal review, and actual-cost gates remain open.
+- Details: `2026-10-04-langguo-a348-wheel-and-v14-audit.md`.
