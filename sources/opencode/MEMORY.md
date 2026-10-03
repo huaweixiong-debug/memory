@@ -741,3 +741,18 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
   - 稳定副本均已写入 xperiments/<model>/best_valid_bbox_map.pth 与 checkpoints/<model>/best_valid_bbox_map.pth，与源哈希一致
 - 证据目录：C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-recursive-best-checkpoint（含 REVIEW_PACKET.md、verification_report.json、verification_commands.json、benchmark.diff）
 - 待办：中间复审配置为 simple-tier GPT-5.6 Luna；用户明确排除 Terra
+
+
+## 2026-10-03 opencode: Hengchuang v47 grouped WBF experiment scaffolding
+
+- Target project root exactly `D:\ultralytics-main\inference_results\hengchuang_v47_grouped_wbf_20261003`; evidence run directory exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-hengchuang-grouped-ensemble`. Do not confuse these paths.
+- Source dataset (read-only): `D:\Hengchuang00601.v47i.yolo26`. Excluded contaminated checkpoint: `D:\Hengchuang00601.v47i.yolo26_v2\weights\best.pt`.
+- Created 5 scripts: `prepare_data.py` (audit + 393/146/178 split materialization + COCO), `train_yolo.py` (YOLO26s smoke/train/predict), `train_mmdet.py` (Faster+Cascade R-CNN gen-configs/train/predict/smoke), `evaluate_fusion.py` (thresholds + WBF IoU 0.55 + COCOeval + protocol freeze + Chinese report), `README.md` (stage commands).
+- Frozen class map from source data.yaml: `['convex_plate', 'flat_plate', 'ignore']` (nc=3), written to `class_map.json`, consumed by all scripts. COCO category_id = class_id + 1.
+- Date-grouped split: train ≤ 2026-01-06 (393), valid = 2026-05-05 (146), test = 2026-05-07/08/09/19 (178); total 717 unique images. Source has 715 duplicated in train/valid + 717 in test (2 extra May-5 images only in test).
+- Smoke checks passed (no training, no test inference): prepare_data ok=True with exact 393/146/178; YOLO26s COCO pretrained loaded (10M params, CUDA OK); FasterRCNN (41M) + CascadeRCNN (69M) instantiated on GPU with num_classes_head=3, CUDA NMS ok; check-env confirmed RTX 4070 SUPER + pycocotools + no test artifacts.
+- Env: `yida-mmdet-ab-20261003` (mmcv 2.1.0, mmengine 0.10.7, mmdet 3.3.0, ultralytics 8.4.2, Python 3.8).
+- Protocol: seed 42, epochs 20, imgsz 1024, YOLO batch 8, MMDet batch 2. WBF equal weights IoU 0.55. Threshold grid 0.05–0.95 step 0.05, max F1, ties → higher threshold. Protocol freeze before test enforced.
+- Remaining to run: full training (3 models), valid predictions, threshold select + protocol freeze, test predictions + metrics, Chinese report. Commands in README.md.
+- Known risks for reviewer: mmdet box rescale heuristic untested; `ignore` treated as detectable class (matching source data.yaml); WBF score uses weighted-average variant; Python 3.8 f-string backslash issue was found and fixed in evaluate_fusion.py.
+- REVIEW_PACKET written to evidence run directory. Terra not called. Non-Git project; diff as before/after file inventory.
