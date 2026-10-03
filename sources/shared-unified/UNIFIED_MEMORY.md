@@ -41,3 +41,7 @@
 - 来源：Codex 当前账号；用户在当前会话直接明确。
 - 最新偏好：GPT-6 Luna 为最高指挥官，负责协调、审查裁定和最终验收；不再使用 GPT-5.6 Terra。
 - 该明确指令优先于旧路由记录中涉及 Terra 的安排。代码执行者仍按任务提供的 AGENTS.md 和明确授权决定；本次项目由 OpenCode 实施、GPT-6 Luna 最终验收。
+
+## 2026-10-03 Codex - YiDa F/U R-CNN comparison result
+
+- On the 66-image frozen test for YiDa F/U, Faster R-CNN R50-FPN and Cascade R-CNN R50-FPN did not beat the YOLO baseline in mAP@[.50:.95] (0.5815 / 0.6430 vs 0.7025). Cascade's F exact-count result improved but U worsened; joint F/U exact-count accuracy tied YOLO at 42.4%, with slower inference. Keep the current YOLO baseline; treat the result as specific to this dataset split, not unseen production conditions.
