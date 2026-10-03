@@ -669,3 +669,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 可复刻性：单一检测任务数天可复刻（Ultralytics YOLO + Label Studio + ONNX/TensorRT）；商用平台难点在工程（旋转框、大图切分、多模型多线程调度、C++/C# SDK 封装、加密授权、低代码 GUI、IO/PLC 集成），均有开源替代件
 - 证据：nb-ai.com 产品页、neurobot.readthedocs.io `Deployment/HowToUseSDK`、`github.com/neurobot-ai/neurobot-vision` README、`neurobot_sdk_demo` README
 
+
+### 2026-10-03 补：矩视"二阶段检测比 YOLO 更精准"说法核查（OpenCode 问答）
+
+- 核查方式：抓取 neurobot.readthedocs.io 全站英文文档搜索索引（search_index.json，248 KB，覆盖全部页面）全文检索：0 处 "two-stage"、0 处 "YOLO"、仅 1 处 "faster"（FAQ 描述新框架模型"推理更快"）、4 处 "algorithm"
+- 公开可证事实：平台有模型分级"标准版/高精度版"（FAQ/lowcodedep，替代旧"普通模型/快速模型"）；私有云训练模块支持 "manually switch the algorithm, adjust the hyper-parameter"（算法可切换，未公开算法名）；标注指南提到 anchor box 定位（属 anchor-based 检测器）
+- 同组织 `neurobot-vision` 仓库自述 "Optimized YOLO series models"；无任何公开基准（mAP/速度）对比 vs YOLO
+- 结论："有二阶段检测"无公开证据；"二阶段一定比 YOLO 准"技术上已过时（现代 YOLO 已追平/反超常见 Faster R-CNN 实现；工业精度更取决于数据/标注/分辨率/阈值）。验证动作：要其给出具体架构名 + 本数据 A/B 指标，或自行同数据对比高精度版 vs 标准版 vs YOLOv8x/11x
+- 另一可能口径：其 SDK demo README 第 7 条"目标定位 + OCR"是真两段流水线（先检测 ROI 再 OCR），可能被销售表述为"两阶段"
+
