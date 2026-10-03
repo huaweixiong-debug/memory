@@ -23,3 +23,9 @@
 - Implemented optional Faster R-CNN / Cascade R-CNN offline comparison helper for YiDa F/U without editing existing pipelines.
 - Stable conclusion: R-CNN candidates must stay isolated from existing conda envs; train/eval later in `yida-mmdet-ab-20261003`.
 - Limitations encoded in report helper: small shared-context test split; detection/count metrics are not end-to-end slot accuracy.
+
+## 2026-10-03 OpenCode - YiDa detector helper fix pass
+
+- Valid-threshold persistence must precede any test inference; report consumes a single frozen-threshold test result.
+- Official detection metrics must use pycocotools COCOeval; custom AP approximations are rejected.
+- Isolated MMDetection env still required (Py3.8 + torch2.1 cu121 + mmcv2.1 Windows wheel + mmdet3.3); existing mmdetection env remains incompatible.

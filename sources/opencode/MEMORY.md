@@ -688,3 +688,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - Training was intentionally NOT launched this pass. Isolated env still required: Python 3.8 + torch 2.1.0+cu121 + mmcv 2.1.0 Windows wheel + mmengine 0.10.7 + mmdet 3.3.0. Existing conda `mmdetection` env is incompatible (mmcv 1.7.2).
 - REVIEW_PACKET.md written to the evidence run directory (not the project root). Project root and evidence path must not be confused.
 - Follow-up: create isolated env, run `benchmark.py --stage check-env`, then `--stage train --allow-train`, then eval/select/report. Do not substitute another detector if R-CNN cannot fit; record blocker.
+
+## 2026-10-03 opencode - YiDa R-CNN helper fix pass (ses_f00a15108ffeVZVYmimGqIQway)
+
+- Applied fix.md exactly for session ses_f00a15108ffeVZVYmimGqIQway on project `D:\ultralytics-main`.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-rcnn-ab` (fresh REVIEW_PACKET.md).
+- Fixed 4 terra issues: (1) valid threshold persist before single test pass; (2) official pycocotools COCOeval only, no custom AP fallback; (3) check-env requires CUDA + MMCV NMS on selected CUDA device; (4) mmdet_detector passes runtime Config to init_detector.
+- Changed only: mmdet_detector.py, benchmark.py, README.md. Unchanged: prepare_data.py, environment.yml. Training not launched.
+- Unresolved: isolated env creation, CUDA check-env runtime, full valid/test eval, metric-filled Chinese report.
