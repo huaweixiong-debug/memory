@@ -1196,3 +1196,11 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - PR remains open without a formal review decision. Field point/port and actual-cost gates remain open; no phase gate advanced.
 - Rough roadmap estimate is about 33% (30–35% range) across ten equally weighted capabilities; no official workload weighting exists.
 - Details: 2026-10-04-langguo-core-template-package-gate.md.
+
+## 2026-10-04 — Langguo Traceability SQLite row/envelope consistency
+
+- Codex final review found that `TraceStore.events_for_cycle` decoded `event_json` without checking its denormalized SQLite columns. OpenCode DeepSeek V4.1 Flash/max fixed only `app/trace_store.py` and `tests/test_trace_store.py`: cycle ownership plus `event_id`, `kind`, and timezone-aware `occurred_at` consistency are now checked; mismatches fail closed without repair, row mutation, or export.
+- Verification against the isolated installed Core PR #2 wheel target: Python 3.10.11 / pytest 9.1.1; focused store tests 37/37 and full pilot suite 88/88. Before/after git status matched; no pilot commit/push, device access, or live operation occurred.
+- ZCode CLI Start Plan GLM-5.3-Flash/high and BigModel Coding Plan GLM-5.3-Flash/high were both attempted read-only but returned no usable verdict. Do not record an independent ZCode PASS; Codex performed final review.
+- Overall roadmap estimate remains about 33% across ten equally weighted capabilities; no official weighting exists. This consistency fix did not advance a phase gate. Field point/port confirmation and actual-cost evidence remain open.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`.
