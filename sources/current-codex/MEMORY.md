@@ -1154,3 +1154,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Fresh offline installed-wheel route for Core 0.1.0 passes the complete Traceability pilot suite (43/43); the old stale site-packages import failure remains historical, not current.
 - Exactly four roadmap/QA documents synchronized and independently reviewed by ZCode GLM-5.3-Flash/high read-only: PASS. TASK-0001 stays APPROVED; no Phase 2 gate advanced.
 - Details/evidence: `2026-10-03-langguo-traceability-installed-wheel-and-roadmap-sync.md`.
+
+## 2026-10-03 — Langguo V14 supplier contract source correction
+
+- V14 corrects stale BOM supplier-source notes against contract XS20260924; 7,980 RMB is tracked as a contractual procurement commitment, not paid or recognized actual cost. Actual quantity/unit-price and payment/invoice/delivery/acceptance evidence remain missing.
+- The V13→V14 audit found 4,200 formulas and caches unchanged; only two BOM text cells changed. The cost gate and all roadmap phase gates remain open.
+- ZCode custom BigModel plan GLM-5.3-Flash/high timed out after 300 seconds with no verdict; configuration was restored byte-for-byte. Codex passed the bounded final review. Details: `2026-10-03-langguo-v14-supplier-contract-source-correction.md`.
