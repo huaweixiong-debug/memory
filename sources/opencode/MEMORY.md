@@ -729,3 +729,15 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - Verification without training: isolated env `D:\miniconda3\envs\yida-mmdet-ab-20261003\python.exe` (`mmengine 0.10.7`, `mmdet 3.3.0`); `py_compile` OK; `--stage gen-configs` OK; both generated configs load via `Config.fromfile` with train/val/test `num_workers=0` and `persistent_workers=false`.
 - Self-correction: first edit briefly introduced f-string indent into generated-config content (unloadable configs); corrected to planned column-0 layout. Authoritative verification is post-fix.
 - REVIEW_PACKET: `...\REVIEW_PACKET.md`. Terra not called. Training not started; real train still pending.
+
+## 2026-10-03 opencode: yida 递归 best checkpoint 发现修复
+
+- 项目：D:\ultralytics-main，实验目录 inference_results/yida_faster_cascade_compare_20261003
+- 问题：Faster/Cascade 训练已完成，但 MMEngine best checkpoint 写在 xperiments/<model>/<model>/（嵌套一层）；enchmark.py 的 _find_mmengine_best_checkpoint 只搜 work_dir 顶层，导致 stage_train 标失败且未安装评测 handoff 副本
+- 决策：只改 enchmark.py 中该函数的候选扫描 work_dir.glob → work_dir.rglob，保留 metric coco/bbox_mAP 匹配与最高 epoch 选择；不重训、不改其他源文件
+- 验证（隔离环境 yida-mmdet-ab-20261003，未启动训练）：
+  - Faster：源 est_coco_bbox_mAP_epoch_14.pth，SHA256 6eba68a7...
+  - Cascade：源 est_coco_bbox_mAP_epoch_20.pth，SHA256 839276d8...
+  - 稳定副本均已写入 xperiments/<model>/best_valid_bbox_map.pth 与 checkpoints/<model>/best_valid_bbox_map.pth，与源哈希一致
+- 证据目录：C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-recursive-best-checkpoint（含 REVIEW_PACKET.md、verification_report.json、verification_commands.json、benchmark.diff）
+- 待办：中间复审配置为 simple-tier GPT-5.6 Luna；用户明确排除 Terra
