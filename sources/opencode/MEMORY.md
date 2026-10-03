@@ -773,3 +773,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - Before SHA-256 `E1F7525D...C4AB64` → after `220f02bd...F0FFF93F`；替换 9 行 + 插入 2 行；CRLF 44 不变、LF 152→154；无 BOM。
 - apply 脚本首跑因审计断言过严在写盘前中止（无副作用），修正后通过；certutil 与独立复核 PASS。未运行测试；Terra 未调用。
 - REVIEW_PACKET：`...\REVIEW_PACKET.md`（含完整 diff、字节保留、行尾校验与事实来源披露）。
+
+## 2026-10-04 opencode: Core PR #2 模板包 CI 门禁与 Replay 契约文档
+
+- 目标工程根目录 exactly `C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix`；证据运行目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-core-template-package-gate`；两者不同，不可混淆。
+- 分支 `codex/lg-industrial-core-reconcile-20260928` HEAD `dafb171`；仅修改计划授权的 3 个文件：`.github/workflows/ci.yml`、`README.md`、`src/lg_industrial_core/serial_recording.py`；工作树基线下干净，会话后 git status 恰为这 3 个文件。
+- 关闭 ZCode 评审 finding #2：ci.yml 新增三步——template 目录内 `python -m build`（并校验恰一个 wheel + 一个 sdist）、`pip install --no-deps --target "$RUNNER_TEMP/template-install"`、在 `working-directory: ${{ runner.temp }}` 下以 PYTHONPATH 指向 target 导入 `app`（断言 `app.__file__` 位于 target 内）并执行 `SimulatedStation.create().run_cycle("ci-template-smoke")`（断言 passed 为 True、value=42.0）。权限保持 `contents: read`；release.yml 的 `ci` job 仍 `uses: ./.github/workflows/ci.yml`，自动继承新门禁。
+- 关闭 finding #1（不改回放事务语义，仅文档）：serial_recording.py 模块 docstring 与 RecordingSerial/ReplaySerial/ReplaySerialFactory docstring、README 序列记录章节及限制列表明确：ReplaySerial 仅提供方法级兼容面（write/flush/read/close/is_open/上下文管理器/reset_input_buffer/consumed/remaining/total/exhausted）；transport 属性（port/baudrate/timeout/in_waiting）不记录不模拟，访问抛 AttributeError；RecordingSerial 仅因包装活传输而转发未知属性；Replay 工厂接受并忽略连接参数、永不打开端口。
+- 静态验证：`git diff --check` 通过（无输出）；`ast.parse` serial_recording.py 通过；本地已有 PyYAML 结构校验 ci.yml 通过（三步存在、permissions=contents:read、heredoc 终结符收敛于列 0、env 与 working-directory 指向 runner.temp）并确认 release.yml 复用 CI。按计划未在本地运行 pytest/build/pip install；远端 CI 与 Release 校验待 Codex 提交推送后执行；ZCode/Terra 评审未在 OpenCode 会话内执行。
+- REVIEW_PACKET：`C:\Users\Administrator\.codex\opencode-executor\runs\20261004-core-template-package-gate\REVIEW_PACKET.md`，同目录附 session.diff、diff-stat.txt、git-status.txt。
