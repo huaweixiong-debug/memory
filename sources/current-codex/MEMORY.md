@@ -1148,3 +1148,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - V10 is the current editable template; V9 is unchanged. WPS-only workbook verification and a disposable 30/30 synthetic probe passed the bounded review, but Microsoft Excel and real cost evidence remain unverified. Cost acceptance and all later roadmap gates remain open.
 - Four roadmap/audit documents received a dated status sync. No Core PR, device, LIVE, production, or release state advanced.
 - Details: 2026-10-03-langguo-cost-workbook-v10-editability-and-gates.md.
+
+## 2026-10-03 — Langguo Traceability installed-wheel compatibility and roadmap sync
+
+- Fresh offline installed-wheel route for Core 0.1.0 passes the complete Traceability pilot suite (43/43); the old stale site-packages import failure remains historical, not current.
+- Exactly four roadmap/QA documents synchronized and independently reviewed by ZCode GLM-5.3-Flash/high read-only: PASS. TASK-0001 stays APPROVED; no Phase 2 gate advanced.
+- Details/evidence: `2026-10-03-langguo-traceability-installed-wheel-and-roadmap-sync.md`.
