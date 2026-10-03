@@ -1,0 +1,8 @@
+# 2026-10-03 — Langguo Morocco/ATEQ offline revalidation
+
+- Core PR #2 is still OPEN at remote HEAD `6d278e8b7ebfc6620828111de6e9602161e458f7`, with CI/Release checks green and no review decision. Local Core and pilot-template guard changes remain uncommitted; they are not part of the remote PR.
+- Added an exact Fake-only runtime guard and frozen port references to the existing Morocco-style Traceability pilot composition. Eleven guard regressions were added; the complete local suite is 54/54. The worktree had existing user changes, which were preserved; only `app/composition.py` and `tests/test_template.py` received this session's changes.
+- Revalidated independent pilot suites against the local Core PR #2 `src` at the exact head above, Python 3.10.11: Morocco 179/179 and ATEQ 129/129. Both are offline software evidence only, not field or release approval.
+- The ATEQ reference repository contains internal F620 adapter code, but its PLC `points.toml` explicitly marks Morocco-derived placeholders; the ATEQ `points_confirmed` and `ports_confirmed` flags remain false. Morocco M0.5/M0.4 has conflicting software labels. Do not advance those source/field gates without authoritative engineering records and per-machine confirmation.
+- The V14 supplier contract amount 7,980 RMB is a purchase commitment, not paid/recognized actual cost. Actual-cost evidence remains open. Whole-roadmap progress is still a rough ~30% estimate; no formal phase gate advanced.
+- ZCode did not return a review verdict this run: the interactive CLI lacks `@zcode/tui`, and headless model switching is unavailable. Do not claim a ZCode GLM-5.3-Flash/high review.
