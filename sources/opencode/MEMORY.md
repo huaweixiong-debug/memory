@@ -789,3 +789,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 按 Codex 计划加固本地 SIMULATE 追溯试点（仅 6 个允许文件）：F1 存储 event_json 按 Core JSONL 契约严格反序列化，统一 TraceStoreError 并带 cycle/event seq 上下文；F2 append_event 仅允许 in_progress 周期的非 cycle_state 事件；F3 event_id 唯一（打开时发现历史重复即 fail-closed，不删改行），重复 cycle/event ID 与不存在周期错误归一化；F4 tester/printer 异常终态化为 port_error（记录 failed_stage、completed=false、零标签、不落异常文本），scanner 异常在创建周期前不留部分行；F5/F6 CLI 边界捕获存储/Core 记录/文件系统错误返回 2（0/1 语义保留、无 traceback、全输出转义、query 缓冲防半截输出）；F7/F8 README 补全夹具/错误码/port_error 并追加 2026-10-04 Release wheel 记录（54/179/141/129），补 scanner 断言。
 - 验证：Python 3.10.11 / pytest 9.1.1，仅用已装 exact PR#2 wheel（Release run 37146409416、head 88a5b6e、SHA-256 8C4548F16136B298CD998F316054A680FED94F9116A3224C2483770B65B15A87）；基线 54/54 → 加固后 80/80；CLI 冒烟 9 项 + 4 内容断言全过；`git diff --check` 通过；git status 与基线一致；`.agent/state/TASK-0001.json` 哈希未变；未构建/安装 wheel、未提交/推送 pilot。
 - 证据：`C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-state-store-hardening\REVIEW_PACKET.md`（session diff +873/-50，另含 logs/、baseline/、smoke/）。
+
+## 2026-10-04 opencode: Traceability 事件行-信封一致性修复（executor）
+
+- 目标工程根 exactly `\\100.117.1.6\projects\Langguo_AI\repos\lg-traceability-pilot-20260927`；证据运行目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-event-row-consistency-fix`；两者不同且不可混淆。
+- 仅改 2 个允许文件：`app/trace_store.py` 新增 `_verify_event_row`，`events_for_cycle` 扩展 SELECT 后逐行校验解码信封与冗余列（cycle 归属、event_id 文本、kind、occurred_at 按 tz-aware 瞬时精确比较；等价偏移接受、1µs 差异拒绝；列时间戳非法/naive 也报错），任何不一致抛带 `cycle '…' event seq N` 上下文的 TraceStoreError，不产出/导出、不修复/变更行；`tests/test_trace_store.py` 新增 8 个聚焦测试（JSON cycle_id、三列篡改、naive/非法时间戳、等价偏移正例、export 拒绝且行不变）。
+- 验证：Python 3.10.11 / pytest 9.1.1 + 已装 exact PR#2 wheel target；focused 37 passed；全量 88/88（上一轮 80）；`git diff --check` 通过；git status 与基线一致；六项未触碰文件哈希（含 `.agent/state/TASK-0001.json`）不变；未提交/推送 pilot。
+- 证据：`...\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`（session diff +244/-12，另含 baseline/、logs/）。
