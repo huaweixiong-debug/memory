@@ -1,0 +1,6 @@
+# 2026-10-03 — Langguo roadmap progress and Core template guard
+
+- Current whole-roadmap completion is a rough workload estimate of about 30%; the foundational batch is about 80%, while no formal phase gate has advanced. Treat these as estimates from the 2026-10-03 evidence snapshot, not a computed metric.
+- The remaining pilot evidence is material: Morocco M0.5/M0.4 point semantics remain unconfirmed; ATEQ still lacks source engineering/point documents; both live port-confirmation flags remain false. The 7,980 RMB supplier commitment is not evidence of paid or recognized actual cost.
+- In `C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix`, `SimulatedStation` was hardened as a frozen dataclass with exact runtime Fake checks for ATEQ, PLC, and repository; four regression tests cover arbitrary objects, real-like adapters, Fake subclasses, and reassignment. Template suite: 12 passed; `git diff --check` passed. Nine unrelated pre-existing modified files remained byte-identical. These changes are local and uncommitted.
+- ZCode did not produce an independent review verdict for this patch: headless `/model` was sent as ordinary text, and interactive CLI startup failed because `@zcode/tui` is missing. Do not attribute a GLM-5.3-Flash/high review to this run.
