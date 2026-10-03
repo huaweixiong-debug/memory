@@ -1204,3 +1204,11 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode CLI Start Plan GLM-5.3-Flash/high and BigModel Coding Plan GLM-5.3-Flash/high were both attempted read-only but returned no usable verdict. Do not record an independent ZCode PASS; Codex performed final review.
 - Overall roadmap estimate remains about 33% across ten equally weighted capabilities; no official weighting exists. This consistency fix did not advance a phase gate. Field point/port confirmation and actual-cost evidence remain open.
 - Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`.
+
+## 2026-10-04 — Langguo Core PR #2 exact wheel evidence synchronized
+
+- Live PR #2 head is `88a5b6ed1b9dbee904f066606f68a183bd960a29` (OPEN, non-Draft, MERGEABLE; `reviewDecision` empty). CI run 37146409172 and Release run 37146409416 succeeded for Python 3.10–3.12; PR-triggered Publish was skipped.
+- Exact Release wheel is 19,167 bytes, SHA-256 `8C4548F16136B298CD998F316054A680FED94F9116A3224C2483770B65B15A87`; isolated offline suites passed: Traceability baseline 54, Morocco root 179, Morocco `python_app` 141, ATEQ 129. A separate later Traceability hardening run against the same installed wheel target passed 88; do not combine the 54 and 88 counts.
+- Updated the living company roadmap ledger only: replaced stale current PR summary and rows 1–3, appended exact 88a5b6e evidence. Baseline comparison confirms all other 721 historical lines byte-identical; V14 workbook and capabilities 4–10 were untouched. No roadmap gate advanced; field points/ports and actual-cost evidence remain open.
+- ZCode Start Plan GLM-5.3-Flash/high and BigModel Coding Plan GLM-5.3-Flash/high CLI attempts returned no usable review output. No ZCode PASS or formal GitHub approval is claimed; the ZCode config was restored byte-for-byte to its original state. Codex completed the bounded final review.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-roadmap-pr88a5-exact-wheel-sync\REVIEW_PACKET.md`, `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-exact-head-wheel-pilot-revalidation\REVIEW_PACKET.md`, and `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`.
