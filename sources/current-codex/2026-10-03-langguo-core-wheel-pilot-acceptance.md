@@ -1,0 +1,6 @@
+# 2026-10-03 — LG Industrial Core wheel acceptance for pilots
+
+- Built a local `lg_industrial_core-0.1.0-py3-none-any.whl` from a disposable copy of the Core checkout at HEAD `6d278e8b7ebfc6620828111de6e9602161e458f7`, including the current dirty working-tree source. All 8 `src/lg_industrial_core/*.py` files matched the copied source by SHA-256. Build used bundled Python 3.12.14, setuptools 84.0.0, wheel 0.48.0, and `--no-deps --no-build-isolation --no-index`.
+- Wheel size 18,657 bytes; SHA-256 `076c49bc8b0d181e2c4de218c8907f9c4c05a5668f874eb00cb1ebfdb8e75e31`. Installed via Python 3.10 `pip --no-deps --no-index --target`; import probe resolved Core and serial recording from the isolated target, package version 0.1.0, `AteqStartPort` and serial transcript API present.
+- Full offline pilot tests against the installed wheel (without Core `src` on PYTHONPATH): Morocco 179 passed; ATEQ 129 passed. This validates a local wheel from a dirty source snapshot, not a published artifact or field configuration.
+- PR #2 remains OPEN at the same head; no review decision. Point/port source confirmation and actual-cost evidence remain open; no roadmap phase gate advanced.
