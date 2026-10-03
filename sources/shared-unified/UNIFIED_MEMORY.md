@@ -45,3 +45,7 @@
 ## 2026-10-03 Codex - YiDa F/U R-CNN comparison result
 
 - On the 66-image frozen test for YiDa F/U, Faster R-CNN R50-FPN and Cascade R-CNN R50-FPN did not beat the YOLO baseline in mAP@[.50:.95] (0.5815 / 0.6430 vs 0.7025). Cascade's F exact-count result improved but U worsened; joint F/U exact-count accuracy tied YOLO at 42.4%, with slower inference. Keep the current YOLO baseline; treat the result as specific to this dataset split, not unseen production conditions.
+
+## 2026-10-03 Codex - YiDa three-detector WBF ensemble follow-up
+
+- A fixed score-normalized WBF of YOLO/Faster/Cascade on YiDa v17 improved F/U joint exact counting on the 66-image test from 28/66 to 54/66, with thresholds selected on valid first. mAP@[.50:.95] fell from 0.7025 to 0.6566; serial latency is about 5.5x YOLO by summing measured model means. Treat as count-focused candidate only, not production evidence; a separate-date test is still needed.

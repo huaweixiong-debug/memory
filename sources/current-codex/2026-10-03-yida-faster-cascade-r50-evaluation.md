@@ -7,3 +7,11 @@
 - Conclusion: do not replace the current YOLO baseline with these R-CNNs based on this experiment. Cascade may be useful only for the F-specific count behavior, but it did not improve joint F/U exact counts and was slower. The 66-image test comes from the same v17 collection context; do not generalize to new dates/lines or claim end-to-end installation accuracy.
 - Checkpoint-discovery fix: `_find_mmengine_best_checkpoint` now searches recursively (`rglob`) because MMEngine nests best weights under `<work_dir>/<model>/`. Stable copies were hash-verified. No retraining was done for that fix.
 - Report: `report/report_zh.md`; detailed frozen test metrics: `metrics/frozen_test_results.json`; joint count result: `metrics/joint_count_exact_test.json`.
+
+## Follow-up: three-detector WBF ensemble
+
+- Compared cached YOLO/Faster/Cascade predictions with score-normalized weighted box fusion; cluster IoU 0.55. Per-model score filters came from valid; final ensemble thresholds F=0.23/U=0.21 were chosen by per-class F1 on valid and frozen before test.
+- On 66 test images: joint F/U exact counts improved to 54/66 (81.8%) from YOLO 28/66 (42.4%); F exact 66/66 and U exact 54/66. Valid joint exact was 96/132 vs YOLO 60/132.
+- Detection mAP@[.50:.95] was 0.6566 vs YOLO 0.7025. Estimated serial inference cost is 117.4 ms/image from the three measured detector latencies, excluding fusion overhead.
+- Conclusion: promising for count accuracy on this split, but localization mAP and speed are worse. It remains an offline candidate; validate on a separate capture date/session before production consideration.
+- Artifacts: experiment `D:\ultralytics-main\inference_results\yida_faster_cascade_compare_20261003`; see `report/report_zh.md`, `metrics/ensemble_3model_results.json`, and `metrics/ensemble_3model_thresholds.json`.
