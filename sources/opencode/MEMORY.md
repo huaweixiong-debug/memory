@@ -660,3 +660,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：pre-edit 副本 SHA256 `BA046DF9…`（16820 B）与改前原文件逐字节相同；post SHA256 `0BB03344…`（16877 B）；单一 hunk 1+/1−；`git diff --check` exit 0；无尾随空白；无 BOM 变化、CRLF=108 不变；`SIMULATE-first` 全树 0 匹配
 - 边界：Markdown-only，未重跑测试/构建（Core 170/template 8 与 run1 wheel/sdist 仍适用；`docs/` 不参与打包）；未 commit/push；远端 CI 仍只覆盖已提交 head `6f2591f`
 - REVIEW_PACKET：`C:\Users\Administrator\.codex\opencode-executor\runs\20261002-roadmap-core-fix1\REVIEW_PACKET.md`
+
+### 2026-10-03 矩视智能/NeuroBot（nb-ai.com）目标检测技术调研（OpenCode 问答）
+
+- 对象：`nb-ai.com`（北京矩视智能，工业 AI 视觉低代码平台）+ `github.com/neurobot-ai/neurobot_sdk_demo`（闭源 SDK 调用示例：C++/C#，链接 `opencv_world454.lib` + `neuro_det_sdk.lib`，模型由平台下载，Virbox 授权；无算法源码）
+- 结论：检测为深度学习单阶段检测器（SDK 输出 `x0,y0,x1,y1 + score + label`，通用检测格式）；同组织开源仓库 `neurobot-ai/neurobot-vision` 自述 "Optimized YOLO series models" 且路线图规划开源 YOLO 检测/分割/分类 → 检测方法属 YOLO 系（具体版本官方未公开，此为公开材料推断）
+- 配套：OCR=文本检测+识别，像素分割=语义/实例分割，3D=点云处理/配准，跟踪=轨迹关联算法；标注端宣传"视觉大模型"辅助（疑似 SAM 类，未证实）；整体是商用化封装而非开源工具简单拼装，但组件方法论均为公开常规技术
+- 可复刻性：单一检测任务数天可复刻（Ultralytics YOLO + Label Studio + ONNX/TensorRT）；商用平台难点在工程（旋转框、大图切分、多模型多线程调度、C++/C# SDK 封装、加密授权、低代码 GUI、IO/PLC 集成），均有开源替代件
+- 证据：nb-ai.com 产品页、neurobot.readthedocs.io `Deployment/HowToUseSDK`、`github.com/neurobot-ai/neurobot-vision` README、`neurobot_sdk_demo` README
+
