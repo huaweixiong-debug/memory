@@ -718,3 +718,14 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 本 OpenCode 实现只做了 `py_compile` + 源字符串校验；未生成配置、未训练、未跑 check-env、未调用 Terra。
 - 待办（Codex 侧）：审阅补丁后重新生成 `generated_configs/*`（现存 artifacts 仍带旧路径），再在隔离 GPU 环境跑非训练 `check-env` 验证实例化。
 - 该目录不是 Git 仓库；diff 已写入 REVIEW_PACKET 的 before/after 文本。
+
+
+## 2026-10-03 opencode - YiDa persistent_workers Windows init fix (executor)
+
+- Target project root exactly `D:\ultralytics-main`; evidence run directory exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-persistent-workers-fix`. Do not confuse these paths.
+- Implemented saved plan only. Sole allowed source edit: `inference_results/yida_faster_cascade_compare_20261003/benchmark.py`.
+- Change: added `persistent_workers=False` to generated `train_dataloader`, `val_dataloader`, and `test_dataloader` dicts. Preserved `num_workers=0` / `{args.workers}` (CLI default 0). Diff is exactly 3 added lines.
+- Before hash matched baseline: `2c2424f10328fb0a750544e18f45a20e1bed779538d8e2ce575d10c67f2834de`. After hash: `11f9196c1530b9cb6430d4248c52e9d17cbef52b9586d8540e256886b81b31b7`.
+- Verification without training: isolated env `D:\miniconda3\envs\yida-mmdet-ab-20261003\python.exe` (`mmengine 0.10.7`, `mmdet 3.3.0`); `py_compile` OK; `--stage gen-configs` OK; both generated configs load via `Config.fromfile` with train/val/test `num_workers=0` and `persistent_workers=false`.
+- Self-correction: first edit briefly introduced f-string indent into generated-config content (unloadable configs); corrected to planned column-0 layout. Authoritative verification is post-fix.
+- REVIEW_PACKET: `...\REVIEW_PACKET.md`. Terra not called. Training not started; real train still pending.
