@@ -756,3 +756,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - Remaining to run: full training (3 models), valid predictions, threshold select + protocol freeze, test predictions + metrics, Chinese report. Commands in README.md.
 - Known risks for reviewer: mmdet box rescale heuristic untested; `ignore` treated as detectable class (matching source data.yaml); WBF score uses weighted-average variant; Python 3.8 f-string backslash issue was found and fixed in evaluate_fusion.py.
 - REVIEW_PACKET written to evidence run directory. Terra not called. Non-Git project; diff as before/after file inventory.
+
+## 2026-10-03 opencode: core 模板 Fake-only 构造函数守卫
+
+- 目标工程根：`C:\Users\Administrator\Documents\Codex\2026-10-01-core-output-receipt-boolean-fix`；证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20261003-core-template-fake-only-constructor-guard`（两者不可混淆）。
+- 仅改允许的两个文件：`template/app/composition.py`、`template/tests/test_template.py`；基线分支 `codex/core-output-receipt-boolean-fix` HEAD `6d278e8`。
+- 实现：`SimulatedStation` 改 `@dataclass(frozen=True)`，ATEQ 字段注解改为 `FakeAteq`，新增 `__post_init__` 用 `type(value) is not fake_type` 精确校验三个端口（拒绝 Fake 子类与 real-like 适配器）；`create()`/`run_cycle()`/`demonstrate_live_gate()` 未动。
+- 测试：新增 4 个回归测试（任意对象、real-like 端口、Fake 子类、冻结重赋值），最终 12 passed；负对照（仅 stash composition.py）4 个新测试全部失败，证明守卫有效。
+- 环境偏差：计划原命令从仓库根运行时 `app` 不在 sys.path，基线同样失败（预先存在的问题）；验证用等价命令在 PYTHONPATH 追加 `template` 后通过。9 个无关已修改文件前后 hash 完全一致。
+- REVIEW_PACKET 已写入证据目录；ZCode/Terra 未调用（按计划由 Codex 做最终 bounded review）。
