@@ -1183,3 +1183,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode Start Plan failed model creation; the configured BigModel Coding Plan CLI reached GLM-5.3-Flash but produced no verdict after about four minutes. No independent ZCode PASS was obtained.
 - PR review/merge and field point, port, and actual-cost gates remain open; overall progress estimate remains about 30% of ten capabilities / 75% of the foundation batch, without official weighting.
 - Details: `2026-10-04-langguo-core-payload-cycle-review.md`.
+
+## 2026-10-04 — Langguo Core PR #2 latest validation and progress
+
+- PR #2 head `dafb171` remains OPEN / non-Draft / MERGEABLE with no formal review decision. CI and Release package checks passed; exact wheel Fake-adapter smokes passed offline.
+- The new indirect tuple-cycle regression test passed locally and received a ZCode read-only PASS limited to that test. No phase gate advanced; field points/ports and actual-cost evidence remain open, and capabilities 7–10 remain deferred.
+- Rough progress remains about 30% of the ten-capability roadmap / 75% of the foundation batch; no official workload weighting exists.
+- Details: `2026-10-04-langguo-core-pr2-latest-validation.md`.

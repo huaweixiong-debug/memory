@@ -1,0 +1,8 @@
+# Langguo Core PR #2 latest validation and progress — 2026-10-04
+
+- PR #2 head `dafb171c2ea70a3ad9fac699919077db7ada2fe1` is OPEN, non-Draft, MERGEABLE, with empty `reviewDecision`. CI run `37141562144` and Release run `37141562343` passed the Python 3.10/3.11/3.12 jobs and package preflight; Release publishing was skipped for the PR event.
+- The tuple-mediated list→tuple→list cycle regression test passed locally (1 passed). ZCode GLM-5.3-Flash read-only review returned PASS for that test only, not for the full PR or GitHub review.
+- The exact dafb171 Release wheel passed isolated offline install/import and Morocco label / ATEQ-F620-Laser mark Fake-adapter smoke. No pytest rerun, physical I/O, LIVE, field, production, or actual-cost acceptance occurred.
+- Overall estimate remains roughly 30% of the ten-capability roadmap and 75% of the current foundation batch; no official workload weighting exists. Morocco semantics/ports, independent ATEQ points/ports, actual-cost evidence, formal PR review/merge, and capabilities 7–10 remain open or deferred; no phase gate advanced.
+- The two company roadmap Markdown files were verified as valid UTF-8 without BOM or control characters after synchronization: implementation ledger SHA-256 `BDAAC760D2C10D8384EB7E87FD826B8120859795CBAB26005AC87A4F4A5CE94B`; overview SHA-256 `5F7EF155CAAF3F18B0D5A95C0266A29874CB612A24707C31341696CC8BE56A44`. This is document-integrity evidence, not roadmap acceptance.
+- Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-core-tuple-cycle-test\FINAL_REVIEW_PACKET.md` and `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-corepr2-dafb171-wheel-pilot-compatibility\verification.json`.
