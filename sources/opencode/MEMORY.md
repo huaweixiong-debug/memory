@@ -708,3 +708,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - REVIEW_PACKET: `C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-checkpoint-keyfix\REVIEW_PACKET.md`. Terra no longer used per user; Codex does final bounded review.
 - Follow-up: real train in isolated env `yida-mmdet-ab-20261003` still pending; after train confirm `best_coco_bbox_mAP_epoch_*.pth` preserved and stable `best_valid_bbox_map.pth` created, then eval/select/report.
 
+
+---
+
+## 2026-10-03 OpenCode 会话结论：yida mmdet config 引用修正
+
+- 工程根：`D:\ultralytics-main`；证据目录：`C:\Users\Administrator\.codex\opencode-executor\runs\20261003-yida-mmdet-config-ref-fix`
+- 在 `benchmark.py` 中仅修正两条 `mmdet_config`：去掉多余 `configs/` 段，改为 `mmdet::faster_rcnn/...` 与 `mmdet::cascade_rcnn/...`（官方 MMEngine `{package}::` 写法）。
+- 本 OpenCode 实现只做了 `py_compile` + 源字符串校验；未生成配置、未训练、未跑 check-env、未调用 Terra。
+- 待办（Codex 侧）：审阅补丁后重新生成 `generated_configs/*`（现存 artifacts 仍带旧路径），再在隔离 GPU 环境跑非训练 `check-env` 验证实例化。
+- 该目录不是 Git 仓库；diff 已写入 REVIEW_PACKET 的 before/after 文本。
