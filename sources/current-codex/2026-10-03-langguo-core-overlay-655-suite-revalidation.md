@@ -1,0 +1,8 @@
+# Langguo Core current local overlay and cross-pilot revalidation (2026-10-03)
+
+- Source: Codex current account; continue the ten-capability roadmap from current checkout evidence.
+- OpenCode CLI used DeepSeek V4.1 Flash/max to audit the existing local Core overlay and fix one reproducible README serial-example defect: the in-memory Fake lacked `reset_input_buffer()`. The extracted example now records and replays successfully.
+- A fresh isolated snapshot from Core HEAD `6d278e8b7ebfc6620828111de6e9602161e458f7`, overlaid with the exact 11 local modified paths, passed five offline suites on Python 3.10.11: Core 194, template 12, Morocco root 179, Morocco `python_app` 141, ATEQ 129; total 655 passed, zero skipped. All imports resolved to the snapshot source; Morocco (1009 files), ATEQ (109 files), and snapshot (27 files) manifests were unchanged before/after.
+- ZCode Start Plan / GLM-5.3-Flash/high reviewed the local code overlay and the appended compatibility evidence read-only. It found no new code correctness issue and no factual/boundary error in the current evidence section. This is private review, not GitHub approval.
+- `docs/pilot-compatibility.md` now preserves the prior 8-path/650-pass historical record and appends the current 11-path/655-pass matrix with source hashes and scope limits.
+- PR #2 remains OPEN/CLEAN at the unchanged head with empty `reviewDecision`; the 11 local paths remain uncommitted and are not covered by remote CI. No push, merge, tag, release, or phase-gate advance occurred. Morocco/ATEQ points and ports, Morocco signal semantics, and actual cost evidence remain open.
