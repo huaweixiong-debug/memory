@@ -1234,5 +1234,6 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 ## 2026-10-04 — Langguo Core consolidated nine-file candidate
 
 - Codex accepted the bounded offline candidate; separate Core/template/Morocco/ATEQ/Traceability suites passed, but no roadmap gate advanced and readiness remains about 33% (30–35%).
-- ZCode review attempts returned no usable verdict. Candidate remains local, uncommitted, and outside PR #2.
+- ZCode Start Plan / GLM-5.3-Flash / high returned read-only PASS via the user-level failover helper; no quota error or fallback, and provider config was restored byte-for-byte.
+- The pinned softprops/action-gh-release v3.0.3 tag was verified to peel to the exact workflow SHA. Candidate remains local, uncommitted, and outside PR #2.
 - Details: 2026-10-04-langguo-core-consolidated-nine-file-final-acceptance.md.
