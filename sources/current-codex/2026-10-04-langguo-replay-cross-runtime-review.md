@@ -1,0 +1,8 @@
+# Langguo Core JSONL replay cross-runtime regression — 2026-10-04
+
+- Overall ten-capability roadmap estimate remains approximately 33% (30–35%) by capability/gate readiness; this local test hardening did not advance a formal roadmap gate.
+- In the detached local Core snapshot at `88a5b6ed1b9dbee904f066606f68a183bd960a29`, OpenCode changed only `tests/test_recording.py`: deep nested replay accepts the two verified line-numbered `RecordingError` paths (JSON parser recursion or the `EventEnvelope` depth guard), and a deterministic monkeypatch test covers the parser `RecursionError` mapping.
+- Python 3.10.11: focused replay 67 passed and full Core suite 201 passed. Python 3.14.2: focused replay 67 passed and the selected recursion/invalid-JSON/duplicate-key set 5 passed. Python 3.11/3.12 were not available locally; no local result is claimed for them. Mutation checks confirmed removing the parser handler lets `RecursionError` escape; `git diff --check` passed.
+- ZCode CLI / BigModel Start Plan / GLM-5.3-Flash / high completed a read-only review with PASS. It confirmed the revised two-path test resolves its earlier CPython 3.12 threshold finding and the Python 3.14 alternate path. This is not GitHub review or approval. The ZCode model configuration was restored byte-for-byte afterward.
+- Project changes remain local and uncommitted; no project push, merge, release, deployment, or field action occurred. CI on 3.11/3.12 and formal PR/phase gates remain separate evidence.
+- Evidence run: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-lg-core-replay-cross-runtime-regression\`; target worktree: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-lg-core-review-hardening-fix1\worktree`.
