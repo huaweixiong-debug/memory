@@ -1237,3 +1237,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode Start Plan / GLM-5.3-Flash / high returned read-only PASS via the user-level failover helper; no quota error or fallback, and provider config was restored byte-for-byte.
 - The pinned softprops/action-gh-release v3.0.3 tag was verified to peel to the exact workflow SHA. Candidate remains local, uncommitted, and outside PR #2.
 - Details: 2026-10-04-langguo-core-consolidated-nine-file-final-acceptance.md.
+
+## 2026-10-05 — Morocco historical source and Traceability recheck
+
+- Scope extension to the prior bounded P-drive/reference scan found a historical Y-drive `251212` barcode/config/template set. No inspected evidence links it to current/in-service deployment; capability 5 source/SSOT remains open.
+- Revalidated the synthetic-only Traceability pilot under Python 3.10.11 with an isolated Core wheel: 88 passed. This does not establish product SSOT or advance a phase.
+- Overall roadmap estimate remains about 33% (30–35%); no gate advanced.
+- Details: `2026-10-05-morocco-historical-source-and-traceability-recheck.md`.
