@@ -1,0 +1,7 @@
+# 2026-10-04 — Langguo Core local hardening candidate
+
+- On detached PR #2 head 88a5b6ed1b9dbee904f066606f68a183bd960a29, OpenCode DeepSeek V4.1 Flash/max prepared a six-file isolated candidate: atomic exclusive transcript creation, exact top-level event schema-version comparison, and strict boolean validation for all five RuntimePolicy gates.
+- OpenCode recorded 157 focused tests and 239 Core tests passing; Codex performed static final acceptance PASS without rerunning tests.
+- ZCode CLI Start Plan / GLM-5.3-Flash / high and fallback BigModel Coding Plan / GLM-5.3-Flash / high both returned no usable review output in the bounded attempts. Do not claim a ZCode verdict. The saved provider configuration was restored byte-for-byte.
+- Candidate remains uncommitted and outside remote PR #2. No roadmap gate advanced; ten-capability readiness remains roughly 33% (30–35%). The open point/port, LIVE/site, Traceability source, and actual-cost gates remain separate.
+- Evidence: C:/Users/Administrator/.codex/opencode-executor/runs/20261004-lg-core-schema-policy-validation/CODEX_FINAL_ACCEPTANCE.md and the roadmap ledger at P:/Langguo_AI/company/outputs/01a0dc5b-a613-7a30-9675-6be7a44f5ddd/10项能力路线图门禁总览_2026-10-01.md.

@@ -1223,3 +1223,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 
 - Morocco reference code documents the expected barcode/date INI and label-template inputs, but the referenced original configs were not found in the bounded project/archive scan. Keep product SSOT and M0.5/M0.4 electrical-source gates open; no roadmap phase advanced.
 - Details: `2026-10-04-morocco-barcode-source-gap-review.md`.
+
+## 2026-10-04 — Langguo Core local hardening candidate
+
+- Codex statically accepted a six-file local candidate for exclusive transcript creation, exact event schema-version comparison, and strict RuntimePolicy gate booleans; OpenCode recorded 157 focused and 239 full Core tests passing.
+- ZCode Start Plan/high and BigModel Coding Plan/high CLI attempts produced no usable verdict; provider configuration was restored byte-for-byte. Do not attribute a ZCode PASS.
+- Candidate remains uncommitted and outside remote PR #2; no roadmap gate advanced, readiness remains about 33% (30–35%).
+- Details: 2026-10-04-lg-core-local-hardening-candidate.md.
