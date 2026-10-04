@@ -1,0 +1,9 @@
+# 2026-10-05 LG Industrial Core and roadmap revalidation
+
+Source: Codex current account.
+
+- Python 3.10.11 offline revalidation: LG Industrial Core **281 passed** (one expected warning from the duplicate `.dist-info/METADATA` negative fixture); standard project template **12 passed**. `git diff --check` passed.
+- Existing local candidate wheel: 20,089 bytes, SHA-256 `30F5A40A7110C4CAD54ED43E40F110B942FF67DEE03CE16C203C31F4FFABBD78`. Existing sdist: 35,275 bytes, SHA-256 `EDAE7D0665370CDEADBB159E163C099C4013B1FC9629FE98218F42638FD00A1E`. Each package artifact contains eight Core Python modules matching candidate source; package identity preflight passes for version 0.1.0. These artifacts were checked, not rebuilt.
+- PR #2 remained OPEN/MERGEABLE at `88a5b6ed1b9dbee904f066606f68a183bd960a29`, with empty GitHub `reviewDecision`. Local candidate had 11 uncommitted entries; no project commit, push, PR update, merge, tag, or release was performed.
+- Ten-capability overall progress remains estimated at about **33% (30–35%)**, measured by delivery and gate readiness. Morocco/ATEQ field sources and PLC points/ports, LIVE acceptance, current Traceability SSOT, actual cost evidence, and later capability gates remain open. Offline checks do not advance those gates.
+- Updated the roadmap ledger and Codex acceptance report with this evidence while preserving their prior byte prefixes. The verified outputs and preimages are under `C:\Users\Administrator\.codex\opencode-executor\runs\20261005-progress-reassessment` and `...\20261004-morocco-historical-barcode-audit\CODEX_FINAL_ACCEPTANCE.md`.
