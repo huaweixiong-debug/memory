@@ -1276,3 +1276,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 
 - Local Python 3.10.11 joint-wheel smoke and installed template tests passed; ZCode Start Plan / GLM-5.3-Flash / high returned read-only PASS. Hosted CI and later roadmap gates remain open; readiness remains about 33%.
 - Details/evidence: 2026-10-05-langguo-core-template-ci-artifact-integration.md.
+
+## 2026-10-05 — LG Core candidate consolidation and offline pilot matrix
+
+- Candidate remains an uncommitted overlay at PR #2 head `88a5b6e`; offline Core 282 and template 12 passed, plus installed-wheel Morocco/ATEQ/Traceability suites 179/141/129/93 and unchanged 148-entry input manifest.
+- No phase gate advanced; overall readiness remains about 33% (30–35%). Current ZCode Start Plan and BigModel fallback reviews returned no verdict; the earlier ZCode PASS applies only to the prior nine-file overlay.
+- Details: `2026-10-05-langguo-core-candidate-consolidation.md`.
