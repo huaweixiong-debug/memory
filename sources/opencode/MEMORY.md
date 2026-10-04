@@ -816,3 +816,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - `git diff --check` exit 0；工作树 status 恰为 9 个 M、无未跟踪；源工作树 status 与开始时一致；未 commit/push/PR/release/LIVE；无 phase gate 推进。
 - REVIEW_PACKET：`...\20261004-lg-core-consolidated-overlay\REVIEW_PACKET.md`（含完整 634 行合并 diff，SHA-256 `048858E4…`），证据在 `verification\` 与 `artifact\`。
 
+## 2026-10-05 opencode: Morocco/ATEQ 精确 Release wheel 修正命令离线复验同步（executor）
+
+- 目标工程根目录 exactly `\\100.117.1.6\projects\Langguo_AI`；证据运行目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261005-morocco-ateq-roadmap-revalidation`；两者不同、不可混淆。
+- 仅向 `company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\10项能力路线图门禁总览_2026-10-01.md` 追加一个 2026-10-05 日期节：精确 PR #2 Release wheel 19,167 B、SHA-256 `8C4548F1…`、head `88a5b6e`；Python 3.10.11 下 Morocco 根 179、python_app 141、ATEQ 129 passed（0 failed/skipped，导入仅解析隔离安装目标）；首轮设置问题（Morocco 缺显式 `LG_INDUSTRIAL_CORE_SOURCE`、ATEQ 未以试点根为 cwd）已由修正命令取代，不得与产品失败混记；136 文件源清单前后一致；门禁不推进、总体估算仍约 33%。
+- 字节校验：前映像 94,036 B / SHA-256 `BBD809FF…`；追加 +2,608 B（CRLF、UTF-8 无 BOM，含 1 空行分隔）；末文件 96,644 B / SHA-256 `E66CCD3F…`；前 94,036 字节前缀 SHA-256 与逐字节比较均等于前映像。
+- 证据：`...\20261005-morocco-ateq-roadmap-revalidation\REVIEW_PACKET.md`、`verification-append.txt`；测试总结 `...\20261005-morocco-ateq-exact-release-wheel-revalidation\summary-final.json`（`ateq-pytest-corrected.txt` 为被取代的设置错误日志；最终 ATEQ 日志为 `ateq-pytest-corrected-cwd.txt`）。
+
