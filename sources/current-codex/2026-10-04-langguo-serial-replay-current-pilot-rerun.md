@@ -1,0 +1,5 @@
+# Langguo serial replay current pilot rerun — 2026-10-04
+
+Source: Codex current account. Revalidated the current Core local source overlay at detached HEAD `88a5b6ed1b9dbee904f066606f68a183bd960a29` against the shared offline pilots with Python 3.10.11, `LG_INDUSTRIAL_CORE_SOURCE` set to that worktree's `src`, Qt offscreen, and pytest cache/bytecode disabled. Morocco root passed 179 tests on a serial rerun; Morocco `python_app` passed 141; ATEQ passed 129. One Morocco root test with a 0.2-second synthetic serial timeout failed during concurrent runs, then passed by itself and in the full serial rerun. The initial concurrent failure is scheduling-sensitive evidence, not a reproduced product defect.
+
+A before/after manifest over the Morocco and ATEQ pilot trees matched: 1,118 files, zero added, removed, or changed by size/mtime. These suites validate offline compatibility with the updated Core parser overlay only. Overall roadmap estimate remains about 33% (30–35%); no phase gate advanced. PR #2 is still OPEN/CLEAN with no formal review decision. No project code was committed or pushed; no LIVE or field action occurred.
