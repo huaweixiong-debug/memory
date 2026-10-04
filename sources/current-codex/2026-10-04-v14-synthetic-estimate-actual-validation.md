@@ -1,0 +1,6 @@
+# 2026-10-04 — V14 synthetic estimate-to-actual cycle validation
+
+- On a disposable V14 copy, an isolated synthetic BOM/labor scenario exercised the estimate-to-recorded-actual formulas. formulas 1.3.4 on Python 3.10.11 resolved all 4,200 formulas with zero errors; 28 expected results passed, including estimated total 2,900, recorded actual 2,680, variance -220, and rework 120 / 1 hour.
+- A negative case with a rework hour but no reason remained incomplete, excluded labor/rework from aggregate actuals, and withheld project variance; all 8 fail-closed expectations passed.
+- The original V14 file was not written and retained SHA-256 D020986F47AE7F7C41A1FF4E7016263096E94644F8DBEE16BDABA423BE73AE87. openpyxl warned that unsupported/conditional-formatting extensions may be removed from disposable copies, so this is formula-engine evidence, not Excel/WPS native recalculation or rendering.
+- Synthetic values are not actual-cost evidence. The real purchase/payment/invoice/delivery/acceptance, BOM, labor, and rework evidence gate remains open; no roadmap phase advances, overall readiness stays about 33% (30–35%).
