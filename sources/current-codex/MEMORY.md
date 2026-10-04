@@ -1218,3 +1218,8 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Isolated Core diagnostic fix accepted after 219 combined Core/template tests, a ZCode Start Plan GLM-5.3-Flash/high PASS review, and Codex final static review; temporary ZCode configuration restored byte-for-byte.
 - Candidate remains outside open PR #2 and uncommitted. The change did not advance a roadmap phase; readiness remains about 33% (30–35%).
 - Details: `2026-10-04-lg-core-comparison-presence-review.md`.
+
+## 2026-10-04 — Morocco Traceability barcode source gap review
+
+- Morocco reference code documents the expected barcode/date INI and label-template inputs, but the referenced original configs were not found in the bounded project/archive scan. Keep product SSOT and M0.5/M0.4 electrical-source gates open; no roadmap phase advanced.
+- Details: `2026-10-04-morocco-barcode-source-gap-review.md`.
