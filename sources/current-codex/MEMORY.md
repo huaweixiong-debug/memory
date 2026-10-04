@@ -1244,3 +1244,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Revalidated the synthetic-only Traceability pilot under Python 3.10.11 with an isolated Core wheel: 88 passed. This does not establish product SSOT or advance a phase.
 - Overall roadmap estimate remains about 33% (30–35%); no gate advanced.
 - Details: `2026-10-05-morocco-historical-source-and-traceability-recheck.md`.
+
+## 2026-10-05 — Morocco/ATEQ offline revalidation and Core PR checkpoint
+
+- Offline Python 3.10.11 suites passed on the exact local Core candidate: Morocco root 179, Morocco `python_app` 141, ATEQ 129, Traceability 88. No hardware/LIVE evidence; product SSOT and field gates remain open.
+- Core PR #2 remains OPEN/MERGEABLE at `88a5b6e`, without formal review decision; tested candidate remains local and uncommitted.
+- No phase advanced; roadmap estimate remains about 33% (30–35%).
+- Details: `2026-10-05-morocco-ateq-pilot-and-core-pr-recheck.md`.
