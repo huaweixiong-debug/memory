@@ -9,3 +9,9 @@ Source: Codex current account.
 - ZCode CLI Start Plan / GLM-5.3-Flash / high returned independent read-only PASS on this review. The CLI main route was temporarily set to high for the request, then restored to max. This confirms that this CLI route worked for this invocation; it does not establish remaining quota.
 - GitHub-hosted CI, Python 3.11/3.12, formal PR review, merge/release, field/LIVE, and actual-cost gates remain open. No phase advanced; overall ten-capability readiness remains roughly 33% (30–35%).
 - Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261005-core-wheel-template-ci-hardening-fix1.
+
+## Additional verification and current PR checkpoint (2026-10-05)
+
+- The isolated candidate Core wheel passed the complete Core suite: 196 passed on Python 3.10.11; a pytest startup plugin asserted import provenance from the wheel target. The joint Core/template workflow smoke also passed on Python 3.12.14.
+- PR #2 remains OPEN/CLEAN at 88a5b6e with no formal review decision. Its existing 3.10/3.11/3.12 CI/Release and package-preflight checks passed on 2026-10-03, but do not cover the local workflow edit. GitHub main still declares xz-industrial-core; PR head declares lg-industrial-core.
+- No project push/PR update/merge/release or roadmap gate advancement. Readiness stays about 33% (30–35%).
