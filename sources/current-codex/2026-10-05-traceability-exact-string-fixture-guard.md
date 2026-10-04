@@ -1,0 +1,8 @@
+# 2026-10-05 Traceability exact-string fixture guard
+
+[Source: Codex current account]
+
+- Follow-up to the earlier station allowlist fix: a `str` subclass storing `UNAPPROVED-STATION` and spoofing `__eq__` could still pass the old tuple membership check as `PILOT-SIM`. A no-write probe reproduced acceptance on Python 3.10.11. `_require_fixture()` now requires `type(value) is str` before equality comparison; this protects station, barcode, product, and scanner-output fixture paths while preserving the generic non-echo `ValueError`.
+- Added `_SpoofedStation` regression coverage proving equality spoof, generic rejection, no rejected-value echo, no port calls, and zero cycle/event rows. Against the exact pre-change module copied into an isolated CWD, the test failed as expected with `DID NOT RAISE ValueError`; imported module path and preimage hash were verified. Fixed source: 11 focused checks passed and the full Traceability suite passed 93 tests, using the isolated Core 0.1.0 target with SHA-256 `8C4548F16136B298CD998F316054A680FED94F9116A3224C2483770B65B15A87`.
+- Only `app/traceability.py` and `tests/test_traceability.py` changed; 29-file inventory and all pre-existing Git status entries were preserved. No project commit/push/PR/merge/release/device/LIVE action occurred. Evidence was appended to the ten-capability roadmap without advancing gates; overall estimate remains about 33% (30–35%).
+- OpenCode CLI DeepSeek V4.1 Flash/max implemented. ZCode CLI showed `custom:bigmodel-plan/GLM-5.3-Flash` as the current model but the bounded review request returned no verdict; reasoning effort was not visible. Codex independently reviewed the source, test, red proof, and scope evidence with no blocking finding. This is not a ZCode or GitHub approval.
