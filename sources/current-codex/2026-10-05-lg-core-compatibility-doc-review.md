@@ -1,0 +1,8 @@
+# 2026-10-05 LG Core compatibility document refresh
+
+Source: Codex current account.
+
+- Updated only `docs/pilot-compatibility.md` in the detached PR #2 candidate at `88a5b6ed1b9dbee904f066606f68a183bd960a29` to append current offline evidence: Core 281 passed, template 12 passed, existing local wheel/sdist identities and eight-module parity. The artifacts were rechecked, not rebuilt. Historical bytes were preserved as an exact prefix; `git diff --check` passed.
+- OpenCode CLI / DeepSeek V4.1 Flash / max performed the bounded documentation update and wrote a review packet. ZCode Start Plan / GLM-5.3-Flash / high returned `Model creation failed`; BigModel Coding Plan / GLM-5.3-Flash / high fallback returned PASS for this documentation packet only. No source-code or GitHub approval is implied, and the shared ZCode provider config was not changed.
+- PR #2 remained OPEN/MERGEABLE with empty GitHub `reviewDecision`; no project commit, push, PR edit, merge, tag, or release occurred. No phase gate advanced. Overall ten-capability progress remains approximately 33% (30–35%), with Morocco/ATEQ field evidence, PLC points/ports, LIVE, Traceability SSOT, actual cost evidence, and later capability gates still open.
+- Detailed plan, review packet, Start Plan/fallback outputs, and Codex acceptance are in `C:\Users\Administrator\.codex\opencode-executor\runs\20261005-core-compatibility-doc-refresh`.
