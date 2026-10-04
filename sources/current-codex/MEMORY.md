@@ -1265,3 +1265,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Pilot inputs were unchanged across 148 manifest entries. This remains Fake/SIMULATE compatibility evidence only; no remote CI, PR update, field/LIVE acceptance, release, or phase gate advancement.
 - Overall ten-capability estimate remains about 33% (30–35%); field/SSOT/port, formal PR/release, and actual-cost gates remain open.
 - Details: 2026-10-05-lg-core-patched-artifact-pilot-matrix.md.
+## 2026-10-05 — Langguo Core rename and estimate-to-actual gates
+
+- The GitHub repository name is LG, but default main still declares the package name xz-industrial-core; open PR #2 changes it to lg-industrial-core and remains unreviewed/unmerged.
+- ZCode Start Plan is not enabled in the current provider config; BigModel Coding Plan GLM-5.3-Flash/high timed out without a verdict. Local config was restored exactly.
+- Cost workbook V14 remains a synthetic-validated capture template. The targeted YIDA project folder has no located actual payment, invoice, receiving/acceptance, labor, or rework vouchers; real-cost gate remains open.
+- No roadmap phase advanced. Details: 2026-10-05-langguo-core-rename-and-cost-gates.md.
