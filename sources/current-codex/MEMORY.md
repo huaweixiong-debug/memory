@@ -1212,3 +1212,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Updated the living company roadmap ledger only: replaced stale current PR summary and rows 1–3, appended exact 88a5b6e evidence. Baseline comparison confirms all other 721 historical lines byte-identical; V14 workbook and capabilities 4–10 were untouched. No roadmap gate advanced; field points/ports and actual-cost evidence remain open.
 - ZCode Start Plan GLM-5.3-Flash/high and BigModel Coding Plan GLM-5.3-Flash/high CLI attempts returned no usable review output. No ZCode PASS or formal GitHub approval is claimed; the ZCode config was restored byte-for-byte to its original state. Codex completed the bounded final review.
 - Evidence: `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-roadmap-pr88a5-exact-wheel-sync\REVIEW_PACKET.md`, `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-exact-head-wheel-pilot-revalidation\REVIEW_PACKET.md`, and `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`.
+
+## 2026-10-04 — Langguo Core missing-key versus explicit-null review
+
+- Isolated Core diagnostic fix accepted after 219 combined Core/template tests, a ZCode Start Plan GLM-5.3-Flash/high PASS review, and Codex final static review; temporary ZCode configuration restored byte-for-byte.
+- Candidate remains outside open PR #2 and uncommitted. The change did not advance a roadmap phase; readiness remains about 33% (30–35%).
+- Details: `2026-10-04-lg-core-comparison-presence-review.md`.
