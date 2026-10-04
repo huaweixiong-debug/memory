@@ -25,3 +25,10 @@
 阈值及计数指标由同一验证集选取，属于探索性验证结果；test 仅 2 张，不能据此声称独立泛化已确认。需要新增足量独立测试图后再做最终部署判定。
 
 完整报告：D:\ultralytics-main\inference_results\hengchuang_v48_triplet_20261004\report\valid_comparison_zh.md
+
+## YOLO26m 1024 追加验证（2026-10-04）
+
+- 在同一 v48 隔离副本 train=634、valid=143 上，从 COCO 预训练训练 YOLO26m：Ultralytics 8.4.172、20 epochs、seed=42、imgsz=1024、batch=4；test=2 未使用，原始数据未改。
+- YOLO26m 官方 COCOeval valid AP50=0.9615、AP50:95=0.5883、逐图三类计数全对率=76.2%、mean inference=19.71ms；对照新训 YOLO26s 1024 为 0.9550/0.5816/68.5%/13.64ms。M 有小幅准确率与计数提升，耗时增加。
+- 替换进 YOLO26m+Faster+Cascade WBF 后为 0.9743/0.6273/72.7%，成员延迟和约 113.24ms；现用 YOLO26s 1536 参考仍为 AP50:95=0.6361、计数全对率=85.3%、23.81ms。仍不建议替换现用模型；v48 test 只有 2 张，泛化未确认。
+- 完整报告：D:\ultralytics-main\inference_results\hengchuang_v48_triplet_20261004\report\yolo26m_1024_zh.md；checkpoint 位于同目录 checkpoints\yolo26m_1024\best.pt。
