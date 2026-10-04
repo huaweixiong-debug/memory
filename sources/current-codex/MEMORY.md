@@ -1271,3 +1271,8 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode Start Plan is not enabled in the current provider config; BigModel Coding Plan GLM-5.3-Flash/high timed out without a verdict. Local config was restored exactly.
 - Cost workbook V14 remains a synthetic-validated capture template. The targeted YIDA project folder has no located actual payment, invoice, receiving/acceptance, labor, or rework vouchers; real-cost gate remains open.
 - No roadmap phase advanced. Details: 2026-10-05-langguo-core-rename-and-cost-gates.md.
+
+## 2026-10-05 — Langguo Core/template CI artifact integration
+
+- Local Python 3.10.11 joint-wheel smoke and installed template tests passed; ZCode Start Plan / GLM-5.3-Flash / high returned read-only PASS. Hosted CI and later roadmap gates remain open; readiness remains about 33%.
+- Details/evidence: 2026-10-05-langguo-core-template-ci-artifact-integration.md.
