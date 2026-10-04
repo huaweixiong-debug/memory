@@ -1259,3 +1259,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode BigModel Coding Plan / GLM-5.3-Flash plan-mode review returned no verdict in about 120 seconds; no ZCode PASS is claimed.
 - Patch remains uncommitted and outside PR #2; no roadmap gate advanced, overall estimate remains about 33% (30–35%).
 - Details: 2026-10-05-lg-core-event-key-canonicalization.md.
+## 2026-10-05 — LG Core patched package and four-pilot offline matrix
+
+- The local EventEnvelope key-validation patch built matching wheel/sdist artifacts; both isolated install smoke checks passed. Four Python 3.10.11 offline suites imported from the patched wheel: Morocco root 179, Morocco python_app 141, ATEQ 129, Traceability 93 (542 total).
+- Pilot inputs were unchanged across 148 manifest entries. This remains Fake/SIMULATE compatibility evidence only; no remote CI, PR update, field/LIVE acceptance, release, or phase gate advancement.
+- Overall ten-capability estimate remains about 33% (30–35%); field/SSOT/port, formal PR/release, and actual-cost gates remain open.
+- Details: 2026-10-05-lg-core-patched-artifact-pilot-matrix.md.

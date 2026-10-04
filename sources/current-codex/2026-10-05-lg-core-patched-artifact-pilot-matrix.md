@@ -1,0 +1,7 @@
+# 2026-10-05 — LG Core patched package and four-pilot offline matrix
+
+- From exact PR #2 base 88a5b6ed1b9dbee904f066606f68a183bd960a29 plus an isolated two-file local EventEnvelope key-validation patch, built wheel (19,331 bytes; SHA-256 368410E6D029C3BE8022164D916FBBEE691EBBB408875246757F4A84F1FF0B66) and sdist (32,767 bytes; SHA-256 E30C919FA0CCA8D913CD166A71BE512E7F5021ADF4FEB30A6ECDC55AA6D74321). Packaged events.py hashes matched source; isolated install smoke passed for both artifacts.
+- Python 3.10.11 pilot tests imported from the isolated patched wheel: Morocco root 179, Morocco python_app 141, ATEQ 129, Traceability 93; total 542 passed. The first python_app run used the wrong working directory and had 1 failed/140 passed from package shadowing; correct-cwd rerun passed all 141 without project edits.
+- Pilot input manifest remained identical at 148 paths/sizes/hashes. Offline Fake/SIMULATE only; no device, LIVE, production/customer data, remote CI, PR update, merge, release, or deployment.
+- PR #2 remains open at the unchanged remote head; the isolated patch is uncommitted. No capability gate advanced. Ten-capability readiness remains about 33% (roughly 30–35%); field/SSOT/port evidence, formal PR/release gates, and actual-cost vouchers remain open.
+- Company roadmap appendix: 10项能力路线图门禁总览_2026-10-01.md. Evidence: C:\Users\Administrator\.codex\opencode-executor\runs\20261005-core-patched-wheel-pilot-matrix\CODEX_FINAL_ACCEPTANCE.md and pilot-matrix-final-summary.json.
