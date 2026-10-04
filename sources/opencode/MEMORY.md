@@ -805,3 +805,14 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 本会话不跑测试（计划要求，Codex 事后执行）。已完成验证：7/7 SHA-256 与参考一致且逐字节相同；867 条库存比对 missing=0、恰好 7 个白名单变更、越界 0；全会话仅这 7 个文件被写（touched-since 2026-10-04T00:00Z = 7）；142 个清单外路径均为 2026-09-27..30 预存缓存/agent 文件（原清单排除 .agent/.pytest_cache/__pycache__/部分 build pyc）；参考副本哈希未变；rg 静态审计无 test_mode PLC 残留（exit 1）。
 - REVIEW_PACKET：`...\20261004-morocco-pressure-mode-point-separation-source-integrate\REVIEW_PACKET.md`（SHA-256 `5E8B6A5D44A125BAC034971DA27FE54AED5694F0B6CECA0550B7497AA37225CA`，含完整 diff 与前后哈希表）。
 - 待办：Codex 以 PYTHONDONTWRITEBYTECODE=1、禁用 pytest cache，离线 Fake-only 运行聚焦 UI/点表测试、根套件与 python_app 套件；若应用字节与参考一致可沿用既有 ZCode PASS，否则对新的精确 packet 重跑 ZCode。
+
+## 2026-10-04 opencode: LG Core 九文件合并覆盖层离线复核（executor）
+
+- 目标工程根目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-lg-core-consolidated-overlay\worktree`；证据运行目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-lg-core-consolidated-overlay`；两者不同、不可混淆。基线 detached PR #2 head `88a5b6ed1b9dbee904f066606f68a183bd960a29`。
+- 合并来源（均只读、未编辑）：`20261004-lg-core-review-hardening-fix1\worktree`（八文件覆盖层，diff SHA-256 `3520EB…`）与 `20261004-lg-core-serial-exclusive-create\worktree`（六文件，仅取 policy/schema 部分，diff SHA-256 `B2D07D…`）。
+- 结果：恰好 9 个允许路径变更（+381/-22）：release.yml SHA pin、pilot-compatibility.md 追加记录、events.py/serial_recording.py/recording.py 递归加固、serial 独占创建、policy.py 严格 bool 门（5 字段非 bool 抛 TypeError）、recording.py `_deep_compare(exact_paths)` 仅对每信封顶层 `schema_version` 精确比较（嵌套 payload 中同名键仍享数值容差），及对应测试；serial 两文件与 prior 源逐字节相同（race 测试与递归测试保留，未复制 latest 的替代 race 测试）；policy.py 与 latest 源逐字节相同。
+- 验证（Python 3.10.11；全部 `-B`/`-p no:cacheprovider`/`PYTHONDONTWRITEBYTECODE=1`）：Core 250 passed；template 12 passed；Morocco root 179、python_app 141、ATEQ 129、Traceability 88（`LG_INDUSTRIAL_CORE_SOURCE`/PYTHONPATH 指向目标 src，import 探针全部解析到目标 src）；三个试点树 before/after manifest 0 变更（1009/109/66 文件），Traceability git status 14 项不变。
+- 本地包验证（构建依赖现成：Codex runtime bundled Python 3.12.14 + setuptools 84.0.0 + wheel 0.48.0，全程 `--no-index`/`--no-build-isolation`/`--no-deps`，未联网/未装包）：wheel 20,089 B SHA-256 `30F5A40A…`、sdist 35,275 B `EDAE7D06…`；载荷审计 8/8 模块与快照源一致；安装到 isolated target 后 import 解析到 target（wheel 与 sdist 均验证），wheel Core 250/template 12，sdist Core 250。
+- `git diff --check` exit 0；工作树 status 恰为 9 个 M、无未跟踪；源工作树 status 与开始时一致；未 commit/push/PR/release/LIVE；无 phase gate 推进。
+- REVIEW_PACKET：`...\20261004-lg-core-consolidated-overlay\REVIEW_PACKET.md`（含完整 634 行合并 diff，SHA-256 `048858E4…`），证据在 `verification\` 与 `artifact\`。
+
