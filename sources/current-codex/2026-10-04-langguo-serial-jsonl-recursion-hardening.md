@@ -1,0 +1,7 @@
+# Langguo serial JSONL replay recursion guard — 2026-10-04
+
+- Continuing the ten-capability roadmap. Readiness estimate remains about 33% (30–35%); this local hardening did not pass a formal phase gate.
+- On detached Core snapshot `88a5b6ed1b9dbee904f066606f68a183bd960a29`, the session delta was limited to `src/lg_industrial_core/serial_recording.py` and `tests/test_serial_recording.py`. `_parse_row` now maps a `json.loads` `RecursionError` to a line-numbered `SerialTranscriptError` with preserved cause; tests cover both deterministic handler mapping and portable deep valid JSON.
+- Python 3.10.11: serial recording tests 77 passed; full Core tests 203 passed. Python 3.14.2: serial recording tests 77 passed. Deep-input probes take the parser recursion path on 3.10.11 and the line-numbered request-field validation path on 3.14.2. Local Python 3.11/3.12 were unavailable. Diff check and two-file baseline/hash audit passed.
+- ZCode CLI / BigModel Start Plan / GLM-5.3-Flash / high returned read-only ACCEPT. Temporary model configuration was restored byte-for-byte. Evidence is in `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-lg-core-serial-replay-recursion-guard\`.
+- The roadmap gate overview received an append-only evidence note; its prior byte prefix was verified unchanged. PR #2 remains OPEN/MERGEABLE with empty `reviewDecision`; this detached local code is uncommitted and not included in PR CI. No project commit/push/merge/release or field/LIVE action occurred. PLC source/port semantics and actual cost receipts remain open gates.
