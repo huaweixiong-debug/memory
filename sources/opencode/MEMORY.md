@@ -796,3 +796,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 仅改 2 个允许文件：`app/trace_store.py` 新增 `_verify_event_row`，`events_for_cycle` 扩展 SELECT 后逐行校验解码信封与冗余列（cycle 归属、event_id 文本、kind、occurred_at 按 tz-aware 瞬时精确比较；等价偏移接受、1µs 差异拒绝；列时间戳非法/naive 也报错），任何不一致抛带 `cycle '…' event seq N` 上下文的 TraceStoreError，不产出/导出、不修复/变更行；`tests/test_trace_store.py` 新增 8 个聚焦测试（JSON cycle_id、三列篡改、naive/非法时间戳、等价偏移正例、export 拒绝且行不变）。
 - 验证：Python 3.10.11 / pytest 9.1.1 + 已装 exact PR#2 wheel target；focused 37 passed；全量 88/88（上一轮 80）；`git diff --check` 通过；git status 与基线一致；六项未触碰文件哈希（含 `.agent/state/TASK-0001.json`）不变；未提交/推送 pilot。
 - 证据：`...\20261004-traceability-event-row-consistency-fix\REVIEW_PACKET.md`（session diff +244/-12，另含 baseline/、logs/）。
+
+## 2026-10-04 opencode: Morocco 压力/模式点分离成果集成到源树（executor）
+
+- 目标工程根目录 exactly `\\100.117.1.6\projects\Langguo_AI\repos\lg-pilot-morocco-20260927`（即 `P:\Langguo_AI\repos\lg-pilot-morocco-20260927`）；证据运行目录 exactly `C:\Users\Administrator\.codex\opencode-executor\runs\20261004-morocco-pressure-mode-point-separation-source-integrate`；两者不同、不可混用。
+- 按 Codex 计划将已独立评审（ZCode GLM-5.3-Flash/high PASS）的 7 个文件从 `D:\CodexIsolated\morocco-pilot` 字节级复制进规范非 Git 源树：README.md、app/plc.py、app/ui_replica.py、config/points.toml、tests/test_dual_station_live_rules.py、tests/test_ui_replica_structure.py、python_app/tests/test_point_map_config.py；合计 +61/-47。
+- 变更语义：删除未溯源的 PLC test_mode 点（config `[points.test_mode]`、`REQUIRED_SIGNALS`），pressure 保持 A=M0.5/B=M0.4 且仅经管理员授权+二次确认的手动输出流程写入；移除 app/ui_replica.py 的 `_sync_test_mode_signal` 及全部 6 处调用（启动/模式切换/两处生产扫码/校准恢复/验证开始）；单测/双测保留于应用 StationSelection/周期/校准记录；手动输出安全路径未改动。
+- 本会话不跑测试（计划要求，Codex 事后执行）。已完成验证：7/7 SHA-256 与参考一致且逐字节相同；867 条库存比对 missing=0、恰好 7 个白名单变更、越界 0；全会话仅这 7 个文件被写（touched-since 2026-10-04T00:00Z = 7）；142 个清单外路径均为 2026-09-27..30 预存缓存/agent 文件（原清单排除 .agent/.pytest_cache/__pycache__/部分 build pyc）；参考副本哈希未变；rg 静态审计无 test_mode PLC 残留（exit 1）。
+- REVIEW_PACKET：`...\20261004-morocco-pressure-mode-point-separation-source-integrate\REVIEW_PACKET.md`（SHA-256 `5E8B6A5D44A125BAC034971DA27FE54AED5694F0B6CECA0550B7497AA37225CA`，含完整 diff 与前后哈希表）。
+- 待办：Codex 以 PYTHONDONTWRITEBYTECODE=1、禁用 pytest cache，离线 Fake-only 运行聚焦 UI/点表测试、根套件与 python_app 套件；若应用字节与参考一致可沿用既有 ZCode PASS，否则对新的精确 packet 重跑 ZCode。
