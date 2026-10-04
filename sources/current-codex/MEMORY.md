@@ -1230,3 +1230,9 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - ZCode Start Plan/high and BigModel Coding Plan/high CLI attempts produced no usable verdict; provider configuration was restored byte-for-byte. Do not attribute a ZCode PASS.
 - Candidate remains uncommitted and outside remote PR #2; no roadmap gate advanced, readiness remains about 33% (30–35%).
 - Details: 2026-10-04-lg-core-local-hardening-candidate.md.
+
+## 2026-10-04 — Langguo Core consolidated nine-file candidate
+
+- Codex accepted the bounded offline candidate; separate Core/template/Morocco/ATEQ/Traceability suites passed, but no roadmap gate advanced and readiness remains about 33% (30–35%).
+- ZCode review attempts returned no usable verdict. Candidate remains local, uncommitted, and outside PR #2.
+- Details: 2026-10-04-langguo-core-consolidated-nine-file-final-acceptance.md.
