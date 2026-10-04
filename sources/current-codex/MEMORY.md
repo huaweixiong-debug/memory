@@ -1251,3 +1251,11 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Core PR #2 remains OPEN/MERGEABLE at `88a5b6e`, without formal review decision; tested candidate remains local and uncommitted.
 - No phase advanced; roadmap estimate remains about 33% (30–35%).
 - Details: `2026-10-05-morocco-ateq-pilot-and-core-pr-recheck.md`.
+
+## 2026-10-05 — LG Core event payload key canonicalization
+
+- Exact PR #2 head 88a5b6e allowed a custom str subclass key to collide after JSON normalization; the isolated local fix now requires exact built-in str keys recursively.
+- Python 3.10.11: focused 115 passed, full Core suite 196 passed, diff check passed. OpenCode DeepSeek V4.1 Flash/max implemented; Codex accepted locally.
+- ZCode BigModel Coding Plan / GLM-5.3-Flash plan-mode review returned no verdict in about 120 seconds; no ZCode PASS is claimed.
+- Patch remains uncommitted and outside PR #2; no roadmap gate advanced, overall estimate remains about 33% (30–35%).
+- Details: 2026-10-05-lg-core-event-key-canonicalization.md.
