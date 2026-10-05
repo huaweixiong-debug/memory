@@ -1,0 +1,7 @@
+# 2026-10-05 LG Industrial Core merge and roadmap checkpoint
+
+- Source: Codex current account. GitHub current state: PR #2 merged at 938f2c51ac74ec280e2f0103e2172520594f8cf2; PR #3 merged at 2fd775d42e98a0380270464264c8e5bddb7ac725. Main tree equals PR #3 head tree and declares package lg-industrial-core version 0.1.0.
+- Main CI run 37250690144 succeeded on Python 3.10, 3.11, and 3.12. The PR #3 release checks and package preflight passed; no GitHub tag or release existed at the live check.
+- Offline wheel evidence against the PR #3 tree: Morocco root 179 passed, Morocco python_app 141 passed, ATEQ 129 passed, Traceability 93 passed. This evidence is synthetic/Fake/SIMULATE and does not establish field, PLC, port, customer, or production acceptance.
+- The roadmap overview and implementation ledger current summaries were refreshed; older historical sections were preserved. Verification: C:\Users\Administrator\.codex\opencode-executor\runs\20261005-roadmap-summary-refresh\verification.json.
+- Open gates: Morocco field port/behavior; independent ATEQ point/port evidence; Traceability product SSOT and field chain; actual BOM/payment/labor/rework evidence. V14 actual-entry cells remain blank. Do not treat contract commitments or offline tests as actual costs or field acceptance.
