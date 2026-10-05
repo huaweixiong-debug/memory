@@ -1,0 +1,8 @@
+# Langguo roadmap continuation — 2026-10-05
+
+- LG Industrial Core v0.1.0 was released from main commit 2fd775d42e98a0380270464264c8e5bddb7ac725; release workflow 37277815074 completed Python 3.10/3.11/3.12 CI, package preflight, and wheel/sdist publishing.
+- Traceability's offline SIMULATE pilot passed 93 tests plus 18 focused adversarial checks using the exact v0.1.0 wheel. ZCode Start Plan was unavailable because @zcode/tui was missing; the configured BigModel Coding Plan / GLM-5.3-Flash fallback returned PASS. Product SSOT and isolated site-chain evidence remain open; two store-hardening observations remain unimplemented.
+- V15 actual-cost source hash remained unchanged. Isolated WPS recalculation passed five synthetic completeness/source/zero/blank cases. Visual review found the full-sheet print layout too small with blank pages; a two-page-wide trial split identifiers and expanded to 34 pages. Print-layout acceptance remains open; no real cost evidence was entered.
+- Morocco diagnostics remained blocked: only a historical 2025-05-12 plot.log was available, and OpenCode CLI / DeepSeek V4.1 Flash / max repeatedly hit a 32,000 reasoning-token length limit without changing allowed files or producing review packets. No field inputs or devices were accessed.
+- D40 has candidate video/CAD files but no labeled OK/NG set or accepted drawing rule; the equipment-document candidate lacks verifiable text, revision, and approval status. PLC port and ATEQ point flags remain unconfirmed.
+- Official roadmap addenda and evidence index: P:\Langguo_AI\company\outputs\01a0dc5b-a613-7a30-9675-6be7a44f5ddd\路线图证据索引_2026-10-05.md. Detailed run evidence is under C:\Users\Administrator\.codex\opencode-executor\runs\20261005-lg-roadmap-continuation\.
