@@ -1282,3 +1282,10 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 - Candidate remains an uncommitted overlay at PR #2 head `88a5b6e`; offline Core 282 and template 12 passed, plus installed-wheel Morocco/ATEQ/Traceability suites 179/141/129/93 and unchanged 148-entry input manifest.
 - No phase gate advanced; overall readiness remains about 33% (30–35%). Current ZCode Start Plan and BigModel fallback reviews returned no verdict; the earlier ZCode PASS applies only to the prior nine-file overlay.
 - Details: `2026-10-05-langguo-core-candidate-consolidation.md`.
+
+## 2026-10-05 — Langguo roadmap checkpoint synchronization
+
+- Morocco documentary/configuration point semantics are reconciled from source materials (26/26 A/B address matches); physical behavior/ports remain open, as do ATEQ independent points/ports.
+- The latest roadmap appendix preserves the local-vs-remote evidence boundary and leaves gates unchanged; estimate remains about 33% (30–35%) by gate readiness. V14 actual inputs remain blank; 7,980 yuan remains a contract commitment.
+- ZCode Start Plan/high and BigModel Coding Plan/high doc-review attempts returned no verdict; the CLI selector was restored exactly to its original Start Plan/max setting. This supersedes the earlier same-day provider-availability snapshot for this invocation only.
+- Details: `2026-10-05-langguo-roadmap-checkpoint-sync.md`.

@@ -1,0 +1,9 @@
+# 2026-10-05 Langguo roadmap checkpoint synchronization
+
+Source: Codex current account.
+
+- The 2026-10-04 Morocco source cross-check reconciles the documentary/configuration naming conflict: 26/26 A/B addresses match; A=M0.5 and B=M0.4 are labeled pressure-on outputs; current `points.toml` maps them to `pressure` and has no PLC `test_mode` point. This does not confirm physical wiring, signal behavior, or ports. Morocco `ports_confirmed=false`; ATEQ still lacks independent point/port sources and keeps both confirmation flags false.
+- Appended a dated checkpoint to the company roadmap implementation ledger and 10-capability overview. It keeps the local Core candidate separate from remote PR CI, records the latest local offline matrix, and leaves all roadmap gates unchanged. Overall estimate remains about 33% (roughly 30–35%) by capability/gate readiness, not elapsed labor or earned value.
+- V14 remains a capture template with 4,200 formulas and blank actual BOM/labor/rework inputs. The 7,980-yuan figure is a contract commitment, not actual/paid cost; the actual-cost gate remains open.
+- At this review checkpoint the ZCode Start Plan provider was enabled and exposed GLM-5.3-Flash/high, but the read-only request returned no verdict after about three minutes. The BigModel Coding Plan/high fallback also returned no verdict after five minutes. The CLI selector was restored byte-for-byte to its original Start Plan/GLM-5.3-Flash/max setting. This is the current invocation record and supersedes the earlier same-day provider-availability snapshot for these attempts; retain older notes as time-specific history.
+- Evidence: company `路线图实施台账_2026-09-28.md` and `10项能力路线图门禁总览_2026-10-01.md`; `C:\Users\Administrator\.codex\opencode-executor\runs\20261005-roadmap-checkpoint-sync\`.
