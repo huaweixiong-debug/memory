@@ -1287,5 +1287,5 @@ applies_to: cwd=D:\ultralytics-main; reuse_rule=Reuse commands and failure check
 
 - Morocco documentary/configuration point semantics are reconciled from source materials (26/26 A/B address matches); physical behavior/ports remain open, as do ATEQ independent points/ports.
 - The latest roadmap appendix preserves the local-vs-remote evidence boundary and leaves gates unchanged; estimate remains about 33% (30–35%) by gate readiness. V14 actual inputs remain blank; 7,980 yuan remains a contract commitment.
-- ZCode Start Plan/high and BigModel Coding Plan/high doc-review attempts returned no verdict; the CLI selector was restored exactly to its original Start Plan/max setting. This supersedes the earlier same-day provider-availability snapshot for this invocation only.
+- ZCode Start Plan/high and BigModel Coding Plan/high doc-review attempts and wrapper retries returned no verdict (120/180-second wrapper timeouts, no output); model-selection files were restored exactly. The wrapper timeout was not classified as quota exhaustion. This supersedes the earlier same-day provider-availability snapshot for this invocation only.
 - Details: `2026-10-05-langguo-roadmap-checkpoint-sync.md`.
