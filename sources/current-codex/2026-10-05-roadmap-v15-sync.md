@@ -1,0 +1,6 @@
+# 2026-10-05 V15 roadmap synchronization
+
+- Source: Codex current account. The official roadmap overview now reflects cost workbook V15 in capability 4; only that evidence cell changed. The implementation ledger appends one V15 evidence section; all prior V14 and PR #3 history remains byte-identical. Official document hashes: overview C5CFF4C173377D05A099337015870BDBA1A9350EB6B097E48E72CC9FF35A9424; ledger C9B7CE9118C95D01321E3B9AC55365705D8A4DE4D8EDBFCCB72D61D99143D06F.
+- Live GitHub check: PR #2 merge 938f2c51ac74ec280e2f0103e2172520594f8cf2; PR #3 merge 2fd775d42e98a0380270464264c8e5bddb7ac725; main at the PR #3 merge and CI run 37250690144 passed on Python 3.10/3.11/3.12. No tag or GitHub Release was present.
+- ZCode CLI read-only review returned PASS for the documentation delta. The wrapper-loaded config selects BigModel Coding Plan / GLM-5.3-Flash / high; the reviewer identified its custom binding as bigmodel-plan. No independent runtime reasoning telemetry was returned.
+- Gates remain open for actual-cost evidence/finance approval, Morocco and ATEQ field/point/port confirmation, Traceability SSOT, and formal release. Offline Fake/SIMULATE results remain offline evidence; no later phase advanced.
