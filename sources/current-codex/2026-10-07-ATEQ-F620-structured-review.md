@@ -14,4 +14,5 @@
 - 验证：Python3.10.11，基线64 passed，聚焦207 passed，全套232 passed，simulate smoke exit0；Codex 独立全套232 passed、最终TC49 passed；GPT-6 Luna/xhigh 最终 PASS（0 issues），Codex最终验收 PASS。
 - 最终证据：同 run 目录 FINAL_ACCEPTANCE.md；fix-1/REVIEW_PACKET.md；final-review/terra_review.json；F620-structured-implementation.patch。
 - 保留风险 AUD05–AUD12：真实模式接受演示管理员口令、UI绕过恢复权限、完成位缺失/旧高位协议、清空定时器竞态/吞错、dual样件pending语义、正负压顺序描述冲突、UI线程跨事务竞态、probe_devices=False仍访问网络/DB。
-- 边界：仅离线合成/Fake/Spy/Mock验证；未连接真实设备/生产数据库，未部署、未发布项目代码。离线 PASS 不代表现场放行；field_release=false。
+- 边界：仅离线合成/Fake/Spy/Mock验证；未连接真实设备/生产数据库，未部署；离线 PASS 不代表现场放行；field_release=false。
+- GitHub更新（2026-10-07，Codex当前账号）：已把经审查的独立分支推送到 `huaweixiong-debug/ATEQ-F620-Laser-2-stations` 的 `codex/f620-structured-spec`；commit `34bc450f1bdc0936f8c4122c8d9b076354a7bd3c`。原目录的用户未提交修改仍未触碰；未合并到main。
