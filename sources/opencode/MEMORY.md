@@ -823,3 +823,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 字节校验：前映像 94,036 B / SHA-256 `BBD809FF…`；追加 +2,608 B（CRLF、UTF-8 无 BOM，含 1 空行分隔）；末文件 96,644 B / SHA-256 `E66CCD3F…`；前 94,036 字节前缀 SHA-256 与逐字节比较均等于前映像。
 - 证据：`...\20261005-morocco-ateq-roadmap-revalidation\REVIEW_PACKET.md`、`verification-append.txt`；测试总结 `...\20261005-morocco-ateq-exact-release-wheel-revalidation\summary-final.json`（`ateq-pytest-corrected.txt` 为被取代的设置错误日志；最终 ATEQ 日志为 `ateq-pytest-corrected-cwd.txt`）。
 
+## 2026-10-08 opencode: ChatGPT/Codex Windows 崩溃定位与修复（windows-updater.node 0xC0000005）
+
+- 现象：商店版 OpenAI.Codex 26.1002.7124.0（主进程 ChatGPT.exe）使用中反复弹 "ChatGPT has stopped working / Error launching CrashSender.exe"，点确定后应用退出；事件查看器与可靠性监视器均无 ChatGPT 崩溃记录。
+- 根因①（真崩溃）：app\resources\native\windows-updater.node 指令偏移 +0x1a789 空指针读（0xC0000005，读地址 0x0），发生在启动后后台执行 primary runtime 安装时；对应 GitHub openai/codex#51824（全站约 58 条同类报告，多机 WinDbg 验证同一模块/偏移/异常码）。
+- 根因②（弹窗来源）：崩溃被注入 ChatGPT 进程的腾讯微信输入法 WeType 组件（wetype_tip_core.dll + CrashRpt1500.dll，CrashRpt 崩溃报告库）进程内截获；它要启动 CrashSender.exe 但该文件不存在（WeType 目录只有 CrashSender1500.exe），于是弹 "Error launching" 并终止进程，完全绕过 Windows WER——这就是日志查不到故障模块的原因。
+- 取证要点：窗口枚举 PID=31988 PROC=ChatGPT CLASS=#32770 TITLE="ChatGPT has stopped working"（子控件文本读出）；PID 31988 模块扫描命中上述 WeType dll；10-07 21:00:47 AppX 部署日志显示 26.1002.6548.0 → 26.1002.7124.0 更新；10-08 应用启动会话 13 次；LocalCache 有 13 份 OpenAI.CodexPrimaryRuntime.v26-1007-641-0.msix（6.4GB）且运行时包未安装。
+- 修复（本机已实施并验证）：退出 ChatGPT 后执行 Add-AppxPackage 安装已下载的官方运行时包（签名 Valid，OpenAI OpCo, LLC）：%LOCALAPPDATA%\Packages\OpenAI.Codex_2p2nqsd0c76g0\LocalCache\codex-windows-runtime-framework-1cQY45\OpenAI.CodexPrimaryRuntime.v26-1007-641-0.msix
+- 验证：重开后主进程存活 236 秒以上（此前 10~60 秒必崩），无弹窗、无新崩溃产物；日志 primary_runtime_install_started → windows_primary_runtime_framework_ready bundleVersion=26.1007.11041；运行时包已注册（26.1007.641.0，Ok，IsFramework）。
+- 风险/待办：仍是 workaround，未来运行时更新可能复发（复发时对新下载的 msix 重复同样操作）；勿卸载商店版应用（有人卸载后 ~/.codex 历史被清）；13 份 msix 缓存（6.4GB）暂未清理，可按需清理。

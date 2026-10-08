@@ -49,3 +49,10 @@
 ## 2026-10-03 Codex - YiDa three-detector WBF ensemble follow-up
 
 - A fixed score-normalized WBF of YOLO/Faster/Cascade on YiDa v17 improved F/U joint exact counting on the 66-image test from 28/66 to 54/66, with thresholds selected on valid first. mAP@[.50:.95] fell from 0.7025 to 0.6566; serial latency is about 5.5x YOLO by summing measured model means. Treat as count-focused candidate only, not production evidence; a separate-date test is still needed.
+
+## 2026-10-08 OpenCode - ChatGPT/Codex Windows 桌面版崩溃修复
+
+- 现象：商店版 OpenAI.Codex（ChatGPT.exe）使用中反复弹 "ChatGPT has stopped working / Error launching CrashSender.exe"，确定后退出；事件查看器/可靠性监视器无 ChatGPT 记录（崩溃被腾讯微信输入法 WeType 的 CrashRpt1500.dll 进程内处理器截获，其 CrashSender.exe 缺失，因此绕过 Windows WER）。
+- 根因：windows-updater.node +0x1a789 空指针读 0xC0000005（openai/codex#51824，58+ 重复报告）；本机 10-07 更新到 26.1002.7124.0 后开始崩。
+- 已在本机实施并验证的修复：退出应用后 Add-AppxPackage 安装已下载的官方运行时 `...LocalCache\codex-windows-runtime-framework-1cQY45\OpenAI.CodexPrimaryRuntime.v26-1007-641-0.msix`（签名 Valid）；重开后主进程稳定运行 4 分钟以上（此前 10~60 秒必崩）。
+- 注意：勿卸载商店版应用（有人卸载后 ~/.codex 历史被清）；LocalCache 遗留 13 份运行时 msix（约 6.4GB）暂未清理；未来运行时更新可能复发。
