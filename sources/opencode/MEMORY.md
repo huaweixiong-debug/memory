@@ -832,3 +832,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复（本机已实施并验证）：退出 ChatGPT 后执行 Add-AppxPackage 安装已下载的官方运行时包（签名 Valid，OpenAI OpCo, LLC）：%LOCALAPPDATA%\Packages\OpenAI.Codex_2p2nqsd0c76g0\LocalCache\codex-windows-runtime-framework-1cQY45\OpenAI.CodexPrimaryRuntime.v26-1007-641-0.msix
 - 验证：重开后主进程存活 236 秒以上（此前 10~60 秒必崩），无弹窗、无新崩溃产物；日志 primary_runtime_install_started → windows_primary_runtime_framework_ready bundleVersion=26.1007.11041；运行时包已注册（26.1007.641.0，Ok，IsFramework）。
 - 风险/待办：仍是 workaround，未来运行时更新可能复发（复发时对新下载的 msix 重复同样操作）；勿卸载商店版应用（有人卸载后 ~/.codex 历史被清）；13 份 msix 缓存（6.4GB）暂未清理，可按需清理。
+## 2026-10-09 opencode: office1 远程机（WIN-0HH52TJ5O4R）网页无法访问修复（mihomo mixed-port 掉为 0）
+- 现象：该机向日葵/UU远程/ToDesk 均可用，但所有浏览器打不开网页；经 Tailscale（100.87.137.51）SSH 可登录排查。
+- 根因：机器上 mihomo（Clash Meta v1.19.30，配置 C:\Users\Administrator\mihomo\xiyou\config.yaml）运行中实例的 HTTP 代理监听端口为 0（未监听 17890），而 Windows 系统代理（WinINET ProxyEnable/ProxyServer + WinHTTP + 用户环境变量 http_proxy/https_proxy/all_proxy）全部指向 127.0.0.1:17890，浏览器请求全部打到死端口。向日葵/UU远程走自有直连通道、不使用系统代理，故不受影响。该运行实例自 2026-10-06 14:20 起未重启，配置文件今日（10-09 11:35）被修改过，运行态与磁盘配置不一致。
+- 修复：未重启 mihomo。先备份配置（config.yaml.bak-opencode-20261009），通过其控制接口（external-controller 127.0.0.1:8767）执行 PATCH /configs {"mixed-port":17890} 与 PUT /configs?force=true 从磁盘重载（均 HTTP 204），17890 立即恢复监听，mihomo PID 31628 保持不变。
+- 验证：curl 经代理百度 200（2381B）、Google 200（84755B）、bing 302；PowerShell Invoke-WebRequest（系统代理路径）百度 200；Edge 无头浏览器两种模式 dump-dom 百度首页约 790KB、Google 首页约 238KB（标题正确）。系统代理设置保持 127.0.0.1:17890（与 mihomo 一致，未改）。
+- 排查要点/备忘：状态检查用 Get-NetTCPConnection -LocalPort 17890 和 curl http://127.0.0.1:8767/configs（注意 PowerShell 5.1 会把空字符串参数丢弃，直接给 curl 传 JSON 会变形，改用文件 --data-binary @file）；启动项 mihomo-xiyou.vbs 会在登录时按配置拉起 mihomo；nanmei-startup.vbs.off 与 ChatGptProxyGuard.vbs.off 为已禁用的历史脚本（疑似历史上有脚本经 API 改端口，若再出现网页打不开先查 17890 是否监听）。浏览器若仍显示旧错误页，刷新或重启即可。
+- 未做：未重启 mihomo、未改系统代理/环境变量（本就正确）、未动 hosts 与防火墙、未新增计划任务。
