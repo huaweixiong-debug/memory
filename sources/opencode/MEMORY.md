@@ -839,3 +839,14 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：curl 经代理百度 200（2381B）、Google 200（84755B）、bing 302；PowerShell Invoke-WebRequest（系统代理路径）百度 200；Edge 无头浏览器两种模式 dump-dom 百度首页约 790KB、Google 首页约 238KB（标题正确）。系统代理设置保持 127.0.0.1:17890（与 mihomo 一致，未改）。
 - 排查要点/备忘：状态检查用 Get-NetTCPConnection -LocalPort 17890 和 curl http://127.0.0.1:8767/configs（注意 PowerShell 5.1 会把空字符串参数丢弃，直接给 curl 传 JSON 会变形，改用文件 --data-binary @file）；启动项 mihomo-xiyou.vbs 会在登录时按配置拉起 mihomo；nanmei-startup.vbs.off 与 ChatGptProxyGuard.vbs.off 为已禁用的历史脚本（疑似历史上有脚本经 API 改端口，若再出现网页打不开先查 17890 是否监听）。浏览器若仍显示旧错误页，刷新或重启即可。
 - 未做：未重启 mihomo、未改系统代理/环境变量（本就正确）、未动 hosts 与防火墙、未新增计划任务。
+
+## 2026-10-11 opencode: context-mode 多端安装（Claude Code / OpenCode / ChatGPT-Codex / ZCode）
+
+- 目标：给 Claude Code 桌面版、OpenCode 桌面版、ChatGPT 桌面版、ZCode 桌面版安装 context-mode 1.0.169（Plugin + Hooks + MCP 完整方案）。
+- Claude Code（桌面内置 claude.exe 2.1.286）：`claude plugin marketplace add mksglu/context-mode` + `claude plugin install context-mode@context-mode`（user scope）；已启用 6 hooks / 8 skills / 1 MCP server；`~/.claude/settings.json` 已加 statusLine（`context-mode statusline`）；hooks 实测在无登录会话中也捕获事件（存储 `~/.claude/context-mode`）。
+- OpenCode：插件条目写入 `~/.config/opencode/opencode.jsonc` 的 `plugin: ["context-mode"]`（npm CLI 由 1.18.25 升级到 1.19.0）；实测每次会话捕获 3 事件（UserPromptSubmit/intent/agent_usage，存储 `%APPDATA%\opencode\context-mode`）；`context-mode doctor` 全 PASS。注意：opencode.json 与 opencode.jsonc 会被同时合并读取（jsonc 优先、数组类键会叠加），plugin 数组只能写在一个文件里，两边都写会重复加载。
+- OpenCode 桌面版限制：内置运行时 2.0.26 不识别该插件导出格式（报错 "Plugin must export a default definition with an id and an effect or setup function"），插件在桌面端暂无法加载；更新器当前也只有 2.0.26；等桌面版更新后重启即可（配置已就绪）。npm CLI 端不受影响。
+- ChatGPT 桌面版 = OpenAI Codex 桌面应用（winget 显示名即 ChatGPT）：`codex plugin marketplace add mksglu/context-mode` + `codex plugin add context-mode@context-mode`；`~/.codex/config.toml` [features] 已设 hooks=true、plugin_hooks=true（0.157.1 中 plugin_hooks 已标记 removed，hooks 为 stable=true）；hooks 已实测执行（生成 `~/.codex/context-mode`）。注意：headless 用 gpt-6.1-sol 报 "not supported with ChatGPT account"，gpt-5.5 可用（用其 switch-model.ps1 切换）。
+- ZCode 3.14.5（zcode CLI 0.16.9，GLM 系）：`zcode plugins marketplace add mksglu/context-mode` + `zcode plugins install context-mode@context-mode`；13 hooks + MCP(plugin:context-mode:context-mode) + 8 skills 全部加载；实测 MCP 2.3s 连接、hooks 阶段 ~200ms；首启冷启动可能触发 MCP 30s 超时一次，重试即好。ZCode 的 hooks 数据落在 `~/.claude/context-mode`（与 Claude Code 共用存储）。
+- 结论：context-mode 降低上下文占用，但不改变 PackyAPI 272K 标准上下文计费门槛。
+- 待办：OpenCode 桌面版更新后重启验证插件加载；Claude Code / Codex 桌面应用重启并确认插件 hooks（Codex 若弹 hook 信任提示需接受）。
