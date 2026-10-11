@@ -850,3 +850,5 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - ZCode 3.14.5（zcode CLI 0.16.9，GLM 系）：`zcode plugins marketplace add mksglu/context-mode` + `zcode plugins install context-mode@context-mode`；13 hooks + MCP(plugin:context-mode:context-mode) + 8 skills 全部加载；实测 MCP 2.3s 连接、hooks 阶段 ~200ms；首启冷启动可能触发 MCP 30s 超时一次，重试即好。ZCode 的 hooks 数据落在 `~/.claude/context-mode`（与 Claude Code 共用存储）。
 - 结论：context-mode 降低上下文占用，但不改变 PackyAPI 272K 标准上下文计费门槛。
 - 待办：OpenCode 桌面版更新后重启验证插件加载；Claude Code / Codex 桌面应用重启并确认插件 hooks（Codex 若弹 hook 信任提示需接受）。
+
+- 补充（2026-10-11 晚，重要）：Claude 桌面版的 Cowork 模式**不加载用户级 Claude Code 插件**。证据：cowork 会话 c0967c63 的完整启动命令行含固定 `--allowedTools` 白名单（仅内置工具 + 桌面自带 mcp__cowork/workspace/skills/mcp-registry 等），配置目录为会话隔离的 `.claude`（cowork-3p@localhost），pluginUsage 仅记录内置/内联插件；会话记录中 0 次 ctx_/context-mode 提及。用户测试 "ctx stats" 被模型理解为用量统计（内置 explain-usage 技能），生成 usage.png（9.3 万 token 分析），并非 context-mode 输出。context-mode 在**桌面版 Code 标签页 / 终端 claude CLI** 生效（走 ~/.claude，插件已启用）；Cowork 内如需可让模型用 workspace bash 直接执行 `context-mode doctor` CLI（但自动 hooks/记忆在 Cowork 内不生效）。无用户侧开关可改变此行为。
