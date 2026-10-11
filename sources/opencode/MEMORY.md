@@ -852,3 +852,5 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 待办：OpenCode 桌面版更新后重启验证插件加载；Claude Code / Codex 桌面应用重启并确认插件 hooks（Codex 若弹 hook 信任提示需接受）。
 
 - 补充（2026-10-11 晚，重要）：Claude 桌面版的 Cowork 模式**不加载用户级 Claude Code 插件**。证据：cowork 会话 c0967c63 的完整启动命令行含固定 `--allowedTools` 白名单（仅内置工具 + 桌面自带 mcp__cowork/workspace/skills/mcp-registry 等），配置目录为会话隔离的 `.claude`（cowork-3p@localhost），pluginUsage 仅记录内置/内联插件；会话记录中 0 次 ctx_/context-mode 提及。用户测试 "ctx stats" 被模型理解为用量统计（内置 explain-usage 技能），生成 usage.png（9.3 万 token 分析），并非 context-mode 输出。context-mode 在**桌面版 Code 标签页 / 终端 claude CLI** 生效（走 ~/.claude，插件已启用）；Cowork 内如需可让模型用 workspace bash 直接执行 `context-mode doctor` CLI（但自动 hooks/记忆在 Cowork 内不生效）。无用户侧开关可改变此行为。
+
+- 补充（2026-10-11 晚，实测生效 ✅）：Claude Code（桌面 Code 标签页 / 终端）中 context-mode 已正常工作——`ctx stats` 输出显示：1 天 5 会话、25.0 KB kept out、33 captures / 5 个项目；本机验证：`Y:\协众\095 EV80防重码\EV80包装防重码\240705包装工位` 会话 db 6 事件、MCP 服务器（pid 19808）运行中、捕获（CLAUDE.md 规则×2 + session_start + intent + 用户消息）。同期 ZCode 也在捕获（`.zcode\workspace\default` 会话 5 事件）。说明：初期 savings 数字偏小属正常（尚无大输出被路由到沙箱）；网页抓取/日志分析/批量命令等任务会显著放大节省。
