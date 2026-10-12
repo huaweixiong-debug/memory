@@ -856,3 +856,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 补充（2026-10-11 晚，实测生效 ✅）：Claude Code（桌面 Code 标签页 / 终端）中 context-mode 已正常工作——`ctx stats` 输出显示：1 天 5 会话、25.0 KB kept out、33 captures / 5 个项目；本机验证：`Y:\协众\095 EV80防重码\EV80包装防重码\240705包装工位` 会话 db 6 事件、MCP 服务器（pid 19808）运行中、捕获（CLAUDE.md 规则×2 + session_start + intent + 用户消息）。同期 ZCode 也在捕获（`.zcode\workspace\default` 会话 5 事件）。说明：初期 savings 数字偏小属正常（尚无大输出被路由到沙箱）；网页抓取/日志分析/批量命令等任务会显著放大节省。
 
 - 更正与补充（2026-10-11 22:00+，重要）：Claude 桌面版 **Cowork 现在已可用** —— 通过桌面自带的"本地插件"机制安装了 context-mode 包装版：`context-mode@local-desktop-app-uploads`（安装于会话目录 `cowork_plugins\marketplaces\local-desktop-app-uploads\context-mode`，22:00:47 安装，MCP 走 `npx -y context-mode@1.0.169`，含 ctx-stats 技能，**无 hooks**）。实测 `ctx_stats` 成功执行（右侧 Connectors/Skills 可见；主日志记录了工具权限请求与批准）：输出卡片显示 43 事件 / 9 项目 / 6 会话 / lifetime $0.06。注意两点：① 桌面把工具结果渲染成 UI 卡片后，模型侧收到的是 "[Result not available]"（卡片内容为准，模型复述可能不准）；② 每次调用会弹权限确认（可选"始终允许"）。Cowork 内无自动 hooks/记忆（包装版不含 hooks）；自动捕获仍需 Code 标签页 / 终端 claude / ZCode 等。另：统计中 "Skipped (2): Claude Code, Codex CLI" 是聚合判定把测试/探测数据跳过，不影响 hooks 运行。
+
+## 2026-10-12 opencode: Tailscale 登录不上定位与修复（fetch control key EOF）
+
+- 现象：Tailscale 1.102.2 服务运行中，但 `tailscale status` 报 "Unable to connect to the Tailscale coordination server"、"You are logged out. The last login error was: fetch control key: Get https://controlplane.tailscale.com/key?v=142: EOF"，日志反复 authRoutine/TryLogin 失败。
+- 根因：tailscaled 是 LocalSystem 服务，只认 Machine 级环境变量；本机 Machine 级有 HTTP_PROXY/HTTPS_PROXY=http://127.0.0.1:17890（C:\Users\Public\nanmei\clash.exe 本地代理）但没有 NO_PROXY，而 tshttpproxy 的解析顺序是「先环境变量、后 WinHTTP 系统代理」（源码 net/tshttpproxy 确认）→ 所有控制连接被迫走 Clash；该 Clash 当天重启后 HTTPS 出口故障（github 超时、google/controlplane TLS 握手失败），导致 tailscaled 取控制公钥 EOF、无法登录。直连 controlplane 正常（HTTP 200，0.57s，curl --ssl-no-revoke 验证）。
+- 修复（已验证）：Machine 级 env NO_PROXY='localhost,127.0.0.1,::1,100.64.0.0/10,tailscale.com'（User 级原有 NO_PROXY 合并 tailscale.com），随后 Restart-Service Tailscale -Force。
+- 验证：重启后约 4 秒 loggedIn=true、netmap received；本机 100.66.227.8 home；tailscale ping lulian 直连 pong 6ms；SMB 445 可达。
+- 关键事实：tshttpproxy 严格生效 NO_PROXY；"tailscale.com" 条目覆盖其所有子域。
+- 遗留：C:\Users\Public\nanmei 的 Clash（NanmeiProxy 计划任务 + watchdog.ps1 保活）当前 HTTPS 出口异常，影响 git/github/google 等走代理的工具；未处理，另行排查。

@@ -56,3 +56,8 @@
 - 根因：windows-updater.node +0x1a789 空指针读 0xC0000005（openai/codex#51824，58+ 重复报告）；本机 10-07 更新到 26.1002.7124.0 后开始崩。
 - 已在本机实施并验证的修复：退出应用后 Add-AppxPackage 安装已下载的官方运行时 `...LocalCache\codex-windows-runtime-framework-1cQY45\OpenAI.CodexPrimaryRuntime.v26-1007-641-0.msix`（签名 Valid）；重开后主进程稳定运行 4 分钟以上（此前 10~60 秒必崩）。
 - 注意：勿卸载商店版应用（有人卸载后 ~/.codex 历史被清）；LocalCache 遗留 13 份运行时 msix（约 6.4GB）暂未清理；未来运行时更新可能复发。
+
+## 2026-10-12 OpenCode - Tailscale 登录修复（本机）
+
+- 症状：Tailscale 登录不上（fetch control key EOF）。根因：LocalSystem 服务受 Machine 级 HTTP(S)_PROXY=127.0.0.1:17890 支配但缺 NO_PROXY，被迫走当时已故障的本地 Clash；直连正常。
+- 修复：Machine 级 NO_PROXY 增加 tailscale.com（User 级同样合并）→ 重启 Tailscale 服务 → 自动登录成功（ping 对端直连 6ms，SMB 445 可达）。已在本机验证。
