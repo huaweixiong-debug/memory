@@ -9,3 +9,8 @@ Source: current Codex account; live local diagnostics on 2026-10-12.
 - Verified fresh Desktop launch at 21:36:54: startup netlog has zero requests to the old remote server; local API responses are JSON and the event stream is SSE. Repeated local checks passed 13/13. Saved legacy connection remains absent. Verification covers startup API behavior, not a model chat or a remote upgrade.
 - Backup: task work/drafts-before-server-fix.sqlite. To restore the old connection, close Desktop and restore only the relevant server-list entry; never overwrite newer drafts/history with the complete backup. Remote use remains pending version compatibility work.
 - A clean git pull of the shared-memory repository succeeded using a one-command direct connection (`http.proxy=`); proxy-path attempts failed TLS EOF. This does not justify changing persistent system proxy settings.
+
+## Follow-up: visible GUI launch
+
+- User reported OpenCode could not reopen after the repair. The GUI and service remained alive, but GUI MainWindowHandle was 0. Prior Hidden process launch left the interactive window invisible; API verification alone did not establish usable desktop recovery.
+- Confirmed no active tasks, ended only the GUI main process, and relaunched with WindowStyle Normal. Verified a responding OpenCode main window with a nonzero handle. The backend and saved data were preserved. Use a visible normal window when reopening the interactive app the user needs to operate, and verify window presence as well as APIs.
