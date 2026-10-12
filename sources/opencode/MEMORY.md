@@ -874,3 +874,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 附带修复：github.com→GitHub 组（Fallback）卡死在死节点 南美-德日韩；GET /group/GitHub/delay 触发健康检查后自动切换到 西游云-德日韩（268ms）；github.com/api.github.com/git ls-remote 经代理全部 200 成功。
 - 环境事实：ChatGptProxyGuard 的 guard.ps1 读 %APPDATA%\南美\config.yaml，运行 group=Pluto（默认值），不管理 MATCH 组、无冲突；NanmeiOpenAIFailover 每 2 分钟运行；chatgpt/openai 域名走 AI自动 组（现=良心云，正常）；南美机场整体挂（如需可续费/清理）。
 - 最终验收：packyapi www 200、google 204、chatgpt 200、github 200、git 拉取正常。
+
+## 2026-10-12 — OpenCode 桌面版「请求失败 / UnsupportedContentType: text/html」含义
+
+- **含义**：OpenCode 客户端发 HTTP 请求，期望 JSON（`application/json`）或 SSE 事件流（`text/event-stream`），但对方返回的是 HTML 页面（`Content-Type: text/html`）。客户端拒绝解析，抛出 `ClientError`（`name="ClientError"`，`reason="UnsupportedContentType"`，`detail` 取响应头 content-type），最终渲染为 `UnsupportedContentType: text/html`；toast 标题取自 i18n `common.requestFailed` = "请求失败"。
+- **来源**：桌面应用 bundle `%LOCALAPPDATA%\Programs\@opencode-aidesktop\resources\app.asar` 内的 server API 客户端。SSE 读取器与 JSON 解码器都校验 content-type；另有 response interceptor：当 `content-type === text/html` 时抛 `Request is not supported by this version of OpenCode Server (Server responded with text/html)`。
+- **性质**：不是模型/配置问题，是「响应格式不对（对方返回了 HTML）」。
+- **常见成因**：① 客户端比本地 server 新，请求到本地 server 未实现的 `/api/*` 路径，被 SPA fallback 成 `index.html`（版本不匹配最典型）；② 本地 server 尚未就绪；③ 代理 / Cloudflare / 登录门户返回 HTML 错误页。
+- **本机证据（2026-10-12 20:59 截图）**：桌面版 2.0.27，本地 server `127.0.0.1:49374`（`opencode-cli.exe` 2.0.27，PID 36184）；实测 `/api/*` 无 token 返回 `401 application/json`，而 `/`、`/index.html` 及任意未知路径返回 `200 text/html`（7202 字节 SPA fallback）；20:58:55 曾发生 server 版本不匹配重启 `2.0.26 -> 2.0.27`。另 20:58:56 updater 访问 opencode.ai 被 Cloudflare 拦截 `error code: 1101`（`text/plain`），属独立问题，**不是**该 toast 的来源。
+- **处理**：先重试；重启桌面 App（连带重启本地 server）；确认代理未把 opencode.ai / 127.0.0.1 请求改写成 HTML；若持续出现，核对桌面版与 server 版本一致。
+- **附带经验**：模型不能直接读图时，用 Windows 内置 WinRT OCR（`Windows.Media.Ocr`，`zh-Hans-CN`）脚本 `%LOCALAPPDATA%\Temp\opencode\ocr.ps1 -Path <png>` 提取截图文字；PowerShell 控制台需先设 `[Console]::OutputEncoding=[System.Text.Encoding]::UTF8` 以免中文乱码。
