@@ -884,3 +884,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **本机证据（2026-10-12 20:59 截图）**：桌面版 2.0.27，本地 server `127.0.0.1:49374`（`opencode-cli.exe` 2.0.27，PID 36184）；实测 `/api/*` 无 token 返回 `401 application/json`，而 `/`、`/index.html` 及任意未知路径返回 `200 text/html`（7202 字节 SPA fallback）；20:58:55 曾发生 server 版本不匹配重启 `2.0.26 -> 2.0.27`。另 20:58:56 updater 访问 opencode.ai 被 Cloudflare 拦截 `error code: 1101`（`text/plain`），属独立问题，**不是**该 toast 的来源。
 - **处理**：先重试；重启桌面 App（连带重启本地 server）；确认代理未把 opencode.ai / 127.0.0.1 请求改写成 HTML；若持续出现，核对桌面版与 server 版本一致。
 - **附带经验**：模型不能直接读图时，用 Windows 内置 WinRT OCR（`Windows.Media.Ocr`，`zh-Hans-CN`）脚本 `%LOCALAPPDATA%\Temp\opencode\ocr.ps1 -Path <png>` 提取截图文字；PowerShell 控制台需先设 `[Console]::OutputEncoding=[System.Text.Encoding]::UTF8` 以免中文乱码。
+
+## 2026-10-12 — Claude 桌面版 Cowork 说"在沙箱中"无法运行 PowerShell：原因与对策
+
+- **结论**：Cowork（桌面 App 的 agentic 标签页，基于 Claude Code 架构）的 shell 命令与 Claude 写的代码在应用自带的**本地沙箱虚拟机**内执行；Windows 上跑在系统内置虚拟化上（Virtual Machine Platform / Hyper-V 系，与 WSL2 用同一 `NT VIRTUAL MACHINE\Virtual Machines` 组，但**不需要安装 WSL**）。该 VM 是 Linux 侧环境（有 `/tmp`、预装 Node 包等），里面没有 Windows 的 `powershell.exe`，也不能直接操作宿主 Windows 进程。"我在沙箱里、跑不了 PowerShell"是架构设计，不是配置问题，Cowork 内**没有**用户侧可关闭沙箱的开关。
+- **沙箱边界**：shell 只能访问用户附加（attach）的文件夹（以文件系统挂载方式）、临时区、应用自带只读资源（skills/plugins）；网络走出口允许列表（默认几乎全禁）。宿主机侧的文件工具同样限于附加文件夹。
+- **对比**：同一 App 的 **Code 标签**直接在本机运行（原生 Windows 无 OS 级沙箱；官方明确 sandbox 仅 macOS/Linux/WSL2 支持，原生 Windows 不支持）→ PowerShell 可用。终端 Claude Code CLI 同理。若 Code 会话跑在 WSL 环境且开了沙箱，从沙箱内启动 `powershell.exe`/`cmd.exe` 会被 Unix socket 限制挡住（可用 `sandbox.network.allowAllUnixSockets: true` 放行，但有安全代价；或改用原生 Windows 会话）。
+- **对策**：① 要真正执行 PowerShell → 改用 Code 标签（本地/Windows 会话）或终端 Claude Code CLI；② 留在 Cowork → 让 Claude 改用 bash/python 等效实现，或让它把 `.ps1` 脚本写入附加文件夹、由用户手动在 Windows 执行；③ 企业侧如需调整走管理员配置（`requireCoworkFullVmSandbox`、产品可用性、允许的网络主机等），用户侧无开关。
+- **来源**：code.claude.com/docs/en/sandboxing（sandbox 平台支持范围 + WSL2 启动 Windows 二进制的 Unix socket 限制）；claude.com/docs/government/security/security-and-data-handling（Cowork shell=沙箱 VM、Code=工作站本机）；claude.com/docs/third-party/claude-desktop/local-access.md 与 windows-checklist（Cowork VM 机制、虚拟化要求、无需 WSL；MSIX 安装 + 8GB 内存/约 20GB 磁盘）。
