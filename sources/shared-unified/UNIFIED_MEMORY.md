@@ -61,3 +61,7 @@
 
 - 症状：Tailscale 登录不上（fetch control key EOF）。根因：LocalSystem 服务受 Machine 级 HTTP(S)_PROXY=127.0.0.1:17890 支配但缺 NO_PROXY，被迫走当时已故障的本地 Clash；直连正常。
 - 修复：Machine 级 NO_PROXY 增加 tailscale.com（User 级同样合并）→ 重启 Tailscale 服务 → 自动登录成功（ping 对端直连 6ms，SMB 445 可达）。已在本机验证。
+
+## 2026-10-12 OpenCode - packyapi.ai 等网页打不开修复（Clash 默认路由）
+
+- 根因：Nanmei Clash 配置 MATCH,南美 指向全部节点失效的「南美」组，未匹配域名全撞死节点。修复：备份后改 MATCH,节点选择 并热重载；顺带触发 GitHub 组健康检查切活节点。packyapi/google/chatgpt/github 经代理全部恢复 200，git 正常。

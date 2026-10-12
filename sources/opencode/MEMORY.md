@@ -865,3 +865,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：重启后约 4 秒 loggedIn=true、netmap received；本机 100.66.227.8 home；tailscale ping lulian 直连 pong 6ms；SMB 445 可达。
 - 关键事实：tshttpproxy 严格生效 NO_PROXY；"tailscale.com" 条目覆盖其所有子域。
 - 遗留：C:\Users\Public\nanmei 的 Clash（NanmeiProxy 计划任务 + watchdog.ps1 保活）当前 HTTPS 出口异常，影响 git/github/google 等走代理的工具；未处理，另行排查。
+
+## 2026-10-12 opencode: packyapi.ai 等网页打不开修复（Clash 默认路由指向死组）
+
+- 现象：https://www.packyapi.ai/ 打不开。实测：直连 200（1.9s）正常；经本地 Clash（127.0.0.1:17890，C:\Users\Public\nanmei\clash.exe，Mihomo v1.19.30，API 127.0.0.1:8765）TLS 握手失败。
+- 根因：config.yaml 最后一条规则为 MATCH,南美，而「南美」组 21 个节点全部 FAIL（该机场整体不可用）；所有未被前面规则匹配的域名（packyapi 等）全部落入死节点。
+- 修复（已验证）：备份 config.yaml（config.yaml.bak-match-fix-20261012-200440，SHA256 before 570C6232… → after 23D17965…）后，把 MATCH,南美 改为 MATCH,节点选择；PUT /configs 热重载。默认流量现走 节点选择→良心云（80ms），packyapi 经代理 200（0.4s）。
+- 附带修复：github.com→GitHub 组（Fallback）卡死在死节点 南美-德日韩；GET /group/GitHub/delay 触发健康检查后自动切换到 西游云-德日韩（268ms）；github.com/api.github.com/git ls-remote 经代理全部 200 成功。
+- 环境事实：ChatGptProxyGuard 的 guard.ps1 读 %APPDATA%\南美\config.yaml，运行 group=Pluto（默认值），不管理 MATCH 组、无冲突；NanmeiOpenAIFailover 每 2 分钟运行；chatgpt/openai 域名走 AI自动 组（现=良心云，正常）；南美机场整体挂（如需可续费/清理）。
+- 最终验收：packyapi www 200、google 204、chatgpt 200、github 200、git 拉取正常。
