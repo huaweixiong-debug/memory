@@ -892,3 +892,17 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **对比**：同一 App 的 **Code 标签**直接在本机运行（原生 Windows 无 OS 级沙箱；官方明确 sandbox 仅 macOS/Linux/WSL2 支持，原生 Windows 不支持）→ PowerShell 可用。终端 Claude Code CLI 同理。若 Code 会话跑在 WSL 环境且开了沙箱，从沙箱内启动 `powershell.exe`/`cmd.exe` 会被 Unix socket 限制挡住（可用 `sandbox.network.allowAllUnixSockets: true` 放行，但有安全代价；或改用原生 Windows 会话）。
 - **对策**：① 要真正执行 PowerShell → 改用 Code 标签（本地/Windows 会话）或终端 Claude Code CLI；② 留在 Cowork → 让 Claude 改用 bash/python 等效实现，或让它把 `.ps1` 脚本写入附加文件夹、由用户手动在 Windows 执行；③ 企业侧如需调整走管理员配置（`requireCoworkFullVmSandbox`、产品可用性、允许的网络主机等），用户侧无开关。
 - **来源**：code.claude.com/docs/en/sandboxing（sandbox 平台支持范围 + WSL2 启动 Windows 二进制的 Unix socket 限制）；claude.com/docs/government/security/security-and-data-handling（Cowork shell=沙箱 VM、Code=工作站本机）；claude.com/docs/third-party/claude-desktop/local-access.md 与 windows-checklist（Cowork VM 机制、虚拟化要求、无需 WSL；MSIX 安装 + 8GB 内存/约 20GB 磁盘）。
+
+## 2026-10-13 opencode: ChatGPT 连不上诊断（Clash 节点全超时 + 系统代理关闭 + DNS 污染）
+- 现象：用户报 ChatGPT 连不上。实测：直连 chatgpt.com 超时；经本机代理 127.0.0.1:17890 访问 google/github/api.openai.com/chatgpt.com 全部超时（curl 000）。
+- 根因：本机 Clash（D:\...\resources\static\clash\clash-windows-amd64.exe，PID 存活，监听 17890 正常）上游节点全部不通（订阅过期或机场挂了）；同时 Windows 系统代理开关为关（WinINET ProxyEnable=0，WinHTTP 虽指向 17890 但节点死）；另 chatgpt.com DNS 被污染（解析到 Facebook IP 31.13.69.245 / 2a03:2880:... face:b00c），直连必然失败。
+- 处理建议（已告知用户）：更新/续费订阅、客户端内换可用节点、打开系统代理开关。
+- 排查备忘：端口监听 ≠ 代理可用，必须 curl -x 实测出口；判断 DNS 污染看解析结果是否属于知名错误归属（如 31.13.x.x=Facebook）。
+
+## 2026-10-13 opencode: Grok Bot 连不上修复（实为 Cursor "Sand" 套壳，SAND_HTTPS_PROXY 环境变量）
+- 现象：Grok Bot 0.70.2 连不上，消息发出后 120 秒超时、bot 无响应。
+- 本质：该应用是 Anysphere/Cursor 的 "Sand" 客户端套壳改名；agent 跑在云端虚拟机（cursorvm.com）里，"box" 即云端 VM 连接状态。
+- 根因：应用内置代理模式默认 off（直连）。直连时短请求能通，但长连接/流式 RPC（box 状态、消息发送、auth，走 api2.cursor.sh / us12.cursorvm.com）在国内网络全部超时。
+- 修复（一处改动，已验证）：设用户级环境变量 SAND_HTTPS_PROXY = http://127.0.0.1:17890 后重启应用。这是它自带的代理开关（代码逻辑 SAND_HTTPS_PROXY → 显式代理模式），已持久化。
+- 验证结果：cursor.com 拉取 4.4MB；api2.cursor.sh ×9 条活跃 RPC；us12.cursorvm.com ×5（box 已连上）；消息成功送达（派发记录清空，不再 120s 超时）；应用全部连接走 127.0.0.1:17890，不再直连 AWS。
+- 注意/待办：以后代理端口变更或重装该应用，需重设 SAND_HTTPS_PROXY；之前卡住未发出的消息需手动重发一次。
