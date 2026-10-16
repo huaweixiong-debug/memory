@@ -906,3 +906,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 修复（一处改动，已验证）：设用户级环境变量 SAND_HTTPS_PROXY = http://127.0.0.1:17890 后重启应用。这是它自带的代理开关（代码逻辑 SAND_HTTPS_PROXY → 显式代理模式），已持久化。
 - 验证结果：cursor.com 拉取 4.4MB；api2.cursor.sh ×9 条活跃 RPC；us12.cursorvm.com ×5（box 已连上）；消息成功送达（派发记录清空，不再 120s 超时）；应用全部连接走 127.0.0.1:17890，不再直连 AWS。
 - 注意/待办：以后代理端口变更或重装该应用，需重设 SAND_HTTPS_PROXY；之前卡住未发出的消息需手动重发一次。
+
+## 2026-10-17 opencode: D:\CodexCAD cadgen 反复弹黑窗修复（uv launcher stub → base 解释器获得新控制台窗口）
+- 现象：CAD 使用期间反复出现黑色 Windows Terminal 窗口（标题 = `D:\CodexCAD\tools\cadgen\Scripts\python.exe`），用户关掉后下次任务又复现。
+- 诊断链：① 窗口 = WT 托管，AttachConsole 探针锁定控制台客户 = cadgen daemon + workers；② 进程呈「无控制台僵尸父进程 + 带控制台子进程」双层结构；③ 临时调试探针（_spawn_daemon 调用栈）证明窗口子进程并非 _spawn_daemon 直接产出 → 真相：uv venv 的 python.exe 是 launcher stub，它会启动 base 解释器（本机 D:\miniconda3\python.exe）为子进程并等待；stub 转发时不带控制台标志，无控制台链条下 Windows 给 base 解释器**新建可见控制台** = 弹窗。`pool.interpreter()` 注释早已记载该机制（worker 已修复），但 `_spawn_daemon` 漏用。
+- 修复（site-packages 6 处，`getattr(subprocess,"CREATE_NO_WINDOW",0)` 跨平台安全）：① `daemon/client.py::_spawn_daemon` 改经 `pool.interpreter()` 直连 base 解释器（+`__PYVENV_LAUNCHER__` env）绕过 stub = 根治；② `daemon/pool.py` worker、③ `daemon/executors.py` 瞬态 job、④ `daemon/artifacts.py` 产物、⑤ `daemon/housekeeping.py` gc、⑥ `_internal/node_runtime.py` node 子进程各加 CREATE_NO_WINDOW。
+- 验证：清链重放 + pythonw 窗口监视器全程 0 个 python/cadgen 标题窗口；daemon 变为单进程（`miniconda python -P -m cadgen.daemon`，无 stub 僵尸）；`cadgen daemon status` 正常；桌面无任何 WindowsTerminal 进程。
+- 关键技法：控制台归属判定 = FreeConsole + AttachConsole + GetConsoleProcessList 探针；窗口监视 = pythonw 循环 EnumWindows 落盘（避免自身弹窗）；实验矩阵证明「无标志 spawn=可见窗口 / DETACHED / CREATE_NO_WINDOW=无窗口」；PowerShell 无法对 GUI 程序（pythonw）可靠重定向 stdout，脚本内部写日志文件才可靠。
+- 升级注意：uv 升级 cadgen 会覆盖 site-packages 修复；说明文档已写至 `D:\CodexCAD\tools\cadgen\FIX-NOTES-opencode-20261017.md`（含逐文件修改表，可直接重放）。
