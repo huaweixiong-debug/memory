@@ -1122,3 +1122,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F3**：`e0-09-holder.sh` 是我在 READY（08:26:06）后 08:26:43 创建的只读助手（用于读持有者行）——**违反 A5 冻结**，如实记录、保留不删、不倒填 mtime；`final-manifest.txt`（153 哈希 + 实现/交接）。
 - 未改源码/测试/运行器/历史提交；未推送；交单后冻结。
 - 教训：①**回归入口必须读真实子门 exit**——包装器自身的 0 不能代表门通过；②跨 Node 版本的 **TAP 汇总格式不同**（`#` vs `ℹ`），解析要兼容；③交单后**任何**写入（含只读助手）都算破坏冻结——需要读到信息就用会话内一次性命令，别落盘。
+
+## 2026-10-19 opencode（E0-09 ATTEMPT=2 续做完成）: 严格入口三自测达标；14 次真实门披露；提交 959c30b
+
+- **F1**：最终版入口 `e0-09-strict-regression-v2.js`（新文件，不覆盖旧版）——读 Summary 真实子门 exit/W36/security/类别 + raw tests/pass；**三种替身自测全达标**：①首败 starts=1/1、exit=3；②summary 缺失 starts=1/1、exit=3；③全成功 3/3、exit=0（`regression-strict-selftest.txt`；被修正的首版 `-first` 保留）。全部真实运行 3 组 14 次披露：Node22×10+Node25×3 过、Node25×2 因 **TAP `ℹ tests` 解析缺陷**判停（子门实际 exit=0）；脚本被覆盖 2 次的版本沿革已如实重建并说明（`strict-regression-summary-v2.md`）。
+- **F2**：`category-count-clarification.md` 可复算——**offline 38 类/284**；watchdog 含 2 项测试；2 探针非类别；A4 已由 PM V1.3 更正，无请求。
+- **F3**：holder 文件 READY 后创建如实说明（保留/不倒填）；`final-manifest-attempt2.txt` 于提交后生成（路径+字节+SHA256）。
+- **提交** `959c30b`（88 文件；扫描 hard=0；主题与消息文件一致；未推送）；提交完成后 git 自动维护报 `could not write multi-pack-index: Permission denied`（repack 失败，提交对象已生成，已记录）。
+- 教训：①**替身自测的 mock 数据必须满足 checker 的完整断言**（类别数错 1 就会误判）；②Node22/25 的 TAP 汇总前缀不同（`#` vs `ℹ`），凡是解析测试数必须兼容；③证据脚本每次改动另存新文件名（CA-4），否则无法复现“产生该证据的版本”。
