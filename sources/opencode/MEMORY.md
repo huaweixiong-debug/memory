@@ -1250,3 +1250,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **报告** `docs/evidence/E1-01B/blocked-report-f2-interface.md`：建议方案 A——`connect()` 返回不透明 handle；`disconnect(handle?)` 定向关闭，省略参数保持现状；`isConnected()` 表示当前连接；需把 `plc/memoryTransport.js` 加入允许修改范围，T3 用两个独立 handle 断言“旧关新活”。另列方案 B/C 与 F1 修法（timer 回调按代际/关闭分支，旧代仅 `PLC_CONNECT_SUPERSEDED`）。
 - 状态：`opencode=BLOCKED`；未改码/未提交/未推送；旧 72/25/8 与证据保留；等待 PM 裁定范围与契约。
 - 教训：①**所有异步回调（timer/成功/失败）都必须带代际守卫**，否则旧代定时器能修改新代状态；②“不误断新连接”与“清理旧连接”必须同时满足，单一布尔连接的测试无法证明；③接口不足时先报 PM，不自行扩范围或降级验收。
+
+## 2026-10-19 opencode（E1-01B ATTEMPT=2 完成）: 每连接句柄 + timer 代际守卫；75/75；提交 c13763c
+
+- **F1（旧代 timer 误断新代）**：`attemptConnect` 超时回调三分支——`closed`→断开并关闭错误；代际失效→仅 `PLC_CONNECT_SUPERSEDED`、**不触碰新代**；当前代→断开+`DISCONNECTED`+`PLC_CONNECT_TIMEOUT`。F1b 回归：新代先 ONLINE → 推进旧 timer → 仍 ONLINE/connected、disconnects 不变。
+- **F2（旧连接未清理）**：传输契约升级为**每连接句柄**——`memoryTransport.connect()` 返回冻结 `{id}` 句柄；`disconnect(handle)` 只关该句柄（无参关当前）；`isConnected()` 指当前；`script.openHandles()` 供断言。`snap7Service` 在迟到成功/关闭/代际失效时 `safeDisconnect(handle)` 只关旧句柄。T3 双句柄断言：旧句柄关闭、新句柄保持、服务 ONLINE。
+- **证据**：修复前 T3/F1b/两项句柄测试全失败（`tests-before-fix-attempt2.txt`）→ 28/28；lib **75/75**、模板 25/25、w11 8/8、check 通过；敏感性去掉 timer 代际守卫→F1b 失败、SHA `5b7e7146…` cmp=0；扫描 `secret-scan-attempt2.txt` 30 文件 hard=0。
+- **提交** `c13763c`（30 文件、消息按 §8.2、未推送；repack 告警记录）；`final-manifest-attempt2.txt` TOTAL 38；`codex=READY`、`opencode=DONE` 最后写入；README 增加 E3 传输契约（每连接一句柄、可按句柄关闭）。
+- 教训：①异步回调（timer/success/failure）都要先判代际，再决定是否清理；②“旧连接清理”必须靠句柄定向，不能靠共享 `disconnect()`；③测试 mock 必须能区分连接身份（openHandles），否则无法证明旧关新活。
