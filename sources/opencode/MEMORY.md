@@ -1179,3 +1179,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **事实与证据（全部保留）**：`fix.diff.raw`（12:26:33，正确前快照，含 Git warning）→ `sensitivity-timeout1.txt`（12:26:49，124!==9）→ `fix.diff.post-sensitivity`（12:27:11）→ 错误中间版 `fix.diff.timeout1-capture.txt`（12:28:07）→ 当前 `fix.diff`=事后归位版（=post，哈希 90dc8e44…）。raw 忽略 warning 与 post 完全一致；SUP 独立内存敏感性复现成立。
 - **ENG 动作**：未重改代码、未重跑回归、未再覆盖；写 `blocked-report-2.md` 请求 PM：①接受 raw 为前基准、current 记为事后归位；②CA-4 偏差登记；③确认仅需文档更正（获裁后新增 lineage 文件 + raw.normalized + 新名清单）。
 - 教训：①**取证文件与被取证对象不能并行操作**——一次 clean diff 抓取与编辑竞争，抓到临时值后又被“归位”覆盖，直接触发 CA-4；②**绝不用复制来“修齐”证据**：基准被污染时用新文件名 + 关系说明，让旧文件保持原样；③敏感性必须“前快照（raw）→临时改→后快照（post）→对照说明”，每一步串行并各自新文件名。
+
+## 2026-10-19 opencode（E0-10 ATTEMPT=2）: F1 文档更正完成；提交 154978c；清单 125
+
+- **PM §8 裁定**：接受 `fix.diff.raw`（12:26:33，c7c66712…）为敏感性前基准；当前 `fix.diff` 记为**事后归位版**（=post，90dc8e44…）；CA-4 覆盖偏差记 **NCR-001 CA-4 复发（一般）**；**只做文档更正**（未重跑/未改码/未重做敏感性）。
+- **新增证据（全部新文件名，不覆盖）**：`fix.diff.raw.normalized.txt`（raw 去 Git warning；与 post 完全相同）与 `evidence-lineage-fix-diff.md`（①raw→②normalized→③post→④归位版 + 哈希/时间/三条复核命令，均 exit0）。
+- **交接 S1/S2**：E0-10_HANDOVER 顶部改为“当前有效状态（DONE+PM §8）”，诊断 BLOCKED 保留为历史；注明“中位=上中位数（n=20 第 11 项）”；OBS-1 类别级 35 s 超时**未关闭**。
+- **提交** `154978c`（15 文件；扫描 hard=0/r1=5；主题与消息文件一致；**未推送**；repack 告警已记录）；提交后 `final-manifest-fix-attempt2.txt` **TOTAL 125**（旧清单保留）；`71b3051` 未变。
+- 教训：①**“归位”= 覆盖 = CA-4 违规**，正确做法是保留污染版本并用新名字写血缘说明；②比较命令绝不可把输出写回被比较文件；③基准被污染时，用“原始前快照 + 规范化副本 + 后快照”三件套恢复可复核性，而不是让 cmp 通过。
