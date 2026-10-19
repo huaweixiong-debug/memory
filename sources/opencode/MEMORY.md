@@ -978,3 +978,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
   - **B = SUBPROJECT.md 内容断言**：修改版按 §11.1 未提交（§11.1 预告分支，已按指示 BLOCKED、未自行加入）。
 - 报告 #5 选项：A1=.gitattributes `-text` 固定该文件字节（推荐）/ A2=克隆 `-c core.autocrlf=false` 口径 / A3=条件通过；B1=授权提交 SUBPROJECT.md 修改版 / B2 其他。
 - 教训：**字节级哈希断言会与行尾转换政策冲突**——受保护文件应以 .gitattributes 显式固定；“工作区通过”≠“干净克隆通过”。
+
+## 2026-10-19 opencode（E0-02 完成）: 提交 11/v0.9.2；clone3 复验 PASS；A6 关闭；已交 SUP 审核
+
+- §12（A1：根 `.gitattributes` 单行 `…005…sql -text` 固定受保护文件字节；B1：提交 `SUBPROJECT.md` 当前版）→ 提交 11 `00e91a2`；标签链 `v0.9`(3896db2) → `v0.9.1`(38182b7) → **`v0.9.2`(00e91a2)**（后者取代前者；均推送、均未移动）；分支快进至 `00e91a2`；main 未动（ls-remote 存证）。
+- clone3（**默认 Git 设置**、新目录）：HEAD=`00e91a2`；克隆内 005 `text: unset`、哈希=期望 `6bbc3a54…`；`check-syntax` ✓；**`w05` PASS** → A6 关闭。
+- 交接：`docs/handovers/E0-02_HANDOVER.md`（11 提交、3 标签、5 次阻塞 #1–#5 全记录、SEC-SCAN-1 v1→v1.2b 演进表、A1–A7 自检）；`opencode.txt=DONE`；`codex.txt=READY` 待 SUP 审核。
+- 复用教训：①**干净克隆是提交集自洽性的唯一检验**（W12 自检依赖被排除文件、行尾转换等只在克隆中暴露）；②字节级哈希断言需用 `.gitattributes -text` 固定受保护文件；③“工作区通过”≠“克隆通过”；④MSYS 下 robocopy 需 `MSYS2_ARG_CONV_EXCL`。
