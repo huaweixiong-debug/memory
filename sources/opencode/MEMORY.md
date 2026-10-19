@@ -930,3 +930,8 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - ENG 处置：F1–F4 完成（含 39 行复核、v2 汇总、映射表、F4 补录、final-check 干净）；F5 按 SUP 指示置 `opencode.txt=BLOCKED` 等待 PM。PM 已在任务队列新增 **E0-06**（统一 Node 22 LTS 运行环境+新基线，关闭 F5）与 **E0-07**（修复 W37/W39 并发输者报错为确定性 409）。
 - **经验教训（高优先级，跨会话复用）**：Git-for-Windows(MSYS) 下**避免在循环内大量使用 `$(...)` 命令替换**——本次 gen-path-mapping v1 触发链式 fork 失控（累积 ~1500 个进程、输出停滞、仓库根落 5 个 0 字节残留文件，已取证 `fork-storm-incident.md` 并按三条件精确清理）。改用 bash 内建（`printf -v`、`mapfile`、关联数组、参数展开、`find ... -newer` 筛查）后同任务秒级完成。
 - 值守：`opencode.txt` 变更监视中；PM 裁决后继续（交 SUP 复审或按派发执行）。
+
+## 2026-10-18 opencode（再续）: longol_mes E0-01 F5 按 PM 裁决关闭并交第 2 次复审
+
+- PM 裁决（`docs/pm/tasks/E0-01.md` §8，20:45）：基线任务的 T2 按“命令全部执行、如实记录”判定（不要求退出码全 0）；两条目录参数命令失败转 **E0-06**（Node 22 LTS 新基线，以实测为准）；W37/W39 缺陷转 **E0-07**（E0-03 后实施）。
+- ENG 按 PM 指示完成 F5 文本修订（交接 §0/§4/§6/§7 改为“按 PM 裁决 §8 已处置”），未重跑命令；`handover.md` §5/§6/§7 同步；`codex.txt=READY`（ATTEMPT=2）交 SUP 复审。
