@@ -1258,3 +1258,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **证据**：修复前 T3/F1b/两项句柄测试全失败（`tests-before-fix-attempt2.txt`）→ 28/28；lib **75/75**、模板 25/25、w11 8/8、check 通过；敏感性去掉 timer 代际守卫→F1b 失败、SHA `5b7e7146…` cmp=0；扫描 `secret-scan-attempt2.txt` 30 文件 hard=0。
 - **提交** `c13763c`（30 文件、消息按 §8.2、未推送；repack 告警记录）；`final-manifest-attempt2.txt` TOTAL 38；`codex=READY`、`opencode=DONE` 最后写入；README 增加 E3 传输契约（每连接一句柄、可按句柄关闭）。
 - 教训：①异步回调（timer/success/failure）都要先判代际，再决定是否清理；②“旧连接清理”必须靠句柄定向，不能靠共享 `disconnect()`；③测试 mock 必须能区分连接身份（openHandles），否则无法证明旧关新活。
+
+## 2026-10-19 opencode（E1-01B ATTEMPT=3 完成）: cancelAttempt 身份守卫 + Memory current 恢复；77/77；提交 e7cb28c
+
+- **F1（旧代 finish 清除新代取消入口）**：`attemptConnect.finish` 只在该 `cancelAttempt === myCancel` 时清空；旧代结束不抹新代入口。F1c 回归：旧 timer 到期后 `close()` → 新连接尝试立即 `PLC_SERVICE_CLOSED`、clock 定时器 0（修复前 PENDING/残留 1）。
+- **F2（实际 Memory current 丢失）**：`memoryTransport.disconnect(handle)` 当被关闭句柄即 current 时，恢复到仍打开的最近句柄（`lastOpenHandle()`），不清空。F2b 真实 Memory 延迟集成：旧代迟到 connect 成功 → 服务定向关旧句柄，新句柄仍为 current、`isConnected=true`、`readSignal` 成功、openHandles 仅剩新句柄。
+- 测试：修复前 F1c/F2b 失败（`tests-before-fix-attempt3b.txt`）→ 修复后 29/29；lib **77/77**、模板 25/25、w11 8/8、check 通过；敏感性去掉 current 恢复→F2b 失败、SHA `eb2a77b6…` cmp=0；扫描 `secret-scan-attempt3.txt` 25 文件 hard=0。
+- 提交 `e7cb28c`（25 文件、未推送；repack 告警记录）；`final-manifest-attempt3.txt` TOTAL 57；`codex=READY`、`opencode=DONE` 最后写入。
+- 教训：①取消入口必须**按尝试身份**持有并条件清除，不能用单一全局槽位；②“关闭句柄”是集合操作，关闭 current 后要按规则恢复（最近打开），否则存活句柄失去 current；③集成测试必须使用真实 Memory 传输 + 仅延迟 connect，才能暴露 current 语义问题。
