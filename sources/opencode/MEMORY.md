@@ -1187,3 +1187,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **交接 S1/S2**：E0-10_HANDOVER 顶部改为“当前有效状态（DONE+PM §8）”，诊断 BLOCKED 保留为历史；注明“中位=上中位数（n=20 第 11 项）”；OBS-1 类别级 35 s 超时**未关闭**。
 - **提交** `154978c`（15 文件；扫描 hard=0/r1=5；主题与消息文件一致；**未推送**；repack 告警已记录）；提交后 `final-manifest-fix-attempt2.txt` **TOTAL 125**（旧清单保留）；`71b3051` 未变。
 - 教训：①**“归位”= 覆盖 = CA-4 违规**，正确做法是保留污染版本并用新名字写血缘说明；②比较命令绝不可把输出写回被比较文件；③基准被污染时，用“原始前快照 + 规范化副本 + 后快照”三件套恢复可复核性，而不是让 cmp 通过。
+
+## 2026-10-19 opencode（E0-08 完成）: 删除请求超时定时器 unref；Node22/25 lib 20/20；core.fileMode=false；提交 c744594
+
+- **修复**：`shared/station-agents/lib/centralClient.js:92` 删除 `if (typeof timer.unref === 'function') timer.unref();`（仅一行）。请求超时定时器必须保持引用，否则无其他句柄时事件循环提前结束、超时不触发（Node22 测试 10/11 `cancelledByParent`）。
+- **验证**：修复前 Node22 18 pass/2 cancelled；修复后 **Node22 20/20、Node25 20/20**；敏感性（恢复该行）Node22 再次 18/2 cancelled，复原后 `cmp fix.diff fix.diff.after-sensitivity` = 0（比较输出写入新文件 `fix-diff-cmp.txt`）。
+- **unref 盘点**：范围内仅 3 处——本次已修 1 处；`PC-01_HELIUM-01/src/collector.js:35`（轮询调度，server.js 持有循环）与 `00_CENTRAL-MES/src/eventBus.js:21`（SSE 心跳）不修改；记录观察项：collector 若独立进程运行需复查。
+- **环境**：`git config core.fileMode false`（仅本仓库）；005 假差异消失、索引/树仍 **100755**；`docs/pm/ENVIRONMENT.md` 追加 §6。
+- **回归（Node22，逐条新文件、失败即停）**：check-syntax 121、w05 PASS、station-template 25/25、PC-01 6/6。
+- **提交** `c744594`（35 文件、扫描 hard=0、主题一致、**未推送**；repack 告警已记录）；`final-manifest.txt` **TOTAL 27**（提交后生成）；`codex.txt=READY`、`opencode.txt=DONE` 为最后写入。
+- 教训：**超时定时器永远不要 unref**（unref 只适合“有主句柄时不应阻止退出”的辅助循环）；`core.fileMode=false` 是 Windows/NAS 仓库防“模式位假差异”的必需设置；比较 diff 的输出只写新文件（CA-4）。
