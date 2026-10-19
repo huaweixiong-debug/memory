@@ -1079,3 +1079,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F5 诊断**（决定性、可复现）：`w05-test-runner.js:73` 类别预算 **30000ms**（watchdog→exit=124）；**单跑 w36：28.4s/29.1s（11/11 通过）**；诊断完整门两次：**FAIL(124)/PASS**；SUP 两次：PASS/FAIL(124) → **临界易碎**（耗时≈预算边界），**功能性通过**，根因未证明唯一；修复方向（提预算/拆分/优化）**待 PM**（涉及测试/运行器，超出本任务范围）。存证：F5-w05-timing.txt + 完整输出 4 份。
 - **CA-12 口径**：`e0-06-final-state.sh` 的 `git tag --points-at` 为**只读**（无创建标签；mtime 早于 CA-12 发布）——边界（只读/政策前/历史脚本）待 PM；ENG 不再运行此类脚本。
 - **纪律**：交单后**冻结**（SUP 要求）；本任务不再提交（E0-08 第 0 步单条命令入库）；首次 PASS 与后续 FAIL 存证均保留，不挑运行。
+
+## 2026-10-19 opencode（E0-06 PM §11/§12 裁决落实）: 全部待决项关闭；等待 SUP 第 3 次审核
+
+- **§11 裁决（06:24）**：F4=原件（`F1-F2-escalation.md`）与 `secret-scan-commitA.txt` 仅本机保留（由 E0-08 第 0 步补 `local-only.txt` + exclude）；安全版本入库；F5=只做诊断（Node22/25 各 3 次完整门 + W36 单跑 3 次，全部保留不挑选）；CA-12 修订为**只禁写操作**（add/commit/push/tag 创建删除/rm/mv/reset/checkout/restore/stash/update-index），只读查询（status/log/diff/ls-files/rev-parse/tag -l|--list|--points-at|--contains/check-attr/ls-remote）允许；生效 06:06，不追溯。
+- **§12 裁决（06:43）**：ENG 第 3 次交单确认——F4 关闭（87 文件 hard=0）；F5 记**已知问题**转 **E0-09**（W36 运行时间与运行器上限；在 E0-08 后、E0-03 前完成）；CA-12 只读口径确认；**ENG 本任务无需再改**；`opencode.txt=DONE`、`codex.txt=READY(ATTEMPT=3)` 待 SUP 第 3 次审核；若再 FIX_REQUIRED 即第 3 次退修→报 GM。
+- **NCR-003 第 4 次（我的）**：opencode.txt 曾在 06:23:04 写入 `SET_AT=06:26:00`（预写 3 分钟、秒数 00 暴露非 date 输出）——CA-8 发布后再犯；PM 记录不退修，但**下次即按重要问题退修**。硬性教训：**写标记的同一批次先 exec `TZ=EST5EDT date -Iseconds` 取值，直接复制输出，绝不心算/整点**。
+- 状态：材料冻结（交单前冻结要求）；未新增提交/推送；watcher 运行中，等待 SUP 第 3 次审核结果。
