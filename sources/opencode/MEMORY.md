@@ -1139,3 +1139,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F3**：`e0-09-final-rows.sh` 为 ENG 在 READY 后（09:41:21）创建——**第 2 次冻结违规**，如实承认、不删除/不倒填；`final-manifest-attempt2.txt` 漏 `strict/` 18 份与 final-rows（179 vs 199，漏 19）；v2 同名覆盖缺口待裁；请 PM 按 §6.3 登 **NCR**。
 - 状态：`opencode.txt=BLOCKED`、报告 `blocked-report-2.md`、handover §5/§6/§7 已更新；裁决前**不重跑/不改源码测试预算/不新增证据**；watcher 运行中。
 - 教训：①**包装器的退出码必须纳入判定**——诊断器恒 0 不是“门通过”；②**固定标签会复用旧成功**——每次运行必须唯一标签并校验文件确为本次产生；③**交单后任何落盘都算违规**（两次都是“只读助手”）；④清单必须**递归全覆盖并核对计数**，否则“已列哈希正确”掩盖“漏项”。
+
+## 2026-10-19 opencode（E0-09 ATTEMPT=3 完成）: F4→E0-10；严格入口停用；F2 三新版；F3 NCR-004；提交 1ae88ea
+
+- **PM §7 V1.4 裁决执行**：F4（SUP Node25 security 超时 124/275）转 **E0-10**，本任务零运行；F1 严格入口**停用**（不做 v3）——`strict-harness-retired.md`（版本沿革/SUP 缺陷说明/`strict/*.txt` PASS **不作验收证据**；今后回归一次一条命令查退出码）；F2 新文件：`category-count-clarification-v2.md`（**38 类名逐行 + 复算命令，38/284**）、`category-timing-compare-v2.md`（**38 行**）、`strict-regression-summary-v3.md`（**14 次 = Node22×10 + Node25×4，入口 PASS 2/判停 2**）；F3：`e0-09-final-rows.sh` 由 ENG 于 READY 后（09:41:21）创建——NCR-004，原文件保留；v2 首版脚本**未保留**如实记录。
+- **提交** `1ae88ea`（24 文件、扫描 hard=0、主题与消息文件一致、**未推送**；提交后 git 自动维护再次报 `multi-pack-index Permission denied`，已记录）。
+- **清单** `final-manifest-attempt3.txt`：递归、排除自身、不可读即非零、**214 条 + COUNT-MATCH=PASS**（与 find 核对）。
+- 交接顶部新增“当前有效结论”（旧 §1–§9 标历史）；`opencode=DONE`/`codex=READY` 后**不再写仓库**（CA-13）。
+- 教训：①包装器/入口的“PASS”不能替代原始输出，**证据以 raw + 审核方独立运行为准**；②严格入口这类工具改到第 3 版仍可能有边界漏洞——**及时停用**比继续打补丁更安全；③冻结规则对“只读助手”同样适用（两次违规均因此）；④NCR 级流程缺陷（NCR-004/CА-13~15）必须转成硬规则：交单后零写入。
