@@ -1097,3 +1097,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
   - 线索（未证明）：该测试 spawn bash 做证据流水线探测（`resolveBash()` 回退逻辑）；本机无 WindowsApps WSL bash。
 - **升级**：本任务第 3 次正式退修 → PM 报 GM 并重拆（ENG 不代替升级流程）；已裁项 F1/F2/F4/F5 保持关闭、F3 通过；A3/A4 维持不通过。
 - 状态：交单后**冻结**；无新提交/推送；清单与证据见 `F6-F7-report.md`、`F7-w05-security-diagnosis.txt`、`final-manifest.txt`。
+
+## 2026-10-19 opencode（E0-09 步骤 0–3）: 根因=NAS 上 pdfkit/qrcode 模块加载（~25-29s）；BLOCKED 待 PM 批准惰性加载
+
+- **第 0 步完成**：提交 **`8d3caa6`**（51 文件；扫描 exit=0；staged 无残留）。⚠️ 提交信息被命令传递**截断为 `E0-06:`**——按禁止改写历史**未 amend**；记录在 `step0-commit-record.txt`；**后续提交改用 `-F 消息文件`**。local-only.txt（2 路径）+ exclude 已就位。
+- **测量（全部保留）**：Node22 完整门 **5/5 过**（106–115s）；Node25 **1/5**（4 次 W36 exit=124，30.6–31.3s）；W36 单跑 ×3/版本、security 单跑 ×3/版本均过；security 完整门 10/10 + 单跑 6/6（SUP 的 1 次断言失败**未复现**）。
+- **根因（铁证）**：W36 的 11 个测试中单一测试占 95%——不是测试本体，而是首次 `require('../src/packing')` → `src/labelService.js` **顶层** `require('pdfkit')`+`require('qrcode')`；**NAS 上分别 14.0s / 10.8s**，**本地磁盘同包 164ms / 70ms** → W36 ≈ 29–31s，正好跨 30000ms 类别上限（runner:73）。Node 22/25 同量级（Node25 略慢），**版本不是根因**。
+- **待 PM 批准（方案 A）**：仅改 `src/labelService.js` 为惰性加载（行为不变），预期 W36 ~1s、门 ~75s；验证：Node22 门 ×5 连续全过、W36<15s、security 无失败、39 类/284 通过。
+- 复用教训：①**NAS 上的 node_modules 是隐形性能炸弹**——模块加载期读字体/数据文件可放大到数十秒；②测试耗时定位要先看**逐测试**再追 require 链；③命令行提交必须用 `-F <文件>`，避免长消息被中间层截断；④“某版本偶发失败”先做**双版本对照**再下结论（本轮 Node25 反而更差）。
