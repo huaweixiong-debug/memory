@@ -1216,3 +1216,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **事故**：`secret-scan-commitX.txt`（ATTEMPT=1 工作区扫描输出）被本轮同名扫描覆盖后，又被一次失败的 `git show` 重定向截断为 0 字节；原内容不可恢复，已如实记录、不补造；权威扫描为 `-attempt2` 与 `commitattempt2` 文件。
 - **提交** `62e77e5`（42 文件；消息按任务 §8.11；**未推送**；repack 告警记录）；`final-manifest-attempt2.txt` **TOTAL 62**；`codex=READY`、`opencode=DONE` 为最后写入。
 - 教训：①**连接尝试也要有超时**——只有操作超时不够；②**超时不是“忽略结果”**：必须在每个 await 之后检查取消令牌，否则迟到回调会继续发 I/O；③close 必须同时失效“在途连接 + 退避定时器 + 排队任务”；④敏感性复原用**文件备份**（字节一致），不要用编辑器改回；⑤工作区证据文件切勿用同名扫描/重定向覆盖——先复制再操作。
+
+## 2026-10-19 opencode（E1-01 ATTEMPT=3 · F5 报 PM）: F3/F4 待修；CA-4 旧扫描丢失先报 PM 裁定
+
+- **SUP 第 2 次退修**（`docs/reviews/E1-01_CODEX_REVIEW.md`）：F1/F2 已修；**F3（未完全修复）**——close 未取消在途读/写回执与队列等待者，旧 watchdog 未清理，迟到回执可返回 OK；**F4**——`transport.disconnect()` 返回 Promise 时，尝试超时/操作超时路径的拒绝未处理 → unhandledRejection；**F5**——ATTEMPT=1 的 `secret-scan-commitX.txt`（384B）被同名扫描覆盖、后又被失败的 `git show` 重定向截断为 0，原件不可恢复，须 PM 正式裁定 CA-4 偏差。
+- **本轮动作（按 SUP §5.3）**：新增 `docs/evidence/E1-01/blocked-report-ca4.md` 报 PM，请求：①NCR 登记；②替代证据组合（`-attempt2` 384B、`secret-scan-commitattempt2` 新扫描 38 文件 hard0、SUP 重扫 16af354 44 文件 hard0、ATTEMPT=1 清单 384B 记录）；③是否仅新增 `ca4-loss-note.md`、不重建原件；`opencode.txt=BLOCKED`；未改码/未覆盖/未提交。
+- 待裁定后执行：F3 登记活动操作取消入口（close 立即失效在途/排队、清 watchdog、迟到结果吸收、不返回 OK）；F4 统一处理同步/异步 disconnect 失败（不吞全局事件、补无 unhandledRejection 证据）；新增回归先证明失败；全套验收/敏感性/扫描/新名清单/提交。
+- 教训：①**clear 路径必须处理 Promise 拒绝**（`try/catch` 只捕同步）；②close 要同时覆盖“连接、I/O 在途、队列等待者、定时器、迟到回执”五个面；③证据文件绝不同名重扫；恢复旧证据用“复制备份”，绝不用重定向写回；④丢失证据必须停手报 PM，不补造。
