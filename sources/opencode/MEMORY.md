@@ -992,3 +992,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F2**：`E0-02_HANDOVER.md` 全文重写（11 提交/HEAD `00e91a2`/三标签/版本表区分当时与复扫）；`remaining-v2.txt`（16 项逐项）；`sha256-reconcile.md`（真实 4 差异：PROJECT_PLAN_PM.md、E0-02.md、handover.md、opencode.txt；任务文件本就在 before 集合内；更正旧表述）；`gitattributes-scope.txt`（499 跟踪文件仅 005 例外）；`gitattributes-gap.txt`（创建前快照缺口如实记录）。
 - 本轮**无新提交/标签/推送**（§13.2）；`codex.txt=READY（ATTEMPT=2）` 交 SUP 第 2 次审核（远程 refs 待 GM，§13.1）。
 - 教训：①Windows 上 mock 只在 bash 层可靠——node 子进程不解析无扩展名脚本，涉及 node 调用的场景须用真实 git/临时真实仓库；②演示脚本的断言路径必须与产品行为同源核对；③“当时使用/后续复扫”的证据必须分列命名；④所有时间戳当场取得并标注时区（本次修正了 remaining-v2 的 UTC 误标）。
+
+## 2026-10-19 opencode（E0-02 第 3 次提交）: §14 口径修复（现行工具 F1、演示器 F3、remaining-v3）；交 SUP
+
+- **PM §14 边界**：F1 只修**现行工具**（lib/commit-group/run-gates/secscan1/f1-syntax-check）；**历史脚本冻结不再修改**；历史脚本需逐条说明运行中的失败项。
+- **F1**：`commit-group.sh` 补齐提交后日志读取检查；`lib.sh` 的 legacy `secretscan` 改为 git 失败即中止（不再可能误报 NO_HITS）。
+- **F3**：新演示器 **v2d**：每用例显式断言 mock 写动作（默认=0；S7 提交失败允许已尝试写入≥1）、**聚合非零退出**、**反向控制 C1（先写后失败必须判 FAIL）/C2（exit=0 必须判 FAIL）**；覆盖 S1–S7+S2b；**结果全部符合预期（AGG=0，整体 PASS）**。
+- **F2**：`remaining-v3.txt`（**动态计算=15 项**，与逐行一致；禁用行号指代；v2/旧文件保留为历史）。
+- **scripts/README.md**：现行 5 工具 / 历史 52（step 23 + 演示 7 + 只读 22）分类；历史运行审计：5 处“失败被继续”（step-0-baseline、step-0b、step-commit8a、step-clone2、step-clone2-v2），**均无仓库写入类影响**；`step-3-prep.sh` 从未运行且含语法错误，标禁用。
+- 仍**无新提交/标签/推送**；`codex.txt=READY(ATTEMPT=3)`；交接 9 处同步更新（§0/§2/§3/§4/§6/§7/§8，含 16→15 计数更正）。
+- 教训：①mock 只在 bash 层可靠（Windows node 不解析无扩展名脚本），涉及 node 的场景用真实临时仓库；②演示器必须带“反向控制”（先写后失败、必定失败断言），否则判定器本身不可信；③动态计数 > 手写计数；④引用清单用路径，不用行号。
