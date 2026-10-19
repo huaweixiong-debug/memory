@@ -1223,3 +1223,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **本轮动作（按 SUP §5.3）**：新增 `docs/evidence/E1-01/blocked-report-ca4.md` 报 PM，请求：①NCR 登记；②替代证据组合（`-attempt2` 384B、`secret-scan-commitattempt2` 新扫描 38 文件 hard0、SUP 重扫 16af354 44 文件 hard0、ATTEMPT=1 清单 384B 记录）；③是否仅新增 `ca4-loss-note.md`、不重建原件；`opencode.txt=BLOCKED`；未改码/未覆盖/未提交。
 - 待裁定后执行：F3 登记活动操作取消入口（close 立即失效在途/排队、清 watchdog、迟到结果吸收、不返回 OK）；F4 统一处理同步/异步 disconnect 失败（不吞全局事件、补无 unhandledRejection 证据）；新增回归先证明失败；全套验收/敏感性/扫描/新名清单/提交。
 - 教训：①**clear 路径必须处理 Promise 拒绝**（`try/catch` 只捕同步）；②close 要同时覆盖“连接、I/O 在途、队列等待者、定时器、迟到回执”五个面；③证据文件绝不同名重扫；恢复旧证据用“复制备份”，绝不用重定向写回；④丢失证据必须停手报 PM，不补造。
+
+## 2026-10-19 opencode（E1-01 ATTEMPT=3 完成）: F3/F4 修复；F5 哈希还原；69/69；提交 bf76cd9
+
+- **F3（close 边界）**：新增 `activeOperations` + `createOperation`；`close()` 立即对在途读/写、**队列等待者** `record.cancel(closedError())` 并清 watchdog；`writeSignal` 在 `writeBytes` 后再次 `assertActive`，迟到回执不返回 OK。3 项新回归修复前失败（`fix-tests-before-fix-attempt3.txt`），修复后 23/23（`fix-service-tests-after-fix-attempt3b.txt`）。
+- **F4（disconnect 失败）**：`safeDisconnect()` 统一吸收同步抛错与 Promise 拒绝；用于连接尝试超时、操作超时与 close；F4 回归在操作超时 + 连接超时两条路径均 **无 unhandledRejection**。
+- **F5（CA-4 还原）**：按 PM §9.1，`secret-scan-commitX-attempt2.txt` 把“文件数=38”改 44 → `secret-scan-commitX-restored.txt`，SHA-256 = `d3a2441e7cce51e642fb03c7c4328cd26df67edc176f2dd627a8063cd88e3544`（与 ATTEMPT=1 清单一致）；0 字节文件不改不删；`ca4-loss-note.md`；CA-16：本轮写证据命令均 `set -C`。
+- **验收**：lib **69/69**、check 通过、模板 25/25、w11 8/8（attempt3 新文件）；敏感性 attempt3（文件备份复原）S1/S2 预期失败、恢复 23/23、SHA `92020b3b…` cmp=0；扫描 `secret-scan-attempt3.txt` **31 文件 hard=0**。
+- **提交** `bf76cd9`（36 文件、消息按 §9.2、未推送；repack 告警记录）；`final-manifest-attempt3.txt` TOTAL 90；`codex=READY`、`opencode=DONE` 最后写入。
+- 教训：①close 必须覆盖“在途 I/O + 队列等待者 + watchdog + 迟到回执”四要素；②清理函数一律走 `safeDisconnect`，绝不裸调 Promise 返回的 `disconnect()`；③扫描必须在 `git add` 之后（默认扫描暂存集），暂存前跑会得到 files=0；④同名扫描前先改名/加后缀，CA-16 的 `set -C` 能阻止误覆盖。
