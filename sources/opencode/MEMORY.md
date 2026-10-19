@@ -1197,3 +1197,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **回归（Node22，逐条新文件、失败即停）**：check-syntax 121、w05 PASS、station-template 25/25、PC-01 6/6。
 - **提交** `c744594`（35 文件、扫描 hard=0、主题一致、**未推送**；repack 告警已记录）；`final-manifest.txt` **TOTAL 27**（提交后生成）；`codex.txt=READY`、`opencode.txt=DONE` 为最后写入。
 - 教训：**超时定时器永远不要 unref**（unref 只适合“有主句柄时不应阻止退出”的辅助循环）；`core.fileMode=false` 是 Windows/NAS 仓库防“模式位假差异”的必需设置；比较 diff 的输出只写新文件（CA-4）。
+
+## 2026-10-19 opencode（E1-01 完成）: snap7Service 模拟实现；61/61；敏感性 S1/S2；提交 16af354
+
+- **实现**：`shared/station-agents/lib/plc/` 五模块——`pointConfig`（白名单/方向/类型/必填/地址重叠/`simulation` 禁现场字段，错误码英文+中文消息）、`s7Codec`（大端 BOOL/INT16/UINT16/INT32/REAL + scale）、`memoryTransport`（areas 数据区 + `failNextConnect`/`hangNext`/`dropConnection`/`setSignal`）、`realS7Transport`（禁用桩）、`snap7Service`（同 plcId 单例、**连接锁**、**串行队列**、超时→DISCONNECTED、不重发写、退避 500/1000/2000/4000/8000→OFFLINE、reconnect、snapshot）。
+- **先测试后实现**：`tests-before-impl.txt`（4 模块 not found，exit=1）→ 实现后 lib **61/61**（新增 41：point-config 11、codec 9、memory 6、service 15）。
+- **敏感性（A8）**：S1 临时并行化 enqueue → “读写按调用顺序串行执行”失败；S2 去连接锁 → “并发 5 次首读只连接一次”失败；恢复后 15/15 且 SHA 前后相同（`sensitivity-cmp.txt` cmp=0）。
+- **最终验收（Node22 逐条）**：node v22.23.3、lib check、lib tests 61/61、station-template 25/25、w11 8/8 全 exit=0。
+- **提交** `16af354`（44 文件、扫描 hard=0、主题与消息文件一致、**未推送**；repack 告警记录）；`final-manifest.txt` TOTAL 31；`codex.txt=READY`、`opencode.txt=DONE` 为最后写入。
+- 遗留：中央 `w11-standard-regression.js` 的 `station-lib-offline` 仍只列旧两个测试文件（§8.7 禁止改中央目录）；心跳未按 30 分钟更新（连续实现），已如实记录。
+- 教训：①**超时测试要在断言前挂 catch**，否则定时器回调的拒绝会被 Node 判为 unhandledRejection；②“并行 vs 串行”“有锁 vs 无锁”必须各自可观测（transport 计数/顺序日志），敏感性才有意义；③先写测试再实现能暴露接口设计问题（如 timeout 与连接重试的边界）。
