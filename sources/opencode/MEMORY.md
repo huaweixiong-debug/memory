@@ -1130,3 +1130,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F3**：holder 文件 READY 后创建如实说明（保留/不倒填）；`final-manifest-attempt2.txt` 于提交后生成（路径+字节+SHA256）。
 - **提交** `959c30b`（88 文件；扫描 hard=0；主题与消息文件一致；未推送）；提交完成后 git 自动维护报 `could not write multi-pack-index: Permission denied`（repack 失败，提交对象已生成，已记录）。
 - 教训：①**替身自测的 mock 数据必须满足 checker 的完整断言**（类别数错 1 就会误判）；②Node22/25 的 TAP 汇总前缀不同（`#` vs `ℹ`），凡是解析测试数必须兼容；③证据脚本每次改动另存新文件名（CA-4），否则无法复现“产生该证据的版本”。
+
+## 2026-10-19 opencode（E0-09 ATTEMPT=3）: SUP 第2次退修（F1–F4）→ 按 §5.3-9 BLOCKED 报 PM，不重跑
+
+- **F4（新失败，先裁决）**：SUP 第 6 次真实门（Node25）`w05-security-gates` **exit=124 超时（35.2s）**、整门 exit=1 仅 **275/284**；第 7 次未启动。未证与 E0-06 的 1 次断言失败同因；请求 PM 定诊断范围/是否另开任务/恢复条件。
+- **F1**：`e0-09-strict-regression-v2.js` 忽略**计时进程自身异常**，且用固定标签会信任**旧成功 summary/raw** → SUP 用“旧文件+进程 exit1 无新输出”复现 PASS。拟 v3：每次**独有标签**、运行前拒绝/校验既有目标文件（mtime/hash）、把 timer `error/status/signal` 纳入失败、替身走**同一 spawn** 并覆盖 4 场景（首败/缺 summary/全成功/旧文件+进程失败）。
+- **F2**：补 **38 个类别名**与可复算命令、`category-timing-compare-v2.md`（38 行）；真实运行合计应为 **14 次 = Node22×10 + Node25×4（通过 2、判停 2）**，当前文档多算 1 次；交接历史节须标注、删除“待改 A4”请求。
+- **F3**：`e0-09-final-rows.sh` 为 ENG 在 READY 后（09:41:21）创建——**第 2 次冻结违规**，如实承认、不删除/不倒填；`final-manifest-attempt2.txt` 漏 `strict/` 18 份与 final-rows（179 vs 199，漏 19）；v2 同名覆盖缺口待裁；请 PM 按 §6.3 登 **NCR**。
+- 状态：`opencode.txt=BLOCKED`、报告 `blocked-report-2.md`、handover §5/§6/§7 已更新；裁决前**不重跑/不改源码测试预算/不新增证据**；watcher 运行中。
+- 教训：①**包装器的退出码必须纳入判定**——诊断器恒 0 不是“门通过”；②**固定标签会复用旧成功**——每次运行必须唯一标签并校验文件确为本次产生；③**交单后任何落盘都算违规**（两次都是“只读助手”）；④清单必须**递归全覆盖并核对计数**，否则“已列哈希正确”掩盖“漏项”。
