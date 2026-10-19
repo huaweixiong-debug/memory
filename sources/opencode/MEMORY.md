@@ -1232,3 +1232,13 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **验收**：lib **69/69**、check 通过、模板 25/25、w11 8/8（attempt3 新文件）；敏感性 attempt3（文件备份复原）S1/S2 预期失败、恢复 23/23、SHA `92020b3b…` cmp=0；扫描 `secret-scan-attempt3.txt` **31 文件 hard=0**。
 - **提交** `bf76cd9`（36 文件、消息按 §9.2、未推送；repack 告警记录）；`final-manifest-attempt3.txt` TOTAL 90；`codex=READY`、`opencode=DONE` 最后写入。
 - 教训：①close 必须覆盖“在途 I/O + 队列等待者 + watchdog + 迟到回执”四要素；②清理函数一律走 `safeDisconnect`，绝不裸调 Promise 返回的 `disconnect()`；③扫描必须在 `git add` 之后（默认扫描暂存集），暂存前跑会得到 files=0；④同名扫描前先改名/加后缀，CA-16 的 `set -C` 能阻止误覆盖。
+
+## 2026-10-19 opencode（E1-01B 完成）: close 生命周期代际修复；72/72；提交 bba60fe
+
+- **T1**：`attemptConnect` 在真正 `transport.connect()` 前检查 `closed` 与连接代际——同一同步轮 `writeSignal` 后 `close()` → **connect 调用 0 次**，请求 `PLC_SERVICE_CLOSED`。
+- **T2**：连接在途时 close、随后迟到成功 → 成功路径 `safeDisconnect()`（断开+1）、`isConnected=false`、服务 DISCONNECTED、无残留定时器。
+- **T3**：旧代连接尝试超时（超时即断开旧连接）→ `reconnect()` 新代 ONLINE → 放行旧代成功：**不断开新连接**（disconnects 不变、ONLINE、isConnected=true）；代际失效的成功仅以 `PLC_CONNECT_SUPERSEDED` 丢弃。
+- 实现：`connectionGeneration` 在 `close()`/`reconnect()` 递增；`connectWithRetry(generation)` 每 await 后校验；`connectPromise` 清理仅在代际未变时执行；连接尝试超时会把状态置 DISCONNECTED 并 emit。
+- **证据**：T1–T3 修复前全失败（`tests-before-fix.txt`）→ 修复后 26/26；lib **72/72**、模板 25/25、w11 8/8、check 通过；敏感性去 precheck → T1 失败（`sensitivity-no-precheck.txt`），恢复后 SHA `ebee8acb…` **cmp=0**；扫描 `secret-scan.txt` 23 文件 hard=0。
+- **提交** `bba60fe`（23 文件、消息按 §4.6、未推送；repack 告警记录）；`final-manifest.txt` TOTAL 19；`codex=READY`、`opencode=DONE` 最后写入。
+- 教训：①异步“发起连接”前必须做 closed/代际检查，否则同轮 close 仍会 connect；②迟到成功的处理要区分“已关闭（断开）”与“被新代取代（不动新连接）”；③连接代际要覆盖 `connectPromise` 清理，否则旧代的 finally 会清掉新代的锁。
