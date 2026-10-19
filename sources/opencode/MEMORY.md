@@ -923,3 +923,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 环境要点（可复用）：本机 git-bash 无 tzdata，`TZ=America/New_York` 失效（回退 UTC）；改用 `TZ=EST5EDT` 生成纽约时间（与 Windows 时区库交叉验证一致）。Node v25.2.1 超出子工程 engines（>=20 <23）：`node --test <目录>` 在 v25 报 MODULE_NOT_FOUND，改显式文件清单可通过（lib 20/20、station-template 25/25）。
 - 项目角色约定：ENG=OpenCode 是唯一代码写入者；一次一任务；只改任务书“允许修改”路径；命令原始输出存 `docs/evidence/<ID>/`；禁止触碰生产库/设备/凭据。
 - 当前状态：等待 SUP（Codex）审核；若 opencode.txt 回到 READY（ATTEMPT>1），按 NOTE 指向的审核文件逐条修复。
+
+## 2026-10-18 opencode（续）: longol_mes E0-01 第 2 轮（SUP FIX_REQUIRED → F1–F4 修复、F5 上报 PM 阻塞）
+
+- SUP 审核（`docs/reviews/E0-01_CODEX_REVIEW.md`）判 FIX_REQUIRED：F1 W37/W39 应按“自述未解决缺陷”列 FIX（已改为 23/14/2/0）；F2 快照口径混用+引号路径未解码+rename 误述（git-summary v2 重建）；F3 需逐路径映射表（`path-task-mapping.md`，597 条：暂存 110/未暂存 43/未跟踪 444）；F4 部分命令缺日志条目（已带日志重跑补录）；F5 两条原验收命令（lib、station-template 目录参数形式）在本机 Node v25.2.1 环境性 exit=1、任务禁止修复，T2 未满足需 PM 裁决。
+- ENG 处置：F1–F4 完成（含 39 行复核、v2 汇总、映射表、F4 补录、final-check 干净）；F5 按 SUP 指示置 `opencode.txt=BLOCKED` 等待 PM。PM 已在任务队列新增 **E0-06**（统一 Node 22 LTS 运行环境+新基线，关闭 F5）与 **E0-07**（修复 W37/W39 并发输者报错为确定性 409）。
+- **经验教训（高优先级，跨会话复用）**：Git-for-Windows(MSYS) 下**避免在循环内大量使用 `$(...)` 命令替换**——本次 gen-path-mapping v1 触发链式 fork 失控（累积 ~1500 个进程、输出停滞、仓库根落 5 个 0 字节残留文件，已取证 `fork-storm-incident.md` 并按三条件精确清理）。改用 bash 内建（`printf -v`、`mapfile`、关联数组、参数展开、`find ... -newer` 筛查）后同任务秒级完成。
+- 值守：`opencode.txt` 变更监视中；PM 裁决后继续（交 SUP 复审或按派发执行）。
