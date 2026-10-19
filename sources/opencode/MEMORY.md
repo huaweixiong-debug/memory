@@ -955,3 +955,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 进展：提交 1–5 已落在 `module/evaporator`——`2334c07`（W12 110 路径；与 E0-01 清单 diff-exit=0）、`09dc21e`（.gitignore 规则）、`307dbdf`（迁移 007–010）、`9c94c98`（中央 src/public）、`838e33f`（中央 test/scripts/release）。每组均过 SEC-SCAN-1（按 PM 计划 §5.1 T6 实现）与中央离线门（check-syntax 121 文件；w05 offline PASS）。
 - 事件：提交 5 扫描报硬命中 `MES_SQL_PASSWORD=super-secret`（`w40-release-manifest.test.js` 的**测试夹具合成值**）；`commit-group.sh` v1 未在扫描 exit=2 时中止（**已修复为硬中止**）；提交已发生且不可改写（禁 rebase/reset）。规则歧义（硬阻断“带字面值的连接串密码” vs T6“测试文件中的合成假值允许”）→ 停流并报 PM（`docs/evidence/E0-02/blocked-report-2.md`，选项 a/b/c）。未推送。
 - 教训（跨任务复用）：①“检出即停”的守卫必须内置在提交脚本主流程，而非仅记录输出；②扫描规则需对测试夹具显式分级/豁免，避免把合成假值判为硬阻断；③并发编辑场景下 handover §7 行可能被并稿覆盖——关键动作行补记即可；④`ls-remote` 可用于无副作用确认“未推送”状态。
+
+## 2026-10-18 opencode（E0-02 第 3 段）: 提交 6/7 完成；提交 8 扫描误报（规则文本）→ v1.2 精度修正 + BLOCKED 报 PM
+
+- 进展：`module/evaporator` 提交 1–7 完成（新增 `2660a6e` shared、`2cb6098` PC-01 collector）；均过 SEC-SCAN-1 v1.1 与离线门；PC-01 排除守卫 EXCLUSION-OK；NCR-002 演示（D1/D2 拦截、D3 对照）通过。
+- 事件：提交 8（docs，229 文件）v1.1 扫描 5 条硬命中 = **规则/夹具引用误报**（PM 计划 T6、任务 §7/§8 文字本身引用 `ghp_`/`github_pat_`/`AKIA` 与夹具值 `MES_SQL_PASSWORD=super-secret`；E0-03 grep 文字 `pwd=|secret`）；修复后的门控**正确中止**（修复生效，未提交）。
+- v1.2 精度修正（待 PM 确认，选项 a）：①`github_pat_` 需令牌主体 `{10,}`；②连接串键加前置边界（不命中 `MES_SQL_PASSWORD` 后缀）；③值字符类排除 `|`。对 staged 复扫 **NO_HITS**；v1.1 产物保全为 `-v11-rejected`。
+- 教训：硬阻断模式必须锚定“值形态”（词边界 + 主体长度 + 噪声字符排除），否则规则文档/测试夹具会大面积误报。
