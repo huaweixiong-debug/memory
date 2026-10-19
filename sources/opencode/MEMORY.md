@@ -985,3 +985,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - clone3（**默认 Git 设置**、新目录）：HEAD=`00e91a2`；克隆内 005 `text: unset`、哈希=期望 `6bbc3a54…`；`check-syntax` ✓；**`w05` PASS** → A6 关闭。
 - 交接：`docs/handovers/E0-02_HANDOVER.md`（11 提交、3 标签、5 次阻塞 #1–#5 全记录、SEC-SCAN-1 v1→v1.2b 演进表、A1–A7 自检）；`opencode.txt=DONE`；`codex.txt=READY` 待 SUP 审核。
 - 复用教训：①**干净克隆是提交集自洽性的唯一检验**（W12 自检依赖被排除文件、行尾转换等只在克隆中暴露）；②字节级哈希断言需用 `.gitattributes -text` 固定受保护文件；③“工作区通过”≠“克隆通过”；④MSYS 下 robocopy 需 `MSYS2_ARG_CONV_EXCL`。
+
+## 2026-10-19 opencode（E0-02 第 2 次提交）: F1 门控失败关闭修复+演示 v2c 8/8；F2 交接重写与对账；交 SUP
+
+- **F1**：修复 16 个脚本 + `secscan1.js`（`fail()` 辅助、逐项 `|| fail`、git 读取失败传播、扫描器对每个 git 调用检查 error/status 并写 `SCAN_ERROR` 绝不输出 `NO_HITS`）；仓库外 mock 演示 **v2c 8/8 PASS**（扫描硬命中×3、脚本层/扫描器内 Git 读取非零、语法非零、w05 非零、守卫失败；写动作 0、成功消息 0）。演示血统 v2→v2b→v2c 全保留（v2 两处缺陷：**Windows 下 node 子进程不解析无扩展名 mock 脚本**、S2 断言误引用残留；v2b：断言文件名漏连字符）。
+- **F2**：`E0-02_HANDOVER.md` 全文重写（11 提交/HEAD `00e91a2`/三标签/版本表区分当时与复扫）；`remaining-v2.txt`（16 项逐项）；`sha256-reconcile.md`（真实 4 差异：PROJECT_PLAN_PM.md、E0-02.md、handover.md、opencode.txt；任务文件本就在 before 集合内；更正旧表述）；`gitattributes-scope.txt`（499 跟踪文件仅 005 例外）；`gitattributes-gap.txt`（创建前快照缺口如实记录）。
+- 本轮**无新提交/标签/推送**（§13.2）；`codex.txt=READY（ATTEMPT=2）` 交 SUP 第 2 次审核（远程 refs 待 GM，§13.1）。
+- 教训：①Windows 上 mock 只在 bash 层可靠——node 子进程不解析无扩展名脚本，涉及 node 调用的场景须用真实 git/临时真实仓库；②演示脚本的断言路径必须与产品行为同源核对；③“当时使用/后续复扫”的证据必须分列命名；④所有时间戳当场取得并标注时区（本次修正了 remaining-v2 的 UTC 误标）。
