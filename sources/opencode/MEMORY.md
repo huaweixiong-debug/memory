@@ -1242,3 +1242,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **证据**：T1–T3 修复前全失败（`tests-before-fix.txt`）→ 修复后 26/26；lib **72/72**、模板 25/25、w11 8/8、check 通过；敏感性去 precheck → T1 失败（`sensitivity-no-precheck.txt`），恢复后 SHA `ebee8acb…` **cmp=0**；扫描 `secret-scan.txt` 23 文件 hard=0。
 - **提交** `bba60fe`（23 文件、消息按 §4.6、未推送；repack 告警记录）；`final-manifest.txt` TOTAL 19；`codex=READY`、`opencode=DONE` 最后写入。
 - 教训：①异步“发起连接”前必须做 closed/代际检查，否则同轮 close 仍会 connect；②迟到成功的处理要区分“已关闭（断开）”与“被新代取代（不动新连接）”；③连接代际要覆盖 `connectPromise` 清理，否则旧代的 finally 会清掉新代的锁。
+
+## 2026-10-19 opencode（E1-01B ATTEMPT=2 · F2 接口报 PM）: 旧代 timer 误伤 + 连接句柄不可定向清理
+
+- **SUP 首审 F1/F2**：F1=旧代连接尝试的 `clock.setTimeout` 到期仍执行 `safeDisconnect()` 并置 DISCONNECTED——若新代已 ONLINE，会误断新连接（SUP 复现：reconnect→ONLINE→推进旧 timer→DISCONNECTED/connected=false/disconnects=1）；F2=T3 仅拒绝旧成功、未清理旧连接（SUP 用独立连接 ID mock 复现 `openConnectionIds=[1,2]`）。
+- **阻塞原因**：现有传输契约 `connect()` 无返回、`disconnect()` 无参数、`isConnected()` 单布尔，**无法定向关闭旧句柄而不误断新连接**；SUP §5.2 明确要求先报 PM。
+- **报告** `docs/evidence/E1-01B/blocked-report-f2-interface.md`：建议方案 A——`connect()` 返回不透明 handle；`disconnect(handle?)` 定向关闭，省略参数保持现状；`isConnected()` 表示当前连接；需把 `plc/memoryTransport.js` 加入允许修改范围，T3 用两个独立 handle 断言“旧关新活”。另列方案 B/C 与 F1 修法（timer 回调按代际/关闭分支，旧代仅 `PLC_CONNECT_SUPERSEDED`）。
+- 状态：`opencode=BLOCKED`；未改码/未提交/未推送；旧 72/25/8 与证据保留；等待 PM 裁定范围与契约。
+- 教训：①**所有异步回调（timer/成功/失败）都必须带代际守卫**，否则旧代定时器能修改新代状态；②“不误断新连接”与“清理旧连接”必须同时满足，单一布尔连接的测试无法证明；③接口不足时先报 PM，不自行扩范围或降级验收。
