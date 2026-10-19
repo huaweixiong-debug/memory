@@ -969,3 +969,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 门控证据：NCR-002 拦截演示、v1.2b 掩码演示（H1–H7/R2/N1–N3 全符合）、SEC-SCAN-1 演进 v1→v1.1→v1.2→v1.2b、每组离线门通过。
 - **新发现（报告 #4）**：干净克隆中 `w12-central-boundary-offline` 失败——W12 自检要求 `PC-01_HELIUM-01/README.md` 与 `src/config.js` 存在，但任务 §3 明令排除提交这些 PC-01 用户文件；工作区可见、克隆不可见。选项：a 补提交 4 文件 / b 有条件通过 / c 其他；待 PM 裁决（ETA：裁决后 ≤15 分钟交单）。
 - 教训：**提交集的自洽性必须用干净克隆验证**；“排除文件”的决定会破坏依赖这些文件的仓库自检；robocopy 经 MSYS 需 `MSYS2_ARG_CONV_EXCL` 防参数转换。
+
+## 2026-10-19 opencode（E0-02 第 5 阶段）: 提交 10/v0.9.1 推送；clone2 复验 2 项差异 → BLOCKED 报告 #5
+
+- 已完成：提交 10（`38182b7`，3 个 PM 审阅 PC-01 文件，扫描全清）、新标签 **`evap-sim-v0.9.1`**（v0.9 保留、未移动）、快进推送 `3896db2..38182b7`、SHA-256 三文件前后一致（`sha256-commit10.txt`）、ls-remote 存证（main 仍 63b1a3f）。
+- clone2 复验（新目录，HEAD=38182b7）：check-syntax ✓；w05 仅 w12 类别 2 断言失败：
+  - **A = 受保护迁移 005 的字节哈希**：纯行尾差异（克隆去 CR 后 SHA-256 = 工作区 `6bbc3a54…`；本机 autocrlf=true 检出为 CRLF）→ 取证 `clone2-005-byte-analysis.txt`；
+  - **B = SUBPROJECT.md 内容断言**：修改版按 §11.1 未提交（§11.1 预告分支，已按指示 BLOCKED、未自行加入）。
+- 报告 #5 选项：A1=.gitattributes `-text` 固定该文件字节（推荐）/ A2=克隆 `-c core.autocrlf=false` 口径 / A3=条件通过；B1=授权提交 SUBPROJECT.md 修改版 / B2 其他。
+- 教训：**字节级哈希断言会与行尾转换政策冲突**——受保护文件应以 .gitattributes 显式固定；“工作区通过”≠“干净克隆通过”。
