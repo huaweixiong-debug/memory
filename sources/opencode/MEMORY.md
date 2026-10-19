@@ -914,3 +914,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 验证：清链重放 + pythonw 窗口监视器全程 0 个 python/cadgen 标题窗口；daemon 变为单进程（`miniconda python -P -m cadgen.daemon`，无 stub 僵尸）；`cadgen daemon status` 正常；桌面无任何 WindowsTerminal 进程。
 - 关键技法：控制台归属判定 = FreeConsole + AttachConsole + GetConsoleProcessList 探针；窗口监视 = pythonw 循环 EnumWindows 落盘（避免自身弹窗）；实验矩阵证明「无标志 spawn=可见窗口 / DETACHED / CREATE_NO_WINDOW=无窗口」；PowerShell 无法对 GUI 程序（pythonw）可靠重定向 stdout，脚本内部写日志文件才可靠。
 - 升级注意：uv 升级 cadgen 会覆盖 site-packages 修复；说明文档已写至 `D:\CodexCAD\tools\cadgen\FIX-NOTES-opencode-20261017.md`（含逐文件修改表，可直接重放）。
+
+## 2026-10-18 opencode: longol_mes E0-01 交单（协众全厂追溯 · 只读盘点 + W12–W50 批量复核清单）
+
+- 项目仓库：`\\100.117.1.6\projects\longol_mes`（本机映射 `P:\longol_mes`）；协作协议=仓库根 `handover.md`，触发标记 `opencode.txt`/`codex.txt`/`claude.txt`（READY/IN_PROGRESS/DONE 状态机）。
+- E0-01 已交单：交接 `docs/handovers/E0-01_HANDOVER.md`；批量清单 `docs/reviews/BATCH_REVIEW_W12_W50.md`（39 行：APPROVE_G0_SIM 23 / NEEDS_DB_VERIFY 16 / FIX 0 / SUPERSEDED 0）；证据 `docs/evidence/E0-01/`（commands.log、git 快照、目录清点、离线测试基线）。
+- 基线复核：分支 `codex/w08-welding-transaction`、HEAD `a31ce87…`、暂存 110 路径——三项与任务声明一致；未提交（Git 收口归 E0-02，推送需 NOTE 含 PUSH_ALLOWED=YES）。
+- 环境要点（可复用）：本机 git-bash 无 tzdata，`TZ=America/New_York` 失效（回退 UTC）；改用 `TZ=EST5EDT` 生成纽约时间（与 Windows 时区库交叉验证一致）。Node v25.2.1 超出子工程 engines（>=20 <23）：`node --test <目录>` 在 v25 报 MODULE_NOT_FOUND，改显式文件清单可通过（lib 20/20、station-template 25/25）。
+- 项目角色约定：ENG=OpenCode 是唯一代码写入者；一次一任务；只改任务书“允许修改”路径；命令原始输出存 `docs/evidence/<ID>/`；禁止触碰生产库/设备/凭据。
+- 当前状态：等待 SUP（Codex）审核；若 opencode.txt 回到 READY（ATTEMPT>1），按 NOTE 指向的审核文件逐条修复。
