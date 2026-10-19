@@ -1207,3 +1207,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **提交** `16af354`（44 文件、扫描 hard=0、主题与消息文件一致、**未推送**；repack 告警记录）；`final-manifest.txt` TOTAL 31；`codex.txt=READY`、`opencode.txt=DONE` 为最后写入。
 - 遗留：中央 `w11-standard-regression.js` 的 `station-lib-offline` 仍只列旧两个测试文件（§8.7 禁止改中央目录）；心跳未按 30 分钟更新（连续实现），已如实记录。
 - 教训：①**超时测试要在断言前挂 catch**，否则定时器回调的拒绝会被 Node 判为 unhandledRejection；②“并行 vs 串行”“有锁 vs 无锁”必须各自可观测（transport 计数/顺序日志），敏感性才有意义；③先写测试再实现能暴露接口设计问题（如 timeout 与连接重试的边界）。
+
+## 2026-10-19 opencode（E1-01 ATTEMPT=2 完成）: F1–F3 生命周期修复；lib 65/65；提交 62e77e5
+
+- **SUP 首审 F1–F3（真实缺陷）**：F1 连接挂起无超时（首读/首写永久 PENDING）；F2 超时后迟到的读取仍触发 writeBytes（阻断级）；F3 close 后迟到 connect 复活为 ONLINE 并写入。
+- **修复**：`attemptConnect`（单次连接尝试受 `timeoutMs` 约束、`cancelAttempt` 供 close 立即取消、settled 守卫忽略迟到成功）；`connectWithRetry` 每 await 后 `throwIfClosed`；`withTimeout` 加 `token`，`writeSignal`/`readSignals` 在每次 await 后 `assertActive(token)`（超时/关闭后不再发起任何新 I/O）；`close()` 取消在途连接、清空并唤醒退避定时器、排队/在途操作收 `PLC_SERVICE_CLOSED`。
+- **证据**：先写 4 项回归证明修复前失败（`fix-tests-before-fix.txt` 4 fail）→ 修复后 `fix-service-tests-after-fix.txt` 19/19；lib **65/65**（attempt2b）、模板 25/25、w11 8/8、check 通过；敏感性 2b 用**文件备份复原**：S1 串行用例失败、S2 并发用例失败、恢复 19/19、`sensitivity-cmp-attempt2b.txt` **cmp=0**（第一轮用编辑器复原导致 SHA 不符，保留并说明）；扫描 `secret-scan-commitattempt2.txt` 38 文件 hard=0。
+- **事故**：`secret-scan-commitX.txt`（ATTEMPT=1 工作区扫描输出）被本轮同名扫描覆盖后，又被一次失败的 `git show` 重定向截断为 0 字节；原内容不可恢复，已如实记录、不补造；权威扫描为 `-attempt2` 与 `commitattempt2` 文件。
+- **提交** `62e77e5`（42 文件；消息按任务 §8.11；**未推送**；repack 告警记录）；`final-manifest-attempt2.txt` **TOTAL 62**；`codex=READY`、`opencode=DONE` 为最后写入。
+- 教训：①**连接尝试也要有超时**——只有操作超时不够；②**超时不是“忽略结果”**：必须在每个 await 之后检查取消令牌，否则迟到回调会继续发 I/O；③close 必须同时失效“在途连接 + 退避定时器 + 排队任务”；④敏感性复原用**文件备份**（字节一致），不要用编辑器改回；⑤工作区证据文件切勿用同名扫描/重定向覆盖——先复制再操作。
