@@ -949,3 +949,9 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - E0-02 基线核对通过（分支 `codex/w08-welding-transaction`、HEAD `a31ce87…`、暂存 110、无 index.lock、origin 一致）；SHA-256 before 完成（627 路径；65 MISSING 均为 W12 迁移后旧 PC-01 路径，属预期）。
 - 提交 1（W12 110 路径）前执行任务 §4.5 密钥扫描：**命中 233 行 / 28 文件**——代码标识符（`function secrets`）、环境变量名清单、空值（`.env.example`）、42 处“字面值”全为合成测试夹具；`STATION_KEY_...=值` 型 9 行非真实值；`PRIVATE KEY` 0 命中。与 A1（110 路径一致性）冲突：规则要求取消暂存，ENG 未改动暂存区，置 **BLOCKED** 报 PM（`docs/evidence/E0-02/blocked-report.md`，选项 a=确认例外 / b=缩窄规则 / c=其他）。
 - 复用要点：粗粒度密钥扫描规则在遍历历史源码/测试夹具时噪声大；派发类任务宜给出“例外类别”或缩窄命令，避免阻塞纯净提交。
+
+## 2026-10-18 opencode（E0-02 续）: 提交 1–5 完成；提交 5 的 SEC-SCAN-1 硬命中 + 脚本缺陷 → BLOCKED 报 PM（第 2 次）
+
+- 进展：提交 1–5 已落在 `module/evaporator`——`2334c07`（W12 110 路径；与 E0-01 清单 diff-exit=0）、`09dc21e`（.gitignore 规则）、`307dbdf`（迁移 007–010）、`9c94c98`（中央 src/public）、`838e33f`（中央 test/scripts/release）。每组均过 SEC-SCAN-1（按 PM 计划 §5.1 T6 实现）与中央离线门（check-syntax 121 文件；w05 offline PASS）。
+- 事件：提交 5 扫描报硬命中 `MES_SQL_PASSWORD=super-secret`（`w40-release-manifest.test.js` 的**测试夹具合成值**）；`commit-group.sh` v1 未在扫描 exit=2 时中止（**已修复为硬中止**）；提交已发生且不可改写（禁 rebase/reset）。规则歧义（硬阻断“带字面值的连接串密码” vs T6“测试文件中的合成假值允许”）→ 停流并报 PM（`docs/evidence/E0-02/blocked-report-2.md`，选项 a/b/c）。未推送。
+- 教训（跨任务复用）：①“检出即停”的守卫必须内置在提交脚本主流程，而非仅记录输出；②扫描规则需对测试夹具显式分级/豁免，避免把合成假值判为硬阻断；③并发编辑场景下 handover §7 行可能被并稿覆盖——关键动作行补记即可；④`ls-remote` 可用于无副作用确认“未推送”状态。
