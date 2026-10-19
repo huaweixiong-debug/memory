@@ -1172,3 +1172,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **回归（失败即停，未触发）**：单跑 Node22×20 + Node25×20 **40/40 exit=0**；完整门 Node22×3 + Node25×2 **5/5 PASS**；测试 8 40/40 通过、**最大 380.5 ms**（看门狗 15000 ms，余量 ~39×）；security 类别 9/9、4.57–4.95 s；文件总耗时 3.96–5.42 s。
 - **提交** `71b3051`（117 文件、扫描 hard=0（R1=4 为测试内固定夹具/说明行）、主题与消息文件一致、**未推送**）；提交后 `final-manifest-fix.txt` **TOTAL 116**（旧清单保留）；提交后 git 自动维护再次报 `multi-pack-index Permission denied`（提交对象已生成，已记录）。
 - 状态：`codex.txt=READY`（交 SUP 第 1 次审核）、`opencode.txt=DONE` 为最后写入；此后不再写仓库（CA-13）。B（R-ENV-1）报 GM；类别级 35 s 超时继续观察（OBS-1）。
+
+## 2026-10-19 opencode（E0-10 首审 F1 → 报 PM 裁定）: fix.diff 被 post 覆盖（CA-4）；旧证据全部保留、未重跑
+
+- **SUP 首审 FIX_REQUIRED**（`docs/reviews/E0-10_CODEX_REVIEW.md`）：业务项全过（测试修改、敏感性功能、40 单跑、5 完整门、语法、清单 116 条匹配且冻结未变）；**仅 F1**=敏感性比较基准 `fix.diff` 被 `post-sensitivity` 覆盖，违反 CA-4（任务 §7.3-3 要求“与原始 fix.diff 比较”，未授权用结果替换基准）。
+- **事实与证据（全部保留）**：`fix.diff.raw`（12:26:33，正确前快照，含 Git warning）→ `sensitivity-timeout1.txt`（12:26:49，124!==9）→ `fix.diff.post-sensitivity`（12:27:11）→ 错误中间版 `fix.diff.timeout1-capture.txt`（12:28:07）→ 当前 `fix.diff`=事后归位版（=post，哈希 90dc8e44…）。raw 忽略 warning 与 post 完全一致；SUP 独立内存敏感性复现成立。
+- **ENG 动作**：未重改代码、未重跑回归、未再覆盖；写 `blocked-report-2.md` 请求 PM：①接受 raw 为前基准、current 记为事后归位；②CA-4 偏差登记；③确认仅需文档更正（获裁后新增 lineage 文件 + raw.normalized + 新名清单）。
+- 教训：①**取证文件与被取证对象不能并行操作**——一次 clean diff 抓取与编辑竞争，抓到临时值后又被“归位”覆盖，直接触发 CA-4；②**绝不用复制来“修齐”证据**：基准被污染时用新文件名 + 关系说明，让旧文件保持原样；③敏感性必须“前快照（raw）→临时改→后快照（post）→对照说明”，每一步串行并各自新文件名。
