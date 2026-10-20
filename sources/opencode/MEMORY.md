@@ -1275,3 +1275,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **接口核对**：welding `/info` `/operator/select|clear` `/events`、hydrophilic 同族、`/api/v1/station/precheck` 与 §2 一致；未改 src/migrations/旧 pda。
 - **残余风险**：密钥存 PDA 浏览器、厂内 HTTP 明文（E3 TLS）；缓解 changeStationCredential 轮换/吊销、独立 SSID/网段。
 - **教训**：①注入式核心可以让整个离线补传在 node:test 中确定性复现（假时钟/脚本化 fetch）；②退避用 `nextRetryInMs` 门控而非自动 timer，测试可精确断言 1→2→4…60s 且避免定时器竞争；③队列满上限必须包含 REJECTED（已知悉前不丢），快照排除已归档拒收记录。
+
+## 2026-10-20 opencode（E1-05 ATTEMPT=2 完成：F1–F4 退修；24/24；提交 c96df403
+
+- **F1 跨工位**：待发送时 `enroll` 仅同工位（否则 `STATION_CHANGE_PENDING` 零请求）；`flush` 校验 `item.stationCode === binding.stationCode`，不一致 `STATION_MISMATCH` 零事件；同工位换密钥可用。
+- **F2 恢复**：`selectOperator` 有队列时仅允许归属操作员（MANUAL 预判；SCAN 选中他人则尽力清中央会话并拒绝）；`halted` 持久化 `state.v1`（401/OPERATOR_REQUIRED 跨重建）；同工位凭据修复清除 halted；页面“工位凭据”入口。
+- **F3 并发**：扫码 ticket 按调用顺序串行化“防重/容量/入队”，`occurredAt` 取调用时刻；并发同码 1 条、499+2 一条、逆序预校验仍按扫码顺序。
+- **F4**：8 秒超时覆盖 `fetch + response.json`，AbortController 中止，保持 PENDING 并释放 flush，原 `clientEventId` 重试。
+- **证据**：先补 11 项回归，其中 9 项失败（F1a/F1c/F2a/F2c/F3a/F3b/F3c/F4/F5）→ **24/24**；pda-static 2/2；check 122；离线门 PASS；敏感性 P3 失败 SHA cmp=0；扫描 32 文件 hard=0；`final-manifest-attempt2` TOTAL 45；提交 `c96df403`（未推送）。
+- **教训**：①跨工位补传必须校验记录归属，绑定接口本身不能作为“当前工位”唯一真相；②恢复流程要允许“原操作员重认证/同工位换密钥”，同时禁止换人/换工位，停止状态要持久化；③并发扫码用调用顺序票据串行化接纳决定，而不是全链路锁；④超时必须包住正文解析，fetch 响应头返回不等于请求完成。
