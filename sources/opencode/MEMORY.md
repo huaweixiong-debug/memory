@@ -1266,3 +1266,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - 测试：修复前 F1c/F2b 失败（`tests-before-fix-attempt3b.txt`）→ 修复后 29/29；lib **77/77**、模板 25/25、w11 8/8、check 通过；敏感性去掉 current 恢复→F2b 失败、SHA `eb2a77b6…` cmp=0；扫描 `secret-scan-attempt3.txt` 25 文件 hard=0。
 - 提交 `e7cb28c`（25 文件、未推送；repack 告警记录）；`final-manifest-attempt3.txt` TOTAL 57；`codex=READY`、`opencode=DONE` 最后写入。
 - 教训：①取消入口必须**按尝试身份**持有并条件清除，不能用单一全局槽位；②“关闭句柄”是集合操作，关闭 current 后要按规则恢复（最近打开），否则存活句柄失去 current；③集成测试必须使用真实 Memory 传输 + 仅延迟 connect，才能暴露 current 语义问题。
+
+## 2026-10-20 opencode（E1-05 完成：PDA 扫码完成端 + 离线补传；13/13；提交 a003a272
+
+- **任务**：CR-001 / 客户方案 v4：WELD-01～05 PDA + HYDRO-01 工控机共用 `pda-scan.html`，直连中央现有工位接口，localStorage 队列 FIFO、同 clientEventId 重试、8s 超时、退避 1→60s、500 上限、60s 防重、损坏隔离。
+- **实现**：`public/pda-scan-core.js`（注入 storage/fetch/now/randomUUID/timer/logger，无 DOM/Date/fetch 直连）+ `pda-scan.html/css/js`（无内联、textContent、无 innerHTML；PDA 竖屏大字）+ `test/e1-05-pda-scan.test.js` P1～P13 + w05 新类别 `e1-05-pda-scan`。
+- **证据**：先失败（模块不存在）→ 13/13；pda-static 2/2；check 122；离线门 PASS 含新类别；敏感性网络失败改 REJECTED → P3/P4/P7/P8 失败、复原 SHA cmp=0；扫描 32 文件 hard=0；`final-manifest` TOTAL 21；提交 a003a272（未推送）。
+- **接口核对**：welding `/info` `/operator/select|clear` `/events`、hydrophilic 同族、`/api/v1/station/precheck` 与 §2 一致；未改 src/migrations/旧 pda。
+- **残余风险**：密钥存 PDA 浏览器、厂内 HTTP 明文（E3 TLS）；缓解 changeStationCredential 轮换/吊销、独立 SSID/网段。
+- **教训**：①注入式核心可以让整个离线补传在 node:test 中确定性复现（假时钟/脚本化 fetch）；②退避用 `nextRetryInMs` 门控而非自动 timer，测试可精确断言 1→2→4…60s 且避免定时器竞争；③队列满上限必须包含 REJECTED（已知悉前不丢），快照排除已归档拒收记录。
