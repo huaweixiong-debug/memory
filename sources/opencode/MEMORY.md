@@ -1318,3 +1318,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **回归**：H1～H16 + H17（收回写入失败→FAULT）/H18（刷新与关闭交错）；实现前模块不存在 → 实现后 18/18；lib **122/122**、模板 25/25、W11 8/8；敏感性去“换件先写 false” → H7 失败、SHA `dd714193…` cmp=0；扫描 44 文件 hard=0；`final-manifest` TOTAL 41；提交 `a282c0d2`（未推送）。
 - **未执行**：未连真实氦检设备/远程 I/O；结果采集属 E1-12；现场需确认地址、窗口、releaseOn、通道/模块映射、预校验/健康检查接入。
 - **教训**：①“许可”必须 fail-closed：任何不确定/失败先写 false 并进 FAULT，绝不自动恢复；②预校验竞态要用序号/取消，最后一次扫码为准；③刷新与收回需要串行链+代际，否则可能出现 true 覆盖 false；④配置校验必须验证信号在远程 I/O 点位表中的区域/方向，而不只是名字。
+
+## 2026-10-20 opencode（E1-10 ATTEMPT=2 完成：F1 撤销写/ F2 在途 grant / F3 旧读取；127/127；提交 498c6167
+
+- **F1**：`close()` 及 revoke/fault/cycle/ack 的 false 写入均检查结果；失败保留 `FAULT`/`IO_LOST`，close 返回最终 status，不显示 IDLE、不自动重试。
+- **F2**：`grant(channel, seq, code)` 入队前与 await 后核对 closed/state/checkSeq/code/permitGeneration；断线、关闭、新扫码后旧 grant 不设置 PERMITTED、不产生事件/定时器/刷新 true。新扫码/拒绝/超时/错误路径先 `forceOff` 保证最终 false。
+- **F3**：`pollOnce` 发起 DI 读取前捕获 token/permitGeneration/state，返回后任一变化即丢弃，不更新 `lastCycle`、不产生跨令牌周期。
+- **回归**：P1 close 撤销失败、P2 在途 grant+模块断线（双通道）、P3 旧读取跨 B 令牌、P4 grant 等待时 close、P5 grant 等待时同通道新扫码；用 ATTEMPT=1 core 跑当前 23 项 → **5 项失败**，修复后 **23/23**；lib **127/127**、模板 25/25、W11 8/8；敏感性 H7 失败 SHA `f944f1e3…` cmp=0；扫描 29 文件 hard=0；`final-manifest-attempt2` TOTAL 66；提交 `498c6167`（未推送）。
+- **教训**：①撤销写入必须检查结果，失败就是 FAULT，不能“报告已收回”；②异步授权在 await 后必须复核扫码序号/许可代际/状态，否则旧 true 会覆盖断线故障；③轮询读取结果必须携带令牌/代际，旧连接/旧许可的采样不得启动新周期；④拒绝/换件/新扫码路径要主动确保 false，不能假设线圈已 false。
