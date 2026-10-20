@@ -1284,3 +1284,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F4**：8 秒超时覆盖 `fetch + response.json`，AbortController 中止，保持 PENDING 并释放 flush，原 `clientEventId` 重试。
 - **证据**：先补 11 项回归，其中 9 项失败（F1a/F1c/F2a/F2c/F3a/F3b/F3c/F4/F5）→ **24/24**；pda-static 2/2；check 122；离线门 PASS；敏感性 P3 失败 SHA cmp=0；扫描 32 文件 hard=0；`final-manifest-attempt2` TOTAL 45；提交 `c96df403`（未推送）。
 - **教训**：①跨工位补传必须校验记录归属，绑定接口本身不能作为“当前工位”唯一真相；②恢复流程要允许“原操作员重认证/同工位换密钥”，同时禁止换人/换工位，停止状态要持久化；③并发扫码用调用顺序票据串行化接纳决定，而不是全链路锁；④超时必须包住正文解析，fetch 响应头返回不等于请求完成。
+
+## 2026-10-20 opencode（E1-05 ATTEMPT=3 完成：F5 身份不确定 fail-closed；28/28；提交 8d97b3e4
+
+- **F5**：`selectOperator` 使用 `identityBusy` + io 锁；有队列时误扫非归属工牌，先持久化 `halted=OPERATOR_REQUIRED`、清空本地 `operator`，再尽力 `operator/clear`；clear 500/网络失败/挂起均停发；`flush` 对 AUTH_FAILED/OPERATOR_REQUIRED/OPERATOR_MISMATCH/STATION_MISMATCH 一律零事件；仅原归属人重新认证（中央确认）后清除 halted 并按原 `clientEventId` 补传。
+- **并发**：flush 与选人/清理共用 io 锁；`identityBusy` 时新 flush 立即停发；在途发送完成后才允许切换中央会话。
+- **回归**：G1 clear 500、G2 clear 网络失败、G3 clear 挂起并发 flush、G4 select 500；离线中央模型断言事件零请求、pending 保留、原 ID 不变、A 重认证后归属 A；先失败 4 项 → **28/28**。
+- **证据**：pda-static 2/2；check 122；离线门 PASS；敏感性 P3 失败 SHA cmp=0（`c2a1218e…`）；扫描 29 文件 hard=0；`final-manifest-attempt3` TOTAL 68；提交 `8d97b3e4`（未推送）。
+- **教训**：①身份切换是分布式状态，选人请求发出前就要 fail-closed 并持久化，不能等 clear 结果；②clear 失败/超时不能吞掉，必须保持“不确定”直到原归属人重新认证；③发送与选人/清理必须互斥，否则中途切换会把记录记到别人名下；④测试要用中央会话模型断言最终归属，而不只看本地字段。
