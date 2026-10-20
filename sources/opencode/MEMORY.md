@@ -1292,3 +1292,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **回归**：G1 clear 500、G2 clear 网络失败、G3 clear 挂起并发 flush、G4 select 500；离线中央模型断言事件零请求、pending 保留、原 ID 不变、A 重认证后归属 A；先失败 4 项 → **28/28**。
 - **证据**：pda-static 2/2；check 122；离线门 PASS；敏感性 P3 失败 SHA cmp=0（`c2a1218e…`）；扫描 29 文件 hard=0；`final-manifest-attempt3` TOTAL 68；提交 `8d97b3e4`（未推送）。
 - **教训**：①身份切换是分布式状态，选人请求发出前就要 fail-closed 并持久化，不能等 clear 结果；②clear 失败/超时不能吞掉，必须保持“不确定”直到原归属人重新认证；③发送与选人/清理必须互斥，否则中途切换会把记录记到别人名下；④测试要用中央会话模型断言最终归属，而不只看本地字段。
+
+## 2026-10-20 opencode（E1-08 完成：连接契约 v2 + F3 + Modbus TCP 远程 I/O；lib 101/101；提交 4c150a54 + c36ee3d6
+
+- **契约 v2**：传输层删除“当前连接”与 `isConnected()`；`connect()` 每次返回新句柄；`disconnect(handle)` 必须带句柄（无参 `PLC_TRANSPORT_HANDLE_REQUIRED`）；`isOpen(handle)`；读写首参句柄。`memoryTransport`、S7 服务、远程 I/O 统一。
+- **F3**：服务持有 `currentHandle`；`reconnect()` 先关旧句柄再建新代；操作超时关闭该操作句柄（若为 current 则清空并 DISCONNECTED）；`close()` 后打开句柄为零；迟到连接只关自己句柄。O1–O6 先失败后通过。
+- **Modbus**：`modbusCodec`（FC1/2/3/5、异常码、MBAP/事务/单元/长度校验、半帧/粘包）、`memoryModbusTransport`、`modbusTcpTransport`（仅回环 127.0.0.1/::1/localhost，`net` 只在此文件与其测试）、`modbusPointConfig`、`remoteIoService`（复用生命周期，COIL/DI 只允许 BOOL）。
+- **证据**：先失败 18/85 → lib **101/101**、模板 25/25、W11 8/8；敏感性去 reconnect 关闭旧句柄 → O1/O2 失败、SHA `1256ccf5…` cmp=0；两次扫描 14/32 文件 hard=0；`final-manifest` TOTAL 34；两次提交 `4c150a54` + `c36ee3d6`（未推送）。
+- **既有测试**：仅调用签名/handle 断言调整；无参 disconnect 改为按契约必须抛错；原“无 socket”断言原样迁移到 Modbus TCP 测试（net 限制），未放宽。
+- **教训**：①连接所有权必须由服务持有，传输层任何“当前连接”都会在重连/关闭边界复活旧连接；②超时清理必须针对该操作开始时捕获的句柄；③Modbus 流式拆帧要把“半帧”和“长度非法”区分，避免半帧误判；④TCP 回环限制用精确白名单，不能靠前缀/大小写/映射地址判断。
