@@ -1326,3 +1326,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F3**：`pollOnce` 发起 DI 读取前捕获 token/permitGeneration/state，返回后任一变化即丢弃，不更新 `lastCycle`、不产生跨令牌周期。
 - **回归**：P1 close 撤销失败、P2 在途 grant+模块断线（双通道）、P3 旧读取跨 B 令牌、P4 grant 等待时 close、P5 grant 等待时同通道新扫码；用 ATTEMPT=1 core 跑当前 23 项 → **5 项失败**，修复后 **23/23**；lib **127/127**、模板 25/25、W11 8/8；敏感性 H7 失败 SHA `f944f1e3…` cmp=0；扫描 29 文件 hard=0；`final-manifest-attempt2` TOTAL 66；提交 `498c6167`（未推送）。
 - **教训**：①撤销写入必须检查结果，失败就是 FAULT，不能“报告已收回”；②异步授权在 await 后必须复核扫码序号/许可代际/状态，否则旧 true 会覆盖断线故障；③轮询读取结果必须携带令牌/代际，旧连接/旧许可的采样不得启动新周期；④拒绝/换件/新扫码路径要主动确保 false，不能假设线圈已 false。
+
+## 2026-10-21 opencode（E1-03 完成：许可结果采集 + 映射约束 + 内堵 1 样例；139/139；提交 5620d1cb
+
+- **结果采集**：`resultOkSignal`/`resultNgSignal`（只读 DI，成对）、`resultDelayMs`；下降沿后同令牌发 `CYCLE_RESULT`：OK=1/NG=0→OK、0/1→NG、同 1/同 0→UNKNOWN（RESULT_AMBIGUOUS）；读取失败/断线不发事件并 FAULT/IO_LOST；延迟期间关闭/故障/令牌失效丢弃；未配置结果信号保持 E1-10 行为。
+- **映射约束**：同一 io 实例上重复 permit/cycle/结果信号在创建时拒绝（错误含冲突通道与信号）；双方相同非空 `sharedGroup` 放行；不同 io 同名允许。
+- **内堵 1 样例**：`permit/examples/inner-leak-1.example.js`，占位 COIL/DI 0–3，note 注明待 Q2/Q8/Q10；X1 跑通 OK 周期。
+- **S1**：`snap7Service.close()` 仅一处改为 `handle !== null && handle !== undefined`，无当前句柄不调用 `transport.disconnect`。
+- **证据**：R1–R7/M1–M3/X1/S1；实现前 9 项失败 → lib **139/139**、模板 25/25、W11 8/8；敏感性 run3（去掉令牌失效丢弃）R6 失败、SHA `98373367…` cmp=0（run1/run2 说明见 sensitivity-note）；扫描 37 文件 hard=0；`final-manifest` TOTAL 33；提交 `5620d1cb`（未推送）。
+- **教训**：①结果事件必须与周期同令牌，延迟期间关闭/故障/换令牌一律丢弃；②映射约束应以 io 实例而非 ioId 为键，并按信号类型检查；③显式 `sharedGroup` 才能放行共用，不能默认容忍；④close/撤销的证据要包含写入结果，空句柄判断用 `null` 而不是仅 `undefined`。
