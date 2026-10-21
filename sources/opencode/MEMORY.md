@@ -1350,3 +1350,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **发送/模拟**：`createResultSender(client)` 适配 outbox→submitEvent；`createMemoryResultSource` 支持追加/迟到/失败/挂起；三个 `SIM-` 配置（INNER-02/03、HELIUM-02），列名 sim_ 前缀。
 - **证据**：C1–C13；实现前模块不存在失败 → lib **155/155**、模板 25/25、W11 8/8；敏感性先推进内存水位 → C5 失败、SHA `dafa0074…` cmp=0；扫描 clean 42 文件 hard=0（首次源码含合成口令样值被 hard=1，原输出保留+note）；`final-manifest` TOTAL 38；提交 `31a6adb4`（未推送）；交接按 PM §6.2 八节。
 - **教训**：①水位必须在“全部落盘”后写，内存 cursor 也不能先推进；②隔离 ID 对无 eventKey 行要用整行稳定摘要，不能猜测键；③判定/时间/测量必须精确白名单，任何“修复”都不得自动补码/改时区；④扫描器会把文档中的合成口令样值当硬命中，测试注入应动态构造并保留原始扫描审计。
+
+## 2026-10-21 opencode（E1-12A ATTEMPT=2 完成：close 写边界/分页/错误码/退避；159/159；提交 6c322ad2
+
+- **F1 close 写边界**：close 设 closed、取消读取、清除退避定时器，并等待 `activeWrites` 中已开始的隔离/checkpoint 写完成；outbox/隔离/checkpoint 每次 await 后复核 closed，关闭后不再启动新写、cursor 不推进。
+- **F2 分页**：按 `pageAfter` 逐页读取直到空页/短页，支持任意 `overlap`（含 overlap ≥ batchSize）；每页全部行落盘后才在轮末写一次 checkpoint；重启/重读靠 outbox 去重与隔离计数。
+- **F3 安全错误码**：health/logger 只输出白名单码（SOURCE_ERROR/SOURCE_TIMEOUT/SOURCE_ORDER_INVALID/CHECKPOINT_*），来源任意 error.code/message 不透传。
+- **F4 退避**：失败后用注入 clock 记录 `nextAttemptAt` 与定时器；退避内 `pollOnce()` 返回 `{skipped:'BACKOFF'}` 且不调用 source；成功清零，封顶 60s，close 清理。
+- **证据**：C8/F1–F4 先失败 5/17（用 ATTEMPT=1 collector 跑当前测试）→ 17/17；lib **159/159**、模板 25/25、W11 8/8；敏感性 C5 失败 SHA `906af8c6…` cmp=0；扫描 attempt2 32 文件 hard=0；`final-manifest-attempt2` TOTAL 63；提交 `6c322ad2`（未推送）。
+- **教训**：①关闭边界要跟踪“已开始的文件写”，不是只取消 source 读；②overlap 回读必须用页内游标推进，否则小 batch 会永久卡在同一页；③外部 error.code 不可信，health/logger 只能写受控码；④退避必须门控实际读取，不能只报告数字。
