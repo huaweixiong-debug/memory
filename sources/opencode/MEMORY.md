@@ -1368,3 +1368,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F3/S1**：安全码白名单含 OUTBOX/QUARANTINE/CHECKPOINT_WRITE_FAILED；SOURCE_KEY_INVALID 用整行摘要。
 - **证据**：C8/F1/F4/V2 先失败 5/19（ATTEMPT=2 collector）→ 19/19；lib **161/161**、模板 25/25、W11 8/8；规定变异“读取后立即写 checkpoint 文件”→ C5 失败、SHA `20ca42ae…` cmp=0；扫描 attempt3 40 文件 hard=0；`final-manifest-attempt3` TOTAL 97；提交 `25660657`（未推送）。
 - **教训**：①close 必须等待 outbox 写，不只自管文件；②分页水位要逐页落盘，页失败不能回滚前页；③页数上限与 overlap 必须联合约束，否则回读窗口不可达；④BACKOFF 要返回绝对 retryAt，调用方才能精确调度。
+
+## 2026-10-21 opencode（E1-13 完成：结果采集工位进程（模拟）；10/10；提交 eaf57db4
+
+- **实现**：`shared/station-agents/result-agent/` 新增 config/agent/healthServer/simGenerator/main/check/package/README/test；显式 `STATION_ENV_FILE`，只 require `station-template/config.js` 的 `parseEnvFile`；`RESULT_SOURCE` 仅 `sim`，配置 fail-closed，错误只写键名。
+- **运行**：采集/补传/心跳各自单飞；采集 `BACKOFF` 按 `retryAt` 安排；异常只记安全码（采集器安全码/DRAIN_FAILED/HEARTBEAT_FAILED/AGENT_ERROR），不记 message/stack；`stop()` 重复调用同一 Promise，清定时器→等待在途→collector.close。
+- **健康页**：仅 127.0.0.1，GET /health JSON（stationCode/sourceId/mode/state/collector/outbox/lastDrain/lastHeartbeat），其他路径 404、非 GET 405、`Cache-Control: no-store`，无密钥。
+- **模拟**：固定种子 mulberry32；游标递增、eventKey 稳定、约 90% PASS/8% FAIL/2% 坏码、时间 +08:00；`createSimGenerator` 已用于演示与 G9。
+- **证据**：G1～G10；实现前模块缺失失败 → agent **10/10**、lib **161/161**、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `f2b4882f…` cmp=0；扫描 38 文件 hard=0；20s 本地假中央演示退出 0（Windows 后台子进程无法可靠注入 Ctrl+C，使用进程内 `process.emit('SIGINT')` 走同一 handler）；`final-manifest` TOTAL 33；提交 `eaf57db4`（未推送）；部署缺项（Windows 服务、真实驱动、密钥权限、时钟同步）在交接 §6。
+- **教训**：①Windows 上不要依赖向后台 node 子进程注入 SIGINT/SIGTERM，验证 handler 可用进程内 emit；②健康页必须固定回环地址并在测试断言 `server.address`；③采集/补传/心跳单飞要用独立 in-flight 标志，退避要用绝对 retryAt；④异常日志只允许安全码，任何 message/stack 都不能进日志/状态。
