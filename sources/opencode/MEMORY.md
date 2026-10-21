@@ -1385,3 +1385,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **S1**：`getStatus().state` 停止中保持 `STOPPING`，完成后 `STOPPED`。
 - **证据**：F1/F2 先失败 2/13（ATTEMPT=1 agent/main）→ agent **13/13**、lib 161/161、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `e947f179…` cmp=0；扫描 44 文件 hard=0；20s 演示 ATTEMPT=2 退出 0（10 事件）；`final-manifest-attempt2` TOTAL 72；提交 `2ea63854`（未推送）。
 - **教训**：①单飞不能用“最后一个 Promise 引用”覆盖真实任务，必须用 Set 登记真实在途工作；②`stop()` 的等待边界必须覆盖所有后台任务类型；③启动失败必须回滚已启动资源，否则定时器/请求残留；④停止过程状态应可观测为 STOPPING，而不是提前报告 STOPPED。
+
+## 2026-10-21 opencode（E1-13 ATTEMPT=3 完成：health.start 在途停止/迟到绑定关闭；14/14；提交 061a8bf9
+
+- **F2b**：`healthServer.close()` 设置 closed 后等待在途 `start()`；若 listen 在关闭请求后才成功，立即 `closeServer()` 并返回 null；`close()` 幂等。`main.js` 在 `health.start()` settle 后若 stopPromise 已存在，再次 `health.close()` 兜底。`start()` 在已关闭时不再绑定。
+- **回归**：新增 F2b 用受控健康启动门分别触发 SIGINT/SIGTERM，断言 close 被调用、释放后 bound=false、close 至少 2 次、main 限时返回；用 ATTEMPT=2 healthServer/main 跑当前 14 项 → F2b 失败（1/14），修复后 14/14。
+- **证据**：agent 14/14、lib 161/161、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `e947f179…` cmp=0；扫描 33 文件 hard=0；20s 演示 ATTEMPT=3 退出 0（10 事件）；`final-manifest-attempt3` TOTAL 100；提交 `061a8bf9`（未推送）。
+- **教训**：①关闭异步监听不能只调用一次 close；close 必须等待 start 并清理迟到绑定；②main 在 start settle 后要再次 close 兜底；③受控门回归要分别覆盖 SIGINT/SIGTERM；④停止 Promise 的完成边界必须包含在途启动资源。
