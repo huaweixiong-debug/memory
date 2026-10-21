@@ -1359,3 +1359,12 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F4 退避**：失败后用注入 clock 记录 `nextAttemptAt` 与定时器；退避内 `pollOnce()` 返回 `{skipped:'BACKOFF'}` 且不调用 source；成功清零，封顶 60s，close 清理。
 - **证据**：C8/F1–F4 先失败 5/17（用 ATTEMPT=1 collector 跑当前测试）→ 17/17；lib **159/159**、模板 25/25、W11 8/8；敏感性 C5 失败 SHA `906af8c6…` cmp=0；扫描 attempt2 32 文件 hard=0；`final-manifest-attempt2` TOTAL 63；提交 `6c322ad2`（未推送）。
 - **教训**：①关闭边界要跟踪“已开始的文件写”，不是只取消 source 读；②overlap 回读必须用页内游标推进，否则小 batch 会永久卡在同一页；③外部 error.code 不可信，health/logger 只能写受控码；④退避必须门控实际读取，不能只报告数字。
+
+## 2026-10-21 opencode（E1-12A ATTEMPT=3 完成：V2 逐页水位/close 等待/retryAt；161/161；提交 25660657
+
+- **F1**：outbox enqueue 纳入 activeWrites；`close()` 返回同一完成 Promise，等待 outbox/隔离/checkpoint 在途写；关闭后不再启动新写；多次 close 同一边界。
+- **F2（V2）**：`maxPagesPerPoll` 1–100 默认 10；拒绝 `overlap >= batchSize × maxPagesPerPoll`；每页全部落盘后立即写 checkpoint，页失败保留前页水位；页内不升序/重复 → `SOURCE_ORDER_INVALID` 且水位不动。
+- **F4**：退避内 `pollOnce()` 返回 `{skipped:'BACKOFF', retryAt}`，不读 source；恰好到点可读；成功清零；封顶 60s；close 清理。
+- **F3/S1**：安全码白名单含 OUTBOX/QUARANTINE/CHECKPOINT_WRITE_FAILED；SOURCE_KEY_INVALID 用整行摘要。
+- **证据**：C8/F1/F4/V2 先失败 5/19（ATTEMPT=2 collector）→ 19/19；lib **161/161**、模板 25/25、W11 8/8；规定变异“读取后立即写 checkpoint 文件”→ C5 失败、SHA `20ca42ae…` cmp=0；扫描 attempt3 40 文件 hard=0；`final-manifest-attempt3` TOTAL 97；提交 `25660657`（未推送）。
+- **教训**：①close 必须等待 outbox 写，不只自管文件；②分页水位要逐页落盘，页失败不能回滚前页；③页数上限与 overlap 必须联合约束，否则回读窗口不可达；④BACKOFF 要返回绝对 retryAt，调用方才能精确调度。
