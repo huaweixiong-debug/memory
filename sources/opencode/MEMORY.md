@@ -1335,3 +1335,10 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **S1**：`snap7Service.close()` 仅一处改为 `handle !== null && handle !== undefined`，无当前句柄不调用 `transport.disconnect`。
 - **证据**：R1–R7/M1–M3/X1/S1；实现前 9 项失败 → lib **139/139**、模板 25/25、W11 8/8；敏感性 run3（去掉令牌失效丢弃）R6 失败、SHA `98373367…` cmp=0（run1/run2 说明见 sensitivity-note）；扫描 37 文件 hard=0；`final-manifest` TOTAL 33；提交 `5620d1cb`（未推送）。
 - **教训**：①结果事件必须与周期同令牌，延迟期间关闭/故障/换令牌一律丢弃；②映射约束应以 io 实例而非 ioId 为键，并按信号类型检查；③显式 `sharedGroup` 才能放行共用，不能默认容忍；④close/撤销的证据要包含写入结果，空句柄判断用 `null` 而不是仅 `undefined`。
+
+## 2026-10-21 opencode（E1-03 ATTEMPT=2 完成：结果采集关闭安全与通道隔离；142/142；提交 f3c33fe1
+
+- **F1**：`captureResult` 在延迟后、OK/NG 每次读取成功/失败后都检查 `closed`、token、许可代际、RUNNING；关闭/失效后静默丢弃，不发事件、不写 I/O、不改关闭后的 FAULT/IDLE；有效周期读取失败仍 FAULT/IO_LOST。
+- **F2**：周期结束只同步发 `CYCLE_ENDED`/release，然后启动 `finishResult()` 异步任务；结果延迟与读取不再阻塞 `pollOnce`，其他通道继续轮询。结果仍绑定原 token/代际，完成后回 IDLE；close/故障可取消。
+- **回归**：F1a（OK 读挂起→close→拒绝）、F1b（NG 读挂起→close→拒绝）、F2（A 延迟 500ms 时 B 正常完成且有自己 token）；修复前 3/37 失败 → 37/37；lib **142/142**、模板 25/25、W11 8/8；敏感性 stale→false 后 R6/F1a/F1b 失败、SHA `2888bdba…` cmp=0；扫描 25 文件 hard=0；`final-manifest-attempt2` TOTAL 54；提交 `f3c33fe1`（未推送）。
+- **教训**：①异步读取的**成功和失败路径**都要复核 closed/token/代际，异常路径最容易越过关闭边界；②结果等待必须与轮询解耦，否则一个通道的延迟会冻结所有通道；③结果完成后的状态收敛要放在独立异步任务里，并支持 close/故障取消；④敏感性要确保测试真的等待异步完成，否则变异不会暴露。
