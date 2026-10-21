@@ -1342,3 +1342,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **F2**：周期结束只同步发 `CYCLE_ENDED`/release，然后启动 `finishResult()` 异步任务；结果延迟与读取不再阻塞 `pollOnce`，其他通道继续轮询。结果仍绑定原 token/代际，完成后回 IDLE；close/故障可取消。
 - **回归**：F1a（OK 读挂起→close→拒绝）、F1b（NG 读挂起→close→拒绝）、F2（A 延迟 500ms 时 B 正常完成且有自己 token）；修复前 3/37 失败 → 37/37；lib **142/142**、模板 25/25、W11 8/8；敏感性 stale→false 后 R6/F1a/F1b 失败、SHA `2888bdba…` cmp=0；扫描 25 文件 hard=0；`final-manifest-attempt2` TOTAL 54；提交 `f3c33fe1`（未推送）。
 - **教训**：①异步读取的**成功和失败路径**都要复核 closed/token/代际，异常路径最容易越过关闭边界；②结果等待必须与轮询解耦，否则一个通道的延迟会冻结所有通道；③结果完成后的状态收敛要放在独立异步任务里，并支持 close/故障取消；④敏感性要确保测试真的等待异步完成，否则变异不会暴露。
+
+## 2026-10-21 opencode（E1-12A 完成：设备库结果采集器（模拟）；155/155；提交 31a6adb4
+
+- **结果采集**：`resultProfile` 配置校验（sourceId/工位/进程/通道/列/rawColumns/verdictMap 精确/码正则/sourceUtcOffset/batch/overlap）；`deviceResultCollector` 按游标读取，逐行严格映射；判定/码/时间/测量不合格隔离，不猜测；合格写 outbox `PROCESS_EVENT`（UUID v5 = SHA256(sourceId|eventKey)）。
+- **水位/幂等**：本批全部入队或隔离后才原子写 `<stateDir>/<sourceId>/checkpoint.json`；读取失败/超时水位不动；outbox 冲突隔离 `SOURCE_EVENT_CONFLICT` 且首条不变；单飞；close 后不读写；超时/挂起迟到结果丢弃。
+- **发送/模拟**：`createResultSender(client)` 适配 outbox→submitEvent；`createMemoryResultSource` 支持追加/迟到/失败/挂起；三个 `SIM-` 配置（INNER-02/03、HELIUM-02），列名 sim_ 前缀。
+- **证据**：C1–C13；实现前模块不存在失败 → lib **155/155**、模板 25/25、W11 8/8；敏感性先推进内存水位 → C5 失败、SHA `dafa0074…` cmp=0；扫描 clean 42 文件 hard=0（首次源码含合成口令样值被 hard=1，原输出保留+note）；`final-manifest` TOTAL 38；提交 `31a6adb4`（未推送）；交接按 PM §6.2 八节。
+- **教训**：①水位必须在“全部落盘”后写，内存 cursor 也不能先推进；②隔离 ID 对无 eventKey 行要用整行稳定摘要，不能猜测键；③判定/时间/测量必须精确白名单，任何“修复”都不得自动补码/改时区；④扫描器会把文档中的合成口令样值当硬命中，测试注入应动态构造并保留原始扫描审计。
