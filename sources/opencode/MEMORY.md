@@ -1377,3 +1377,11 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **模拟**：固定种子 mulberry32；游标递增、eventKey 稳定、约 90% PASS/8% FAIL/2% 坏码、时间 +08:00；`createSimGenerator` 已用于演示与 G9。
 - **证据**：G1～G10；实现前模块缺失失败 → agent **10/10**、lib **161/161**、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `f2b4882f…` cmp=0；扫描 38 文件 hard=0；20s 本地假中央演示退出 0（Windows 后台子进程无法可靠注入 Ctrl+C，使用进程内 `process.emit('SIGINT')` 走同一 handler）；`final-manifest` TOTAL 33；提交 `eaf57db4`（未推送）；部署缺项（Windows 服务、真实驱动、密钥权限、时钟同步）在交接 §6。
 - **教训**：①Windows 上不要依赖向后台 node 子进程注入 SIGINT/SIGTERM，验证 handler 可用进程内 emit；②健康页必须固定回环地址并在测试断言 `server.address`；③采集/补传/心跳单飞要用独立 in-flight 标志，退避要用绝对 retryAt；④异常日志只允许安全码，任何 message/stack 都不能进日志/状态。
+
+## 2026-10-21 opencode（E1-13 ATTEMPT=2 完成：在途任务登记/启动回滚；13/13；提交 2ea63854
+
+- **F1**：采集/补传/心跳真实 Promise 统一登记 `activeJobs`；`skipped` 快路径不覆盖也不清空真实引用；`stop()` 等待 `activeJobs` 全部结束才 `collector.close()`；重复 stop 同一 Promise；新增 F1（drain 挂起+连续 tick）与 F1b（poll 挂起）。
+- **F2**：`main.js` 统一 `stopResources()`（agent.stop→health.close）；collector 启动失败、健康端口占用、启动中 SIGINT/SIGTERM 均回滚，失败退出码 1；错误只 `START_FAILED` + 安全码；新增端口占用子进程回归（无残留、无密钥）。
+- **S1**：`getStatus().state` 停止中保持 `STOPPING`，完成后 `STOPPED`。
+- **证据**：F1/F2 先失败 2/13（ATTEMPT=1 agent/main）→ agent **13/13**、lib 161/161、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `e947f179…` cmp=0；扫描 44 文件 hard=0；20s 演示 ATTEMPT=2 退出 0（10 事件）；`final-manifest-attempt2` TOTAL 72；提交 `2ea63854`（未推送）。
+- **教训**：①单飞不能用“最后一个 Promise 引用”覆盖真实任务，必须用 Set 登记真实在途工作；②`stop()` 的等待边界必须覆盖所有后台任务类型；③启动失败必须回滚已启动资源，否则定时器/请求残留；④停止过程状态应可观测为 STOPPING，而不是提前报告 STOPPED。
