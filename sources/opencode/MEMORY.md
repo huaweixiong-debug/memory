@@ -1392,3 +1392,9 @@ et use T:/Y:/Z:/P: /delete /y 后重建映射重置 SMB 会话。备份均在原
 - **回归**：新增 F2b 用受控健康启动门分别触发 SIGINT/SIGTERM，断言 close 被调用、释放后 bound=false、close 至少 2 次、main 限时返回；用 ATTEMPT=2 healthServer/main 跑当前 14 项 → F2b 失败（1/14），修复后 14/14。
 - **证据**：agent 14/14、lib 161/161、模板 25/25、W11 8/8；敏感性日志写 message → G4 失败、SHA `e947f179…` cmp=0；扫描 33 文件 hard=0；20s 演示 ATTEMPT=3 退出 0（10 事件）；`final-manifest-attempt3` TOTAL 100；提交 `061a8bf9`（未推送）。
 - **教训**：①关闭异步监听不能只调用一次 close；close 必须等待 start 并清理迟到绑定；②main 在 start settle 后要再次 close 兜底；③受控门回归要分别覆盖 SIGINT/SIGTERM；④停止 Promise 的完成边界必须包含在途启动资源。
+
+## 2026-10-21 opencode（E1-13 终验 ACCEPTED；QUOTA_PAUSE）
+
+- PM 15:03 纽约时间终验 **ACCEPTED**（`docs/reviews/E1-13_PM_ACCEPTANCE.md`）；三次提交 `eaf57db4` / `2ea63854` / `061a8bf9`，均未推送；agent 14/14、lib 161/161、模板 25/25、W11 8/8。
+- 三次审核收敛：F1 activeJobs 在途登记；F2 启动失败回滚 + 健康 start 在途信号/迟到绑定关闭；F2b 回归通过。部署遗留（Windows 服务、真实 DB 驱动 E1-12C、密钥 ACL/轮换、NTP、跨机监控、断电持久性）归 E3/E1-11/E1-12C。
+- **QUOTA_PAUSE（G-09）**：SUP 周额度约 15%，PM 暂停派发新任务；ENG 不接新任务、不写 longol_mes 仓库，等待周额度恢复/GM 指示。共享 memory 更新除外。
