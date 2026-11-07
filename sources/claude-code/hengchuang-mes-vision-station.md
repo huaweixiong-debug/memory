@@ -2,7 +2,7 @@
 
 项目：冷水机片数视觉检测 `Detection V21.py`，运行在远程 Windows 机 `D:\ultralytics-main`（SSH 22 端口 2026-11-07 连不上：kex connection reset）。
 远程访问（2026-11-07）：Tailscale 名 `hengchuang-chiller`（100.111.94.83），445 端口通；共享 `\\hengchuang-chiller\ultralytics-main` 存在但需要 Windows 凭据（WinError 1326）。用户给的主机名 DESKTOP-17IPMUM 本机解析不到（WinError 53）。凭据由用户自己 `net use` 映射，助手不代输密码。Git Bash 会吞掉 UNC 开头的 `\\`，测试时在 Python 里用 chr(92) 拼路径。
-远程核对（2026-11-07，经 `\\100.111.94.83\ultralytics-main` 用户 l 映射）：远程 `Detection V21.py` 与本地 Chiller-counting 版 MD5 一致；运行解释器为 Python 3.13（pyc 为 cpython-313），项目 .venv(3.12) 基本为空不是运行环境；`detection_debug.jsonl` 约 1.5 GB 持续增长需轮转。HTTP 决定用标准库 urllib，扫码枪需 pyserial。
+远程核对（2026-11-07，经 `\\100.111.94.83\ultralytics-main` 用户 l 映射）：远程 `Detection V21.py` 与本地 Chiller-counting 版 MD5 一致；运行解释器为 Python 3.13（pyc 为 cpython-313），项目 .venv(3.12) 基本为空不是运行环境；`detection_debug.jsonl` 约 1.5 GB 持续增长需轮转。HTTP 决定用标准库 urllib，扫码枪需 pyserial。远程命令行 `python` 为 `D:\miniconda3`：有 requests 2.32.4，无 pyserial、pycryptodome（2026-11-07 用户 pip show）；是否即 PyCharm 的 Python 3.13 待确认。
 方案草稿：`Y:\恒创\006 视觉识别\MES对接方案.md`（未实施，等用户确认）。
 
 ## 协议结论（来自《恒创MES项目系统接口集成规范V0.3》+ 字段说明 xls + Postman 脚本）
