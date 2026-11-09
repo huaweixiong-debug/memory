@@ -16,3 +16,9 @@
 
 - 公开项目 mac20777/vibecoding-voice 在相同 VID/PID 2717:32B8 和 BARROT USB 蓝牙适配器上实测过 HID/ATT 通知承载 mSBC，独立于 ATVV；其样机厂商 GATT 服务与本机不同，仍须用本机语音键验证帧。参考 https://github.com/mac20777/vibecoding-voice/blob/main/docs/xiaomi-remote-adaptation-notes.md 。
 - 已通过官方发布页下载并核验 Authenticode 签名的 USBPcap 1.5.4.0，安装退出码 0，USBPcap 内核驱动已启动，USB 根设备类 UpperFilters 已登记，但重启前没有可用捕获接口。用户选择保存工作后自行重启。后续先验证捕获接口，限定 BARROT USB 设备，按住语音键测试 mSBC 帧及解码，最后才接语音转写。未安装第三方转写前端，未实测 HID 语音。
+
+### 重启后 HID 语音实测
+
+- 重启后 USBPcap 接口可枚举，限定 BARROT 适配器。当前 USB 地址按启动动态枚举。直接 Node 子进程 stdout 方案没有数据；USBPcap 目标设备过滤 + --inject-descriptors + 临时 pcap 文件方案可靠，诊断结束自动删除原始 pcap。
+- 实物报告编号：0x0042 语音控制 20 字节，0x0046/0x004a/0x004e 音频 60 字节，0x0034 普通键 8 字节。音频字节 0 为 01，字节 1 为 H2 序列，字节 2..58 为 mSBC。两次空按共 896 帧。第一句 372 帧全部解码，通过 CRC，16 kHz 单声道 2.79 秒。另一次 662 帧经项目 JS 解码和 FFmpeg 比对相关系数约 0.99999999，最大样本差 9，证实遥控器内置麦克风音频可用。
+- 上游 v0.5.18 与 main 两套固定报告编号都未包含本机编号。Faster Whisper base 本地中文识别已运行，但测试句有明显错字，语音听写未完成验收。计划独立本地监听工具，OpenCode 会话 ses_e3f61b7d4ffeBjWgT9NL4i4Q1h，默认 mimo-v2.5 被供应商停用，尝试其指定后继 mimo-v2.6-flash。
